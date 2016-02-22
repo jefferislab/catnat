@@ -5,12 +5,13 @@ assignsides.l1 <- function(db, nan2microns = F){
     scale = 1
     cat("Note that query neurons should be scaled to microns")
   }
-  r.l1.alpha = readRDS("right_half_l1mesh") # Fix this at some point
-  good_soma=sapply(db, function(x) !is.null(x$tags$soma))
-  fb = db[good_soma]
-  if (length(db) != length(fb)){
-    warning(paste("Dropping", length(db) - length(fb), "neurons without tagged somas", sep = " "))
-  }
+  r.l1.alpha = readRDS("right_half_l1mesh") # Fix this at some point, add it to package?
+  fb = db
+  #good_soma=sapply(db, function(x) !is.null(x$tags$soma))
+  #fb = db[good_soma]
+  #if (length(db) != length(fb)){
+  #  warning(paste("Dropping", length(db) - length(fb), "neurons without tagged somas", sep = " "))
+  #}
   fdf=as.data.frame(fb)
   fdf=cbind(fdf, side = matrix(0,ncol=1, nrow=nrow(fdf)))
   for (neuron in 1:length(fb)){
@@ -19,6 +20,13 @@ assignsides.l1 <- function(db, nan2microns = F){
     while (rep == 'yes'){
       k = k + 100
       som = soma.neuron(fb[[neuron]])
+      if (is.na(som[1])){
+        if (length(fb[[neuron]]$tags$soma[[1]])>0){
+          som = matrix(xyzmatrix(fb[[neuron]])[fb[[neuron]]$d$PointNo%in%fb[[neuron]]$tags$soma,], ncol = 3)
+        }else{
+          som = matrix(xyzmatrix(fb[[neuron]])[fb[[neuron]]$StartPoint,], ncol = 3)
+        }
+      }
       p = nat::xyzmatrix(fb[[neuron]])
       n = nabor::knn(p, som, ifelse(nrow(p)>k,k,nrow(p)))
       m = p[c(n$nn.idx),]
@@ -48,10 +56,16 @@ assignsides.l1 <- function(db, nan2microns = F){
 }
 
 
-primary.neurite <- function(someneuron, k){      # Find the first 100 points of the primary neurite
-  som = soma.neuron(fb[[neuron]])
-  p = nat::xyzmatrix(fb[[neuron]])
+primary.neurite <- function(someneuron, k = 100){      # Find the first 100 points of the primary neurite
+  som = soma.neuron(someneuron)
+  if (is.na(som[1])){
+    if (length(someneuron[[1]]$tags$soma[[1]])>0){
+      som = matrix(xyzmatrix(someneuron)[someneuron[[1]]$d$PointNo%in%someneuron[[1]]$tags$soma,], ncol = 3)
+    }else{
+      som = matrix(xyzmatrix(someneuron)[someneuron[[1]]$StartPoint,], ncol = 3)
+    }
+  }
+  p = nat::xyzmatrix(someneuron)
   n = nabor::knn(p, som, ifelse(nrow(p)>k,k,nrow(p)))
   m = p[c(n$nn.idx),]
 }
-

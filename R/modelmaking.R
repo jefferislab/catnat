@@ -199,3 +199,34 @@ combine.alphashape = function (ashapelist)
   return (initial)
 }
 
+
+spinny <- function(object, target){
+  rotate = 'go!'
+  first = 0
+  while (rotate != 'e'){
+    if (first == 0){
+      v1 = select.points(object)
+      pop3d();v2 = select.points(object)
+      pop3d();v3 = select.points(object)
+    }
+    if (rotate == 1){v1 = select.points(object)}
+    if (rotate == 2){v2 = select.points(object)}
+    if (rotate == 3){v3 = select.points(object)}
+    # Check all is okay by plotting plane
+    normal <- crossProduct(v2-v1,v3-v1)
+    zeroPro <- points2plane(rep(0,3),v1,normal)
+    ## get sign of normal displacement from zero
+    sig <- sign(crossprod(-zeroPro,normal))
+    d <- sig*norm(zeroPro,"2")
+    planes3d(normal[1],normal[2],normal[3],d=d, alpha = 0.4)
+    m = mirror2plane(object, v1 = c(v1), v2 = c(v2), v3 = c(v3))
+    points3d(object, col = 'blue')
+    points3d(target, col = 'cyan')
+    points3d(m, col = 'grey')
+    points3d(rbind(v1,v2,v3), col = c(1,2,3), size = 40)
+    first = first + 1
+    rotate = readline(prompt="Change V1, V2, V3 or exit (e)?  ")
+  }
+  return(m)
+}
+

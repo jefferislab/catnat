@@ -69,7 +69,7 @@ select.neurons =function (someneuronlist){
 select.points=function (points){
   points = nat::xyzmatrix(points)
   selected.points = unique(points)
-  open3d();points3d(selected.points)
+  points3d(selected.points)
   progress = readline(prompt="Add (a) or remove (r) neurons, or exit (e)?  ")
   while (progress != "e"){
     if (progress == "a"){
