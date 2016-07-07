@@ -169,7 +169,7 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes)
     if (WithConnectors == T){
       rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')
-      efl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')
+      rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')
     }
     if (highflow == T){
       highest = max(neuron$d[,"flow.cent"])
