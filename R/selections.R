@@ -20,7 +20,7 @@ deselect.neurons =function (someneuronlist){
 select.neurons =function (someneuronlist){
   thechosen = someneuronlist
   progress = 'y'
-  open3d(); plot3d(thechosen)
+  rgl::open3d(); rgl::plot3d(thechosen)
   progress = readline(prompt="Add (a) or remove (r) neurons, or exit (e)?  ")
   while (progress != "e"){
     if (progress == "a"){
