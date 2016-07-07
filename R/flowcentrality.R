@@ -124,7 +124,6 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   neuron
 }
 
-
 #' @export
 #' @rdname flow.centrality
 flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
