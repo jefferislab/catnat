@@ -1,28 +1,16 @@
 # Functions for manipulating neuronlist objects
-
-get.connectors=function (someneuronlist, target = "BOTH"){
-  dot.points = matrix(ncol = 3)
+get.connectors=function (someneuronlist, target = c("BOTH", "PRE", "POST")){
+  dot.points = c()
   for (neuron in 1:length(someneuronlist)){
     conn = someneuronlist[[neuron]]$connectors
-    if (target == "POST") { conn = subset(conn, conn$prepost == 1) }
-    if (target == "PRE") { conn = subset(conn, conn$prepost == 0) }
-    if (neuron == 1){
-      if (length(conn) > 0){
-        if (nrow(conn) > 0){
-          dot.points = unique(xyzmatrix(conn))
-        }
-      }
-    }
-    else {
-      if (length(conn) > 0){
-        if (nrow(conn) > 0){
-          p = unique(xyzmatrix(conn))
-          dot.points = rbind(dot.points, p)
-        }
-      }
+    if (target == "POST") { conn = subset(conn, conn$prepost == 0) }
+    if (target == "PRE") { conn = subset(conn, conn$prepost == 1) }
+    if (length(conn) > 0 && nrow(conn) > 0){
+      p = xyzmatrix(conn)
+      dot.points = rbind(dot.points, p)
     }
   }
-  return (dot.points[-1,])
+  return (dot.points)
 }
 
 deselect.neurons =function (someneuronlist){

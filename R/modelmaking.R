@@ -79,7 +79,7 @@ make.3d.tract=function (someneuronlist, savefile, maxdistance = 10, groupsize = 
     }
   }
   else{
-    neighbours = knn(neuron.points, neuron.points, k = groupsize)
+    neighbours = nabor::knn(neuron.points, neuron.points, k = groupsize)
     loose <- apply(neighbours$nn.dists, 1, function(x) {(any(as.numeric(x[1:ncol(neighbours$nn.dists)]) > maxdistance))})
     keep = c(neighbours$nn.idx[,1][!loose])
     close.points = neuron.points[keep,]
@@ -94,13 +94,13 @@ make.3d.tract=function (someneuronlist, savefile, maxdistance = 10, groupsize = 
       remove.points <- select3d()
       removed.points <- remove.points(selected.points)
       selected.points = subset(selected.points, !removed.points)
-      clear3d(); points3d(selected.points); points3d(neuron.points, col = 'red'); points3d(nc82, col = 'grey')
+      clear3d(); points3d(selected.points); points3d(neuron.points, col = 'red')
     }
     if (progress == 'a'){
       add.points <- select3d()
       added.points = subset(neuron.points, add.points(neuron.points))
       selected.points = rbind(selected.points, added.points)
-      clear3d(); points3d(selected.points); points3d(neuron.points, col = 'red'); points3d(nc82, col = 'grey')
+      clear3d(); points3d(selected.points); points3d(neuron.points, col = 'red')
     }
     progress = readline(prompt="Remove (r), add (a) or save (s) points?  ")
   }
@@ -228,5 +228,21 @@ spinny <- function(object, target){
     rotate = readline(prompt="Change V1, V2, V3 or exit (e)?  ")
   }
   return(m)
+}
+
+
+pointsinsidemesh <- function (x, surf, ..., rval = c("logical", "distance", "mesh3d"))
+{
+  if (!requireNamespace("Rvcg", quietly = TRUE))
+    stop("Please install suggested library Rvcg to use pointsinside")
+  rval = match.arg(rval)
+  pts = xyzmatrix(x)
+  if (inherits(surf, "hxsurf")) {
+    surf = as.mesh3d(surf, ...)
+  }
+  rmesh = Rvcg::vcgClostKD(pts, surf, sign = TRUE)
+  switch(rval, logical = is.finite(rmesh$quality) & rmesh$quality >
+           0 & rmesh$quality < 1e+12, distance = rmesh$quality,
+         mesh3d = rmesh)
 }
 

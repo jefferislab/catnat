@@ -115,15 +115,15 @@ get.hxsurf <- function (filename, RegionNames = NULL, RegionChoice = "both",
     headerSecEnd <- closeBraces[closeBraces > headerSecStart][1]
     colorLine <- grep("Color", headerLines[headerSecStart:headerSecEnd],
                       value = T)
-    if (length(colorLine) > 0) {
-      rgbValues <- strsplit(regmatches(colorLine, gregexpr("[0-9]$|[0-9][^\\.]|[0-9]\\.[0-9]+",
-                                                           colorLine, perl = T))[[1]], " ")
-      rgbValues = as.character(unlist(strsplit(gsub("[^0-9]", "", unlist(rgbValues)), "")))
-      color <- rgb(rgbValues[[1]], rgbValues[[2]], rgbValues[[3]])
-    }
-    else {
+    #if (length(colorLine) > 0) {
+#      rgbValues <- strsplit(regmatches(colorLine, gregexpr("[0-9]$|[0-9][^\\.]|[0-9]\\.[0-9]+",
+ #                                                          colorLine, perl = T))[[1]], " ")
+#      rgbValues = as.character(unlist(strsplit(gsub("[^0-9]", "", unlist(rgbValues)), "")))
+ #     color <- rgb(rgbValues[[1]], rgbValues[[2]], rgbValues[[3]])
+  #  }
+   # else {
       color <- FallbackRegionCol
-    }
+ #   }
     d$RegionColourList[which(d$RegionList == regionName)] <- color
   }
   class(d) <- c("hxsurf", class(d))

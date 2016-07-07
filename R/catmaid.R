@@ -1,4 +1,30 @@
 # Some extra catmaid related functions
+open_catmaid<-function(x, s=select3d(), mirror=FALSE, sample=FCWB, scale=1) {
+  xyz=xyzmatrix(x)
+  # calculate centroid
+  cent=colMeans(xyz[s(xyz),, drop=F])
+  cent=matrix(cent, ncol=3)*scale
+
+  xyzi=as.integer(cent)
+  url=sprintf("https://neurocean.janelia.org/catmaidL1/?pid=1&zp=%d&yp=%d&xp=%d&tool=tracingtool&sid0=1&s0=1",
+              xyzi[3], xyzi[2], xyzi[1])
+  browseURL(url)
+}
+
+
+catmaid_remove_annotations_for_skeletons <- function (skids, annotation_ids, pid = 1, conn = NULL, ...)
+{
+  skids = catmaid_skids(skids, conn = conn)
+  post_data = list()
+  post_data[sprintf("skeleton_ids[%d]", seq_along(skids))] = as.list(skids)
+  post_data[sprintf("annotations[%d]", seq_along(annotations))] = as.list(annotations)
+  path = sprintf("/%d/annotations/add", pid)
+  res = catmaid_fetch(path, body = post_data, include_headers = F,
+                      simplifyVector = T, ...)
+  invisible(res)
+}
+
+
 
 unique.connections <- function(someneuronlist, anotherneuronlist, direction, omit = NULL, minimum_synapses = 2, min_nodes = 1000){
   results = list()
