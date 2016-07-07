@@ -13,7 +13,7 @@
 #' @return the neuron or neuron list object inputted, with centipetal flow centrality information added to neuron$d, a segregation idnex score and estimation of neuronal type (intertneuron or PN) based on this score (>0.05 = PN).
 #' @export
 #' @rdname flow.centrality
-#' @seealso \code{\link{plot3dsplit}} \code{\link{get.synapses}}
+#' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
 flow.centrality <-function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...) UseMethod("flow.centrality")
 
 #' @export
@@ -146,9 +146,9 @@ flow.centrality.neuronlist <- function(neuron, mode = c("average","centrifugal",
 #'
 #' @return Plots coloured neuron(s)
 #' @export
-#' @rdname plot3dsplit
+#' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
-plot3dsplit = function(someneuronlist, col = c("blue", "orange", "purple","green","pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green","pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
     if(is.null(neuron$d$flow.cent)){
@@ -179,6 +179,3 @@ plot3dsplit = function(someneuronlist, col = c("blue", "orange", "purple","green
     }
   }
 }
-
-
-

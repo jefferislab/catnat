@@ -14,7 +14,7 @@
 #' @export
 #' @rdname cluster.by.synapses
 #' @seealso \code{\link{plot3d.split}} \code{\link{get.synapses}}
-cluster.by.synapses <- function(someneuronlist, sigma = 2, omega = sigma, symmetric = T){
+cluster.by.synapses <- function(someneuronlist, sigma = 2, omega = sigma, symmetric = T, ...){
   m = matrix(nrow = length(someneuronlist), ncol = length(someneuronlist))
   colnames(m) = rownames(m) = names(someneuronlist)
   for (neuron in 1:length(someneuronlist)){

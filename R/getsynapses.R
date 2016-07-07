@@ -13,7 +13,7 @@ get.synapses <-function(someneuronlist, target = c("BOTH", "PRE", "POST"), polyp
 
 #' @export
 #' @rdname get.synapses
-get.synapses.neuron <- function (someneuronlist, target = target, polypre = polypre){
+get.synapses.neuron <- function (someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T, ...){
   if (target%in%c("POST","BOTH")) {
     syns.in = neuron$connectors[neuron$connectors[,3]==1,][,1]
     point.no = rownames(neuron$d)[match(syns.in,neuron$d[,"PointNo"])]
@@ -36,7 +36,7 @@ get.synapses.neuron <- function (someneuronlist, target = target, polypre = poly
 
 #' @export
 #' @rdname get.synapses
-get.synapses.neuronlist <- function (someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T){
+get.synapses.neuronlist <- function (someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T, ...){
   points = nat::nlapply(someneuronlist, get.synapses.neuron, target = target, polypre = polypre)
   points = do.call(rbind, points)
   points
