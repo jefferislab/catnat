@@ -18,7 +18,7 @@ flow.centrality <-function(neuron, mode = c("average","centrifugal","centripetal
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(neuron, mode = modes, polypre = polypre, primary.dendrite = primary.dendrite, ...){
+flow.centrality.neuron <- function(neuron, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
   el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
@@ -127,7 +127,7 @@ flow.centrality.neuron <- function(neuron, mode = modes, polypre = polypre, prim
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(neuron, mode = modes, polypre = polypre, primary.dendrite = primary.dendrite, ...){
+flow.centrality.neuronlist <- function(neuron, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, ...){
   neurons = nat::nlapply(neuron, flow.centrality, mode = modes, polypre = polypre, primary.dendrite = primary.dendrite)
   neurons
 }
