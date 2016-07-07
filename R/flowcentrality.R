@@ -37,7 +37,7 @@ flow.centrality.neuron <- function(neuron, mode = mode, polypre = polypre, prima
   nodes[,"compartment"] <- 'dendrite'
   nodes = nodes[unlist(c(root, lapply(segs, function (x) x[-1]))),]
   syns.in = neuron$connectors[neuron$connectors[,3]==1,][,1]
-  if (polpre == T){
+  if (polypre == T){
     pres = neuron$connectors[neuron$connectors[,3]==0,][,2]
     pre.cons = catmaid_get_connectors(pres)$connector_id
     syns.out = neuron$connectors[,1][match(pre.cons, neuron$connectors[,2])]
