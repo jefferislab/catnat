@@ -1,5 +1,4 @@
 # Some extra neuronlist functions
-
 convert <- function(someneuronlist, factor = 1/1e3){
   for (neuron in 1:length(someneuronlist)){
     if (length(someneuronlist[[neuron]]$d) == 7){
