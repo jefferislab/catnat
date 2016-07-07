@@ -14,7 +14,7 @@
 #' @export
 #' @rdname flow.centrality
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
-flow.centrality <-function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...) UseMethod("flow.centrality")
+flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
@@ -127,8 +127,8 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
-  neurons = nat::nlapply(neuron, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite)
+flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
+  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite)
   neurons
 }
 
