@@ -6,16 +6,18 @@
 \alias{flow.centrality.neuronlist}
 \title{Determine dendritic/axonal by calculating flow centrality}
 \usage{
-flow.centrality(neuron, mode = c("average", "centrifugal", "centripetal"),
-  polypre = T, primary.dendrite = 0.85, ...)
+flow.centrality(someneuronlist, mode = c("average", "centrifugal",
+  "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
 
 \method{flow.centrality}{neuron}(neuron, mode = c("average", "centrifugal",
   "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
 
-\method{flow.centrality}{neuronlist}(neuron, mode = c("average",
+\method{flow.centrality}{neuronlist}(someneuronlist, mode = c("average",
   "centrifugal", "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
 }
 \arguments{
+\item{someneuronlist}{a neuronlist or neuron object}
+
 \item{mode}{type of flow centrality to calculate. There are three flavors: (1) centrifugal, which counts paths from proximal inputs to distal outputs; (2) centripetal, which counts paths from distal inputs to proximal outputs; and (3) the sum of both.}
 
 \item{polypre}{whether to consider the number of presynapses as a multiple of the numbers of connections each makes}
@@ -23,8 +25,6 @@ flow.centrality(neuron, mode = c("average", "centrifugal", "centripetal"),
 \item{primary.dendrite}{whether to try to assign nodes to a 'primary dendrite'. Defaults to considering nodes of 0.85*maximmal flow centrality. Assigning to NULL will prevent generating this compartment.}
 
 \item{...}{additional arguments passed to methods.}
-
-\item{someneuronlist}{a neuronlist or neuron object}
 }
 \value{
 the neuron or neuron list object inputted, with centipetal flow centrality information added to neuron$d, a segregation idnex score and estimation of neuronal type (intertneuron or PN) based on this score (>0.05 = PN).

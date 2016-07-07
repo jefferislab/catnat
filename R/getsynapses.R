@@ -1,4 +1,4 @@
-#' Get 3D coordinates of synapse positions
+#' Get 3D coordinates of synapse (not connector) positions
 #'
 #' @param someneuronlist a neuronlist or neuron object
 #' @param target whether post or presynapse are ot be returned, or both

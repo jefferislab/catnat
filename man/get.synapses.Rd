@@ -4,13 +4,13 @@
 \alias{get.synapses}
 \alias{get.synapses.neuron}
 \alias{get.synapses.neuronlist}
-\title{Get 3D coordinates of synapse positions}
+\title{Get 3D coordinates of synapse (not connector) positions}
 \usage{
 get.synapses(someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T,
   ...)
 
-\method{get.synapses}{neuron}(someneuronlist, target = c("BOTH", "PRE",
-  "POST"), polypre = T, ...)
+\method{get.synapses}{neuron}(neuron, target = c("BOTH", "PRE", "POST"),
+  polypre = T, ...)
 
 \method{get.synapses}{neuronlist}(someneuronlist, target = c("BOTH", "PRE",
   "POST"), polypre = T, ...)
@@ -28,7 +28,7 @@ get.synapses(someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T,
 Anatomically accurate synapse position (i.e. not just connector positions) as 3D coordinates
 }
 \description{
-Get 3D coordinates of synapse positions
+Get 3D coordinates of synapse (not connector) positions
 }
 \seealso{
 \code{\link{cluster.by.synapses}} \code{\link{flow.centrality}}
