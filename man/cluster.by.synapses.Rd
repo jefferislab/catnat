@@ -5,7 +5,7 @@
 \title{Cluster neurons by pre- and postsynapse positons}
 \usage{
 cluster.by.synapses(someneuronlist, sigma = 2, omega = sigma,
-  symmetric = T)
+  symmetric = T, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}

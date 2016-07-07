@@ -9,11 +9,11 @@
 get.synapses(someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T,
   ...)
 
-\method{get.synapses}{neuron}(someneuronlist, target = target,
-  polypre = polypre)
+\method{get.synapses}{neuron}(someneuronlist, target = c("BOTH", "PRE",
+  "POST"), polypre = T, ...)
 
 \method{get.synapses}{neuronlist}(someneuronlist, target = c("BOTH", "PRE",
-  "POST"), polypre = T)
+  "POST"), polypre = T, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}
