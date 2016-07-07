@@ -128,7 +128,7 @@ flow.centrality.neuron <- function(neuron, mode = mode, polypre = polypre, prima
 #' @export
 #' @rdname flow.centrality
 flow.centrality.neuronlist <- function(neuron, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, ...){
-  neurons = nat::nlapply(neuron, flow.centrality, mode = modes, polypre = polypre, primary.dendrite = primary.dendrite)
+  neurons = nat::nlapply(neuron, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite)
   neurons
 }
 
