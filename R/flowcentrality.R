@@ -135,7 +135,7 @@ flow.centrality.neuronlist <- function(neuron, mode = modes, polypre = polypre, 
 
 #' Plot neurons split up by calculating flow centrality
 #'
-#' @param someneuronlist a neuronlist or neuron object
+#' @param someneuronlist a neuronlist or neuron object that has been modified by flow.centrality
 #' @param col colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.
 #' @param primary.dendrite Type of object for Deformetrica deformation. See Deformetrica's documentation. Default is appropriate for neuron skeletons.
 #' @param WithConnectors whether ot plot the anatomical location of pre (red) and post (cyan) synapses.

@@ -10,8 +10,8 @@ scan4matching <- function(someneuronlist, pairs, reference){
   d = c()
   progress = 'return'
   for (row in 1:nrow(pairs)){
-    points3d(xyzmatrix(reference), col = 'grey')
-    plot3d(someneuronlist[c(as.character(c(pairs$skid.right)[row]), as.character(c(pairs$skid.left)[row]))] )
+    rgl::points3d(xyzmatrix(reference), col = 'grey')
+    rgl::plot3d(someneuronlist[c(as.character(c(pairs$skid.right)[row]), as.character(c(pairs$skid.left)[row]))] )
     print(paste(row, "/", nrow(pairs), sep = ""))
     while (progress == 'return'){
       progress = readline(prompt="Don't keep (d), maybe keep (m), or keep (k)? ")
@@ -26,7 +26,7 @@ scan4matching <- function(someneuronlist, pairs, reference){
       }
     }
     progress = 'return'
-    clear3d()
+    rgl::clear3d()
   }
   l = list(k, m, d)
   names(l) <- c("keep", "maybe", "loose")
