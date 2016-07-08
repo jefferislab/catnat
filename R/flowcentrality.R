@@ -93,7 +93,12 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
     ais = ais[match(min(runstosoma),runstosoma)]
   }
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, ais, to = leaves, mode = "in")$vpath)))
-  nodes[as.character(downstream),"compartment"] = "axon"
+  upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
+  if (sum(nodes[as.character(downstream),"pre"]) > sum(nodes[as.character(upstream),"pre"])){
+    nodes[as.character(downstream),"compartment"] = "axon"
+  }else {
+    nodes[as.character(upstream),"compartment"] = "axon"
+  }
   # Work out the primary neurite and empty leaf compartments
   zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
   remove = rownames(nodes)[!rownames(nodes)%in%zeros]
@@ -142,7 +147,7 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 }
 
 
-#' Plot neurons split up by calculating flow centrality
+#' Plot neurons split up by flow centrality
 #'
 #' @param someneuronlist a neuronlist or neuron object that has been modified by flow.centrality
 #' @param col colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.
@@ -194,18 +199,17 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
 }
 
 
-
-notfinished <- function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
-          sleep = 0.1, extrafun = NULL, selected_file = NULL, selected_col = "green",
+#' @export
+#' @rdname seesplit3d
+splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F, Verbose = T, Wait = T,
+          sleep = 0.1, extrafun = NULL, selected_file = NULL, selected_col = "black",
           yaml = TRUE, ...)
 {
-  if (is.neuronlist(neurons)) {
-    db = neurons
-    neurons = names(db)
+  if (is.neuronlist(someneuronlist)) {
+    db = someneuronlist
+    neurons = as.data.frame(db)$name
   }
   frames <- length(neurons)
-  if (length(col) == 1)
-    col <- rep(col, frames)
   selected <- character()
   i <- 1
   if (!is.null(selected_file) && file.exists(selected_file)) {
@@ -240,16 +244,16 @@ notfinished <- function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
     n <- neurons[i]
     cat("Current neuron:", n, "(", i, "/", length(neurons),
         ")\n")
-    pl <- plot3d(n, db = db, col = substitute(ifelse(n %in%
-                                                       selected, selected_col, col[i])), ..., SUBSTITUTE = FALSE)
+    pl <- seesplit3d(someneuronlist[i], col = col, WithConnectors = WithConnectors, WithNodes = WithNodes, soma = soma, highflow = highflow)
+    print(someneuronlist[[i]]$segregation.index)
     more_rgl_ids <- list()
     if (!is.null(extrafun))
       more_rgl_ids <- extrafun(n, selected = selected)
     if (Wait) {
       chc <- readline("Return to continue, b to go back, s to select, d [save to disk], t to stop, c to cancel (without returning a selection): ")
       if (chc == "c" || chc == "t") {
-        sapply(pl, rgl.pop, type = "shape")
-        sapply(more_rgl_ids, rgl.pop, type = "shape")
+        sapply(pl, rgl::rgl.pop, type = "shape")
+        sapply(more_rgl_ids, rgl::rgl.pop, type = "shape")
         break
       }
       if (chc == "s") {
@@ -269,8 +273,9 @@ notfinished <- function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
       Sys.sleep(sleep)
       i <- i + 1
     }
-    sapply(pl, rgl.pop, type = "shape")
-    sapply(more_rgl_ids, rgl.pop, type = "shape")
+    sapply(pl, rgl::rgl.pop, type = "shape")
+    sapply(more_rgl_ids, rgl::rgl.pop, type = "shape")
+    rgl::clear3d()
   }
   if (is.null(chc) || chc == "c")
     return(NULL)
