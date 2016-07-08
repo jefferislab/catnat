@@ -96,9 +96,12 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   nodes[as.character(downstream),"compartment"] = "axon"
   # Work out the primary neurite and empty leaf compartments
   zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
+  remove = rownames(nodes)[!rownames(nodes)%in%zeros]
   igraph::V(n)$name = igraph::V(n)
-  nn = igraph::delete_vertices(n, v = igraph::V(n)[!igraph::V(n)%in%zeros])
-  p.n = suppressWarnings(unique(unlist(igraph::shortest_paths(nn, from =root))))
+  nn = igraph::delete_vertices(n, v = as.character(remove))
+  clust = igraph::clusters(nn)
+  soma.group = clust$membership[names(clust$membership)==root]
+  p.n = names(clust$membership)[clust$membership==soma.group]
   nodes[p.n,"compartment"] = "primary neurite"
   nodes[zeros[!zeros%in%p.n],"compartment"] = "null"
   if(!is.null(primary.dendrite)){
@@ -154,7 +157,7 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 #' @export
 #' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 1000, highflow = F){
   someneuronlist = as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
@@ -188,4 +191,90 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
       rgl::points3d(nat::xyzmatrix(high), col = col[6])
     }
   }
+}
+
+
+
+function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
+          sleep = 0.1, extrafun = NULL, selected_file = NULL, selected_col = "green",
+          yaml = TRUE, ...)
+{
+  if (is.neuronlist(neurons)) {
+    db = neurons
+    neurons = names(db)
+  }
+  frames <- length(neurons)
+  if (length(col) == 1)
+    col <- rep(col, frames)
+  selected <- character()
+  i <- 1
+  if (!is.null(selected_file) && file.exists(selected_file)) {
+    selected <- yaml.load_file(selected_file)
+    if (!all(names(selected) %in% neurons))
+      stop("Mismatch between selection file and neurons.")
+  }
+  savetodisk <- function(selected, selected_file) {
+    if (is.null(selected_file))
+      selected_file <- file.choose(new = TRUE)
+    if (yaml) {
+      if (!grepl("\\.yaml$", selected_file))
+        selected_file <- paste(selected_file, sep = "",
+                               ".yaml")
+      message("Saving selection to disk as ", selected_file,
+              ".")
+      writeLines(as.yaml(selected), con = selected_file)
+    }
+    else {
+      if (!grepl("\\.rda$", selected_file))
+        selected_file <- paste(selected_file, sep = "",
+                               ".rda")
+      save(selected, file = selected_file)
+      message("Saving selection to disk as ", selected_file)
+    }
+    selected_file
+  }
+  chc <- NULL
+  while (TRUE) {
+    if (i > length(neurons) || i < 1)
+      break
+    n <- neurons[i]
+    cat("Current neuron:", n, "(", i, "/", length(neurons),
+        ")\n")
+    pl <- plot3d(n, db = db, col = substitute(ifelse(n %in%
+                                                       selected, selected_col, col[i])), ..., SUBSTITUTE = FALSE)
+    more_rgl_ids <- list()
+    if (!is.null(extrafun))
+      more_rgl_ids <- extrafun(n, selected = selected)
+    if (Wait) {
+      chc <- readline("Return to continue, b to go back, s to select, d [save to disk], t to stop, c to cancel (without returning a selection): ")
+      if (chc == "c" || chc == "t") {
+        sapply(pl, rgl.pop, type = "shape")
+        sapply(more_rgl_ids, rgl.pop, type = "shape")
+        break
+      }
+      if (chc == "s") {
+        if (n %in% selected) {
+          message("Deselected: ", n)
+          selected <- setdiff(selected, n)
+        }
+        else selected <- union(selected, n)
+      }
+      if (chc == "b")
+        i <- i - 1
+      else if (chc == "d")
+        savetodisk(selected, selected_file)
+      else i <- i + 1
+    }
+    else {
+      Sys.sleep(sleep)
+      i <- i + 1
+    }
+    sapply(pl, rgl.pop, type = "shape")
+    sapply(more_rgl_ids, rgl.pop, type = "shape")
+  }
+  if (is.null(chc) || chc == "c")
+    return(NULL)
+  if (!is.null(selected_file))
+    savetodisk(selected, selected_file)
+  selected
 }
