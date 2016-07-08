@@ -35,6 +35,9 @@ implementation of the algorithm for calculating  flow centralities from Schneide
 \details{
 From Schneider-Mizell et al. (2016): "We use flow centrality for four purposes. First, to split an arbor into axon and dendrite at the maximum centrifugal SFC, which is a preliminary step for computing the segregation index, for expressing all kinds of connectivity edges (e.g. axo-axonic, dendro-dendritic) in the wiring diagram, or for rendering the arbor in 3d with differently colored regions. Second, to quantitatively estimate the cable distance between the axon terminals and dendritic arbor by measuring the amount of cable with the maximum centrifugal SFC value. Third, to measure the cable length of the main den- dritic shafts using centripetal SFC, which applies only to insect neurons with at least one output syn- apse in their dendritic arbor. And fourth, to weigh the color of each skeleton node in a 3d view, providing a characteristic signature of the arbor that enables subjective evaluation of its identity."
 }
+\references{
+Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T., Li, F., Zwart, M. F., … Cardona, A. (2015). Quantitative neuroanatomy for connectomics in Drosophila. bioRxiv, 026617. http://doi.org/10.1101/026617
+}
 \seealso{
 \code{\link{seesplit3d}} \code{\link{get.synapses}}
 }
