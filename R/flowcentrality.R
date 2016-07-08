@@ -137,7 +137,7 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
 #' @export
 #' @rdname flow.centrality
 flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
-  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite)
+  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
   neurons
 }
 
@@ -157,7 +157,7 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 #' @export
 #' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 1000, highflow = F){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
   someneuronlist = as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
@@ -195,7 +195,7 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
 
 
 
-function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
+notfinished <- function (neurons, db = NULL, col = "red", Verbose = T, Wait = T,
           sleep = 0.1, extrafun = NULL, selected_file = NULL, selected_col = "green",
           yaml = TRUE, ...)
 {
