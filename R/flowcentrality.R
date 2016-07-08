@@ -25,10 +25,10 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   # Generate ngraph object
   el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
   n = nat::ngraph(data.matrix(el[,2:1]), neuron$d$PointNo, directed = TRUE, xyz = nat::xyzmatrix(neuron$d),
-             diam = neuron$d$W) # Make ngraph object, but for centripetal, invert the el list
+                  diam = neuron$d$W) # Make ngraph object, but for centripetal, invert the el list
   # Get comprehensive paths list
-  leaves = which(igraph::degree(n, v = V(n), mode = "in")==0, useNames = T)
-  root= which(igraph::degree(n, v = V(n), mode = "out")==0, useNames = T)
+  leaves = which(igraph::degree(n, v = igraph::V(n), mode = "in")==0, useNames = T)
+  root= which(igraph::degree(n, v = igraph::V(n), mode = "out")==0, useNames = T)
   segs = neuron$SegList # Get the segment list
   nodes = neuron$d # get neuron's node data
   nodes[,"post"] <- 0 # raw synapse number at this location
@@ -94,8 +94,13 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   }
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, ais, to = leaves, mode = "in")$vpath)))
   nodes[as.character(downstream),"compartment"] = "axon"
+  # Work out the primary neurite and empty leaf compartments
   zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
-  nodes[zeros,"compartment"] = "null"
+  igraph::V(n)$name = igraph::V(n)
+  nn = igraph::delete_vertices(n, v = igraph::V(n)[!igraph::V(n)%in%zeros])
+  p.n = suppressWarnings(unique(unlist(igraph::shortest_paths(nn, from =root))))
+  nodes[p.n,"compartment"] = "primary neurite"
+  nodes[zeros[!zeros%in%p.n],"compartment"] = "null"
   if(!is.null(primary.dendrite)){
     highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
     nodes[as.character(highs),"compartment"] = "primary dendrite"
@@ -149,7 +154,8 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 #' @export
 #' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green","pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
+  someneuronlist = as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
     if(is.null(neuron$d$flow.cent)){
@@ -160,14 +166,17 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     axon.v = subset(rownames(neuron$d), neuron$d$compartment == "axon")
     nulls.v = subset(rownames(neuron$d), neuron$d$compartment == "null")
     p.d.v = subset(rownames(neuron$d), neuron$d$compartment == "primary dendrite")
-    dendrites = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, nulls.v, p.d.v)))
-    axon = nat::prune_vertices(neuron, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v)))
-    nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v)))
-    p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v)))
+    p.n.v = subset(rownames(neuron$d), neuron$d$compartment == "primary neurite")
+    dendrites = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, nulls.v, p.d.v, p.n.v)))
+    axon = nat::prune_vertices(neuron, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v, p.n.v)))
+    nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
+    p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.n.v)))
+    p.n = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.d.v)))
     rgl::plot3d(dendrites, col = col[1], WithNodes = WithNodes)
     rgl::plot3d(axon, col = col[2], WithNodes = WithNodes)
-    rgl::plot3d(nulls, col = col[3], WithNodes = WithNodes, soma = soma)
+    rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = soma)
     rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes)
+    rgl::plot3d(nulls, col = col[5], WithNodes = WithNodes)
     if (WithConnectors == T){
       rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')
       rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')
@@ -176,7 +185,7 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
       highest = max(neuron$d[,"flow.cent"])
       s.d = sd(neuron$d[,"flow.cent"], na.rm = T)
       high = subset(neuron$d, neuron$d[,"flow.cent"] > (highest - s.d))
-      rgl::points3d(nat::xyzmatrix(high), col = col[5])
+      rgl::points3d(nat::xyzmatrix(high), col = col[6])
     }
   }
 }
