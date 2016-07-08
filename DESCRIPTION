@@ -9,4 +9,5 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat
-Imports: nat, Morpho, Rvcg, catmaid, alphashape3d, nabor, igraph
+Depends: nat, catmaid
+Imports: Morpho, Rvcg, alphashape3d, nabor, igraph
