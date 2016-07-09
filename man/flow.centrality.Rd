@@ -13,7 +13,8 @@ flow.centrality(x, mode = c("average", "centrifugal", "centripetal"),
   "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
 
 \method{flow.centrality}{neuronlist}(someneuronlist, mode = c("average",
-  "centrifugal", "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
+  "centrifugal", "centripetal"), polypre = T, primary.dendrite = 0.85,
+  OmitFailures = TRUE, ...)
 }
 \arguments{
 \item{x}{a neuronlist or neuron object}
@@ -31,6 +32,11 @@ dendrite'. Defaults to considering nodes of 0.85*maximmal flow centrality.
 Assigning to NULL will prevent generating this compartment.}
 
 \item{...}{additional arguments passed to methods.}
+
+\item{OmitFailures}{Whether to omit neurons for which \code{FUN} gives an 
+error. The default value (\code{NA}) will result in nlapply stopping with 
+an error message the moment there is an eror. For other values, see 
+details.}
 }
 \value{
 the neuron or neuron list object inputted, with centipetal flow

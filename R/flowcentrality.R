@@ -162,10 +162,14 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
 
 #' @export
 #' @rdname flow.centrality
+#' @inheritParams nat::nlapply
 flow.centrality.neuronlist <- function(someneuronlist,
                                        mode = c("average","centrifugal","centripetal"),
-                                       polypre = T, primary.dendrite = 0.85, ...){
-  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, ...)
+                                       polypre = T, primary.dendrite = 0.85,
+                                       OmitFailures=TRUE, ...){
+  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode,
+                         polypre = polypre, primary.dendrite = primary.dendrite,
+                         OmitFailures = OmitFailures, ...)
   neurons
 }
 
