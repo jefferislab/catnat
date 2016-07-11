@@ -1,6 +1,6 @@
 Package: catnat
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Extra functions for use with rcatmaid and nat
 Version: 0.1
 Author: Alex Bates
 Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
@@ -9,4 +9,5 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat
-Imports: nat, Morpho, Rvcg, catmaid, alphashape3d, nabor, igraph
+Depends: nat, catmaid
+Imports: Morpho, Rvcg, alphashape3d, nabor, igraph

@@ -1,18 +1,42 @@
 #' Determine dendritic/axonal by calculating flow centrality
 #'
-#' @description implementation of the algorithm for calculating  flow centralities from Schneider-Mizell et al. (2016)
+#' @description implementation of the algorithm for calculating  flow
+#'   centralities from Schneider-Mizell et al. (2016)
 #'
-#' @param someneuronlist a neuronlist or neuron object
-#' @param mode type of flow centrality to calculate. There are three flavors: (1) centrifugal, which counts paths from proximal inputs to distal outputs; (2) centripetal, which counts paths from distal inputs to proximal outputs; and (3) the sum of both.
-#' @param polypre whether to consider the number of presynapses as a multiple of the numbers of connections each makes
-#' @param primary.dendrite whether to try to assign nodes to a 'primary dendrite'. Defaults to considering nodes of 0.9*maximmal flow centrality. Assigning to NULL will prevent generating this compartment.
+#' @param x a neuronlist or neuron object
+#' @param mode type of flow centrality to calculate. There are three flavors:
+#'   (1) centrifugal, which counts paths from proximal inputs to distal outputs;
+#'   (2) centripetal, which counts paths from distal inputs to proximal outputs;
+#'   and (3) the sum of both.
+#' @param polypre whether to consider the number of presynapses as a multiple of
+#'   the numbers of connections each makes
+#' @param primary.dendrite whether to try to assign nodes to a 'primary
+#'   dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
+#'   Assigning to NULL will prevent generating this compartment.
 #' @param ... additional arguments passed to methods.
 #'
-#' @details From Schneider-Mizell et al. (2016): "We use flow centrality for four purposes. First, to split an arbor into axon and dendrite at the maximum centrifugal SFC, which is a preliminary step for computing the segregation index, for expressing all kinds of connectivity edges (e.g. axo-axonic, dendro-dendritic) in the wiring diagram, or for rendering the arbor in 3d with differently colored regions. Second, to quantitatively estimate the cable distance between the axon terminals and dendritic arbor by measuring the amount of cable with the maximum centrifugal SFC value. Third, to measure the cable length of the main den- dritic shafts using centripetal SFC, which applies only to insect neurons with at least one output syn- apse in their dendritic arbor. And fourth, to weigh the color of each skeleton node in a 3d view, providing a characteristic signature of the arbor that enables subjective evaluation of its identity."
+#' @details From Schneider-Mizell et al. (2016): "We use flow centrality for
+#'   four purposes. First, to split an arbor into axon and dendrite at the
+#'   maximum centrifugal SFC, which is a preliminary step for computing the
+#'   segregation index, for expressing all kinds of connectivity edges (e.g.
+#'   axo-axonic, dendro-dendritic) in the wiring diagram, or for rendering the
+#'   arbor in 3d with differently colored regions. Second, to quantitatively
+#'   estimate the cable distance between the axon terminals and dendritic arbor
+#'   by measuring the amount of cable with the maximum centrifugal SFC value.
+#'   Third, to measure the cable length of the main den- dritic shafts using
+#'   centripetal SFC, which applies only to insect neurons with at least one
+#'   output syn- apse in their dendritic arbor. And fourth, to weigh the color
+#'   of each skeleton node in a 3d view, providing a characteristic signature of
+#'   the arbor that enables subjective evaluation of its identity."
 #'
-#' @references Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T., Li, F., Zwart, M. F., … Cardona, A. (2015). Quantitative neuroanatomy for connectomics in Drosophila. bioRxiv, 026617. http://doi.org/10.1101/026617
+#' @references Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T.,
+#'   Li, F., Zwart, M. F., … Cardona, A. (2015). Quantitative neuroanatomy for
+#'   connectomics in Drosophila. bioRxiv, 026617. http://doi.org/10.1101/026617
 #'
-#' @return the neuron or neuron list object inputted, with centipetal flow centrality information added to neuron$d, a segregation idnex score and estimation of neuronal type (intertneuron or PN) based on this score (>0.05 = PN).
+#' @return the neuron or neuron list object inputted, with centipetal flow
+#'   centrality information added to neuron$d, a segregation idnex score and
+#'   estimation of neuronal type (intertneuron or PN) based on this score (>0.05
+#'   = PN).
 #' @export
 #' @rdname flow.centrality
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}

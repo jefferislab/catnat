@@ -5,7 +5,8 @@
 \title{Plot neurons split up by calculating flow centrality}
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
-  "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F)
+  "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100,
+  highflow = F)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object that has been modified by flow.centrality}
