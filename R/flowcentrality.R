@@ -5,7 +5,7 @@
 #' @param someneuronlist a neuronlist or neuron object
 #' @param mode type of flow centrality to calculate. There are three flavors: (1) centrifugal, which counts paths from proximal inputs to distal outputs; (2) centripetal, which counts paths from distal inputs to proximal outputs; and (3) the sum of both.
 #' @param polypre whether to consider the number of presynapses as a multiple of the numbers of connections each makes
-#' @param primary.dendrite whether to try to assign nodes to a 'primary dendrite'. Defaults to considering nodes of 0.85*maximmal flow centrality. Assigning to NULL will prevent generating this compartment.
+#' @param primary.dendrite whether to try to assign nodes to a 'primary dendrite'. Defaults to considering nodes of 0.9*maximmal flow centrality. Assigning to NULL will prevent generating this compartment.
 #' @param ... additional arguments passed to methods.
 #'
 #' @details From Schneider-Mizell et al. (2016): "We use flow centrality for four purposes. First, to split an arbor into axon and dendrite at the maximum centrifugal SFC, which is a preliminary step for computing the segregation index, for expressing all kinds of connectivity edges (e.g. axo-axonic, dendro-dendritic) in the wiring diagram, or for rendering the arbor in 3d with differently colored regions. Second, to quantitatively estimate the cable distance between the axon terminals and dendritic arbor by measuring the amount of cable with the maximum centrifugal SFC value. Third, to measure the cable length of the main den- dritic shafts using centripetal SFC, which applies only to insect neurons with at least one output syn- apse in their dendritic arbor. And fourth, to weigh the color of each skeleton node in a 3d view, providing a characteristic signature of the arbor that enables subjective evaluation of its identity."
@@ -16,11 +16,11 @@
 #' @export
 #' @rdname flow.centrality
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
-flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...) UseMethod("flow.centrality")
+flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
+flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
   el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
@@ -128,10 +128,12 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   axon.pi = axon.post/axon.both
   axon.si = -(axon.pi*log(axon.pi)+(1-axon.pi)*log(1-axon.pi))
   if(is.nan(axon.si)){axon.si = 0}
-  entropy.score = (1/(dendrites.both+axon.both))*(axon.si*axon.both+dendrites.si*dendrites.both)
-  both.comps = nrow(subset(nodes,nodes$post>0))/(dendrites.both+axon.both)
+  entropy.score = (1/(dendrites.both+axon.both))*((axon.si*axon.both)+(dendrites.si*dendrites.both))
+  both.comps = (dendrites.pre+axon.pre)/(dendrites.both+axon.both)
+  # both.comps = sum(nodes$post)/(sum(nodes$pre+sum(nodes$post)))
   control.score = -(both.comps*log(both.comps)+(1-both.comps)*log(1-both.comps))
   segregation.index = 1 - (entropy.score/control.score)
+  if(is.na(segregation.index)) { segregation.index = 0 }
   # Add new data to object
   neuron$d = nodes
   neuron$segregation.index = segregation.index
@@ -141,7 +143,7 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.85, ...){
+flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
   neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
   neurons
 }
