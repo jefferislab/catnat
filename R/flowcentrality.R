@@ -11,7 +11,7 @@
 #' @param polypre whether to consider the number of presynapses as a multiple of
 #'   the numbers of connections each makes
 #' @param primary.dendrite whether to try to assign nodes to a 'primary
-#'   dendrite'. Defaults to considering nodes of 0.85*maximmal flow centrality.
+#'   dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
 #'   Assigning to NULL will prevent generating this compartment.
 #' @param ... additional arguments passed to methods.
 #'
@@ -40,13 +40,11 @@
 #' @export
 #' @rdname flow.centrality
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
-flow.centrality <-function(x, mode = c("average","centrifugal","centripetal"),
-                           polypre = T, primary.dendrite = 0.85, ...) UseMethod("flow.centrality")
+flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripetal"),
-                                   polypre = T, primary.dendrite = 0.85, ...){
+flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
   el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
@@ -154,10 +152,12 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   axon.pi = axon.post/axon.both
   axon.si = -(axon.pi*log(axon.pi)+(1-axon.pi)*log(1-axon.pi))
   if(is.nan(axon.si)){axon.si = 0}
-  entropy.score = (1/(dendrites.both+axon.both))*(axon.si*axon.both+dendrites.si*dendrites.both)
-  both.comps = nrow(subset(nodes,nodes$post>0))/(dendrites.both+axon.both)
+  entropy.score = (1/(dendrites.both+axon.both))*((axon.si*axon.both)+(dendrites.si*dendrites.both))
+  both.comps = (dendrites.pre+axon.pre)/(dendrites.both+axon.both)
+  # both.comps = sum(nodes$post)/(sum(nodes$pre+sum(nodes$post)))
   control.score = -(both.comps*log(both.comps)+(1-both.comps)*log(1-both.comps))
   segregation.index = 1 - (entropy.score/control.score)
+  if(is.na(segregation.index)) { segregation.index = 0 }
   # Add new data to object
   neuron$d = nodes
   neuron$segregation.index = segregation.index
@@ -167,14 +167,8 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
 
 #' @export
 #' @rdname flow.centrality
-#' @inheritParams nat::nlapply
-flow.centrality.neuronlist <- function(someneuronlist,
-                                       mode = c("average","centrifugal","centripetal"),
-                                       polypre = T, primary.dendrite = 0.85,
-                                       OmitFailures=TRUE, ...){
-  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode,
-                         polypre = polypre, primary.dendrite = primary.dendrite,
-                         OmitFailures = OmitFailures, ...)
+flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
+  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
   neurons
 }
 
