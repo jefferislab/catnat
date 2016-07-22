@@ -153,14 +153,14 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   axon.si = -(axon.pi*log(axon.pi)+(1-axon.pi)*log(1-axon.pi))
   if(is.nan(axon.si)){axon.si = 0}
   entropy.score = (1/(dendrites.both+axon.both))*((axon.si*axon.both)+(dendrites.si*dendrites.both))
-  both.comps = (dendrites.pre+axon.pre)/(dendrites.both+axon.both)
+  both.comps = (dendrites.post+axon.post)/(dendrites.both+axon.both)
   # both.comps = sum(nodes$post)/(sum(nodes$pre+sum(nodes$post)))
   control.score = -(both.comps*log(both.comps)+(1-both.comps)*log(1-both.comps))
   segregation.index = 1 - (entropy.score/control.score)
   if(is.na(segregation.index)) { segregation.index = 0 }
   # Add new data to object
   neuron$d = nodes
-  neuron$segregation.index = segregation.index
+  neuron$AD.segregation.index = segregation.index
   neuron$type = ifelse(segregation.index > 0.05, "interneuron", "PN")
   neuron
 }
