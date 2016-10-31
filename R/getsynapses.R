@@ -16,15 +16,14 @@ get.synapses <-function(someneuronlist, target = c("BOTH", "PRE", "POST"), polyp
 get.synapses.neuron <- function (neuron, target = c("BOTH", "PRE", "POST"), polypre = T, ...){
   if (target%in%c("POST","BOTH")) {
     syns.in = neuron$connectors[neuron$connectors[,3]==1,][,1]
-    point.no = rownames(neuron$d)[match(syns.in,neuron$d[,"PointNo"])]
+    point.no = rownames(neuron$d)[neuron$d[,"PointNo"]%in%syns.in]
     points = nat::xyzmatrix(neuron$d[point.no,])
     points = cbind(points, prepost = 1)
   }
   if (target%in%c("PRE","BOTH")) {
     pres = neuron$connectors[neuron$connectors[,3]==0,][,2]
-    pre.cons = catmaid_get_connectors(pres)$connector_id
-    syns.out = neuron$connectors[,1][match(pre.cons, neuron$connectors[,2])]
-    point.no = rownames(neuron$d)[match(syns.out,neuron$d[,"PointNo"])]
+    syns.out = neuron$connectors[,1][match(pres, neuron$connectors[,2])]
+    point.no = rownames(neuron$d)[neuron$d[,"PointNo"]%in%syns.out]
     points.out = nat::xyzmatrix(neuron$d[point.no,])
     points.out = cbind(points.out, prepost = 0)
     if(target == "BOTH"){

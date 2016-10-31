@@ -1,13 +1,26 @@
-# Functions concerning soma positions
-
+#' Functions for retrieving soma data
+#'
+#' @description Functions for retrieving data amout somata from skeletons, that has been assigned in CATMAID using the tag system
+#' @param ... additional arguments passed to methods.
+#'
+#' @details CATMAID access required. Data collected and described in cited publication.
+#'
+#' @references Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
+#' @return Either the soma's 3D coorindates (soma) its id number (somaid) or its posiiton in the neuron's skeleton (somapos)
+#' @export
+#' @rdname soma
 soma<-function(x, ...) UseMethod("soma")
 
+#' @export
+#' @rdname soma
 soma.neuronlist<-function(x, ...) {
   rdf=plyr::ldply(x, soma, ...)
   rownames(rdf)=rdf[[1]]
   rdf[-1]
 }
 
+#' @export
+#' @rdname soma
 soma.neuron<-function(x, ...) {
   r=if(length(somaid<-x$tags$soma[[1]])){
     x$d[match(somaid, x$d$PointNo),c("X","Y","Z")]
@@ -17,21 +30,32 @@ soma.neuron<-function(x, ...) {
   as.data.frame(r)
 }
 
-find.soma <- function (sel3dfun = select3d(), indices = names(db), db = getOption("nat.default.neuronlist"),
-                       threshold = 0, invert = FALSE, rval = c("names", "data.frame",
-                                                               "neuronlist"))
-{
-  if (is.null(db))
-    stop("Please pass a neuronlist in argument db or set options",
-         "(nat.default.neuronlist='myfavneuronlist'). See ?nat for details.")
-  if (is.character(db))
-    db = get(db)
-  selfun = function(x) {
-    pointsinside = sel3dfun(soma(x))
-    sum(pointsinside, na.rm = T) > threshold
-  }
-  if (invert)
-    selfun = Negate(selfun)
-  rval = match.arg(rval)
-  subset(db, subset = indices, filterfun = selfun, rval = rval)
+#' @export
+#' @rdname soma
+somaid<-function(x, ...) UseMethod("somaid")
+
+#' @export
+#' @rdname soma
+somaid.neuronlist<-function(x, ...) {
+  unlist(nlapply(x, somaid.neuron))
 }
+
+#' @export
+#' @rdname soma
+somaid.neuron <- function(n) unlist(n$tags$soma)
+
+#' @export
+#' @rdname soma
+somapos<-function(x, ...) UseMethod("somaid")
+
+#' @export
+#' @rdname soma
+somapos.neuronlist<-function(x, ...) {
+  unlist(nlapply(x, somapos))
+}
+
+#' @export
+#' @rdname soma
+somapos.neuron <- function(n) match(somaid(n), n$d$PointNo)
+
+

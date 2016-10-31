@@ -6,19 +6,16 @@
 \alias{flow.centrality.neuronlist}
 \title{Determine dendritic/axonal by calculating flow centrality}
 \usage{
-flow.centrality(x, mode = c("average", "centrifugal", "centripetal"),
-  polypre = T, primary.dendrite = 0.85, ...)
+flow.centrality(someneuronlist, mode = c("average", "centrifugal",
+  "centripetal"), polypre = T, primary.dendrite = 0.9, ...)
 
-\method{flow.centrality}{neuron}(x, mode = c("average", "centrifugal",
-  "centripetal"), polypre = T, primary.dendrite = 0.85, ...)
+\method{flow.centrality}{neuron}(neuron, mode = c("average", "centrifugal",
+  "centripetal"), polypre = T, primary.dendrite = 0.9, ...)
 
 \method{flow.centrality}{neuronlist}(someneuronlist, mode = c("average",
-  "centrifugal", "centripetal"), polypre = T, primary.dendrite = 0.85,
-  OmitFailures = TRUE, ...)
+  "centrifugal", "centripetal"), polypre = T, primary.dendrite = 0.9, ...)
 }
 \arguments{
-\item{x}{a neuronlist or neuron object}
-
 \item{mode}{type of flow centrality to calculate. There are three flavors:
 (1) centrifugal, which counts paths from proximal inputs to distal outputs;
 (2) centripetal, which counts paths from distal inputs to proximal outputs;
@@ -28,15 +25,12 @@ and (3) the sum of both.}
 the numbers of connections each makes}
 
 \item{primary.dendrite}{whether to try to assign nodes to a 'primary
-dendrite'. Defaults to considering nodes of 0.85*maximmal flow centrality.
+dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
 Assigning to NULL will prevent generating this compartment.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{OmitFailures}{Whether to omit neurons for which \code{FUN} gives an 
-error. The default value (\code{NA}) will result in nlapply stopping with 
-an error message the moment there is an eror. For other values, see 
-details.}
+\item{x}{a neuronlist or neuron object}
 }
 \value{
 the neuron or neuron list object inputted, with centipetal flow
@@ -46,7 +40,7 @@ the neuron or neuron list object inputted, with centipetal flow
 }
 \description{
 implementation of the algorithm for calculating  flow
-  centralities from Schneider-Mizell et al. (2016)
+  centralities from Schneider-Mizell et al. (2016). Note that the neurites() function will retrieve these clusters as separate neuron objects in a neuronlist.
 }
 \details{
 From Schneider-Mizell et al. (2016): "We use flow centrality for
@@ -69,6 +63,6 @@ Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T.,
   connectomics in Drosophila. bioRxiv, 026617. http://doi.org/10.1101/026617
 }
 \seealso{
-\code{\link{seesplit3d}} \code{\link{get.synapses}}
+\code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
 }
 

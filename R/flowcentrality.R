@@ -1,7 +1,7 @@
 #' Determine dendritic/axonal by calculating flow centrality
 #'
 #' @description implementation of the algorithm for calculating  flow
-#'   centralities from Schneider-Mizell et al. (2016)
+#'   centralities from Schneider-Mizell et al. (2016). Note that the neurites() function will retrieve these clusters as separate neuron objects in a neuronlist.
 #'
 #' @param x a neuronlist or neuron object
 #' @param mode type of flow centrality to calculate. There are three flavors:
@@ -39,7 +39,7 @@
 #'   = PN).
 #' @export
 #' @rdname flow.centrality
-#' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
+#' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
 flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
 
 #' @export
@@ -161,7 +161,7 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   # Add new data to object
   neuron$d = nodes
   neuron$AD.segregation.index = segregation.index
-  neuron$type = ifelse(segregation.index > 0.05, "interneuron", "PN")
+  neuron$type = ifelse(segregation.index < 0.05, "interneuron", "PN")
   neuron
 }
 

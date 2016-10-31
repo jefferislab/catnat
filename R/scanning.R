@@ -1,6 +1,15 @@
-# scan
-
-scan4matching <- function(someneuronlist, pairs, reference){
+#' Scan through suggested pairs of neurons
+#'
+#' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
+#'
+#' @param someneuronlist a neuronlist or neuron object
+#' @param pairs A data frame / matrix of two columns named skid.rgight and skid.left perhaps generated using the deformetricar package to estimate neuron cognates.
+#' @param reference A reference object to plot. E.g. CNS cortex.
+#' @param ... additional arguments passed to methods.
+#'
+#' @export
+#' @rdname scan4matching
+scan4matching <- function(someneuronlist, pairs, reference, ...){
   open3d(userMatrix = structure(c(0.999989449977875, -0.00419542612507939, -0.00183705519884825,
                                   0, -0.00426193978637457, -0.999274253845215, -0.0378473773598671,
                                   0, -0.00167691614478827, 0.037854727357626, -0.999281764030457,

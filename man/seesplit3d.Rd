@@ -2,11 +2,17 @@
 % Please edit documentation in R/flowcentrality.R
 \name{seesplit3d}
 \alias{seesplit3d}
-\title{Plot neurons split up by calculating flow centrality}
+\alias{splitscan}
+\title{Plot neurons split up by flow centrality}
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
   "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100,
   highflow = F)
+
+splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
+  "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F,
+  Verbose = T, Wait = T, sleep = 0.1, extrafun = NULL,
+  selected_file = NULL, selected_col = "black", yaml = TRUE, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object that has been modified by flow.centrality}
@@ -21,15 +27,15 @@ seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
 
 \item{highflow}{wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)}
 
-\item{primary.dendrite}{Type of object for Deformetrica deformation. See Deformetrica's documentation. Default is appropriate for neuron skeletons.}
-
 \item{...}{additional arguments passed to methods.}
+
+\item{primary.dendrite}{Type of object for Deformetrica deformation. See Deformetrica's documentation. Default is appropriate for neuron skeletons.}
 }
 \value{
 Plots coloured neuron(s)
 }
 \description{
-Plot neurons split up by calculating flow centrality
+Plot neurons split up by flow centrality
 }
 \seealso{
 \code{\link{flow.centrality}} \code{\link{get.synapses}}

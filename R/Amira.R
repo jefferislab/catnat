@@ -1,5 +1,20 @@
+#' Read Amira surface (aka HxSurface or HyperSurface) files into hxsurf object
+#'
+#' @description Read Amira surface (aka HxSurface or HyperSurface) files into hxsurf object. Modified version of similar nat function, nat::read.hxsurf()
+#'
+#' @param someneuronlist a neuronlist or neuron object
+#' @param RegionNames Character vector specifying which regions should be read from file. Default value of NULL => all regions
+#' @param RegionChoice Whether the Inner or Outer material, or both (default), should define the material of the patch. See details
+#' @param FallbackRegionCol Colour to set regions when no colour is defined
+#' @param Verbose Print status messages during parsing when TRUE
+#' @param ... additional arguments passed to methods
+#'
+#' @details Note that when RegionChoice="both" or RegionChoice=c("Inner", "Outer") both polygons in inner and outer regions will be added to named regions. To understand the significance of this, consider two adjacent regions, A and B, with a shared surface. For the polygons in both A and B, Amira will have a patch with (say) InnerRegion A and OuterRegion B. This avoids duplication in the file. However, it might be convenient to add these polygons to both regions when we read them into R, so that regions A and B in our R object are both closed surfaces. To achieve this when RegionChoice="both", read.hxsurf adds these polygons to region B (as well as region A) but swaps the order of the vertices defining the polygon to ensure that the surface directionality is correct. As a rule of thumb, stick with RegionChoice="both". If you get more regions than you wanted, then try switching to RegionChoice="Inner" or RegionChoice="Outer"
+#' @return Someneuronlist with cell sidedness in the metadata
+#' @export
+#' @rdname get.hxsurf
 get.hxsurf <- function (filename, RegionNames = NULL, RegionChoice = "both",
-                          FallbackRegionCol = "grey", Verbose = FALSE)
+                          FallbackRegionCol = "grey", Verbose = FALSE, ...)
 {
   firstLine = readLines(filename, n = 1)
   if (!any(grep("#\\s+hypersurface\\s+[0-9.]+\\s+ascii", firstLine,

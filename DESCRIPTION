@@ -2,12 +2,12 @@ Package: catnat
 Type: Package
 Title: Extra functions for use with rcatmaid and nat
 Version: 0.1
-Author: Alex Bates
+Author: Alex Bates, Greg Jefferis
 Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
-Description: A selection of functions that I have created for use alongside the nat and rcatmaid packages.
+Description: A selection of functions that created for use alongside the nat and rcatmaid packages.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat
-Depends: nat, catmaid
-Imports: Morpho, Rvcg, alphashape3d, nabor, igraph
+Depends: nat, catmaid, igraph, alphashape3d, Morpho, rgl
+Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2
