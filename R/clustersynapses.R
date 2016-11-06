@@ -60,10 +60,10 @@ cluster_synapses_within_skeleton.neuron <- function(neuron, polyadic = T, lambda
   nodes[names(nodes.in),"post"] <- nodes.in
   nodes[names(nodes.out),"pre"] <- nodes.out
   # Claculate distance matrices
-  dis.matrix.in = igraph::distances(as.undirected(n))[,as.integer(point.no.in)]
+  dis.matrix.in = igraph::distances(igraph::as.undirected(n))[,as.integer(point.no.in)]
   rownames(dis.matrix.in) = rownames(nodes)
   colnames(dis.matrix.in) = point.no.in
-  dis.matrix.out = igraph::distances(as.undirected(n))[,as.integer(point.no.out)]
+  dis.matrix.out = igraph::distances(igraph::as.undirected(n))[,as.integer(point.no.out)]
   rownames(dis.matrix.out) = rownames(nodes)
   colnames(dis.matrix.out) = point.no.out
   synapse.density.in = lapply(rownames(nodes), function(x) sum(unlist(lapply(dis.matrix.in[x,], function(y) exp(-y^2/(2*lambda^2))))))
@@ -71,7 +71,7 @@ cluster_synapses_within_skeleton.neuron <- function(neuron, polyadic = T, lambda
   nodes[,"post.density.score"] <- unlist(synapse.density.in)
   nodes[,"pre.density.score"] <- unlist(synapse.density.out)
   # Calculate for both signs of synapse combined
-  dis.matrix = distances(as.undirected(n))[,as.integer(c(point.no.in,point.no.out))]
+  dis.matrix = igraph::distances(igraph::as.undirected(n))[,as.integer(c(point.no.in,point.no.out))]
   rownames(dis.matrix) = rownames(nodes)
   colnames(dis.matrix) = c(point.no.in,point.no.out)
   synapse.density = lapply(rownames(nodes), function(x) sum(unlist(lapply(dis.matrix[x,], function(y) exp(-y^2/(2*lambda^2))))))
@@ -86,7 +86,7 @@ cluster_synapses_within_skeleton.neuron <- function(neuron, polyadic = T, lambda
       neighbours = unlist(igraph::neighborhood(igraph::as.undirected(ngraph), order = order, nodes = x))
       scores = nodes[as.character(neighbours),"syn.density.score"]
       if (match(max(scores),scores) != 1){
-        positions = c(positions,unlist(igraph::shortest_paths(graph = as.undirected(n), from = x, to = neighbours[match(max(scores),scores)])))
+        positions = c(positions,unlist(igraph::shortest_paths(graph = igraph::as.undirected(n), from = x, to = neighbours[match(max(scores),scores)])))
         positions = positions[!positions%in%unlist(clusters)]
         x = neighbours[match(max(scores),scores)]
         if (x%in%unlist(clusters)){

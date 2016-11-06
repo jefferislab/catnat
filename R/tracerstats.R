@@ -22,31 +22,31 @@ tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts","istvan taisz", 
   df = catmaid::catmaid_user_history(from = calc.date)
   df[is.na(df)] = 0
   df <- df %>%
-    group_by(full_name) %>%
-    arrange(date) %>%
-    mutate(cable.cum.sum = cumsum(new_cable), connectors.cum.sum = cumsum(new_connectors))
+    dplyr::group_by(full_name) %>%
+    dplyr::arrange(date) %>%
+    dplyr::mutate(cable.cum.sum = cumsum(new_cable), connectors.cum.sum = cumsum(new_connectors))
   if (!cumulative){
     p1 <- ggplot2::qplot(date, new_cable, col=full_name,
               data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$new_cable)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_smooth()+
-      theme(legend.position="none")
+      ggplot2::geom_point()+
+      ggplot2::geom_smooth()+
+      ggplot2::theme(legend.position="none")
     p2 <- ggplot2::qplot(date, new_connectors, col=full_name,
               data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$new_connectors)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_smooth()+
-      theme(legend.position="top")
+      ggplot2::geom_point()+
+      ggplot2::geom_smooth()+
+      ggplot2::theme(legend.position="top")
   }else{
     p1 <- ggplot2::qplot(date, cable.cum.sum, col=full_name,
                 data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$cable.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_path()+
-      theme(legend.position="none")
+      ggplot2::geom_point()+
+      ggplot2::geom_path()+
+      ggplot2::theme(legend.position="none")
     p2 <- ggplot2::qplot(date, connectors.cum.sum, col=full_name,
                 data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$connectors.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_path()+
-      theme(legend.position="top")
+      ggplot2::geom_point()+
+      ggplot2::geom_path()+
+      ggplot2::theme(legend.position="top")
   }
   easyGgplot2::ggplot2.multiplot(p2,p1,cols=1)
 }
@@ -55,14 +55,14 @@ tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts","istvan taisz", 
 #' @export
 #' @rdname tracer.plot
 summarise_contribution <- function(skids, auth=5.0, ack=3000, ...) {
-  ul=catmaid_get_user_list()
+  ul=catmaid::catmaid_get_user_list()
   uls=ul[,c('full_name','id')]
-  stats=catmaid_get_contributor_stats(skids, ...)
+  stats=catmaid::catmaid_get_contributor_stats(skids, ...)
   stats.summ <- inner_join(stats$node_contributors, uls, by='id') %>%
-    arrange(desc(n)) %>%
-    mutate(pct=n/sum(n)*100, cpct=cumsum(pct)) %>%
-    filter(n>=ack) %>%
-    mutate(action=ifelse(pct>=auth, "auth", "ack"))
+    dplyr::arrange(desc(n)) %>%
+    dplyr::mutate(pct=n/sum(n)*100, cpct=cumsum(pct)) %>%
+    dplyr::filter(n>=ack) %>%
+    dplyr::mutate(action=ifelse(pct>=auth, "auth", "ack"))
   stats.summ
 }
 
@@ -85,59 +85,59 @@ tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi R
   if (is.null(skids)){
     skids=as.integer(catmaid::catmaid_fetch(paste("/1/skeletons/?nodecount_gt=1")))
   }
-  treenodes=nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
-  ul=catmaid_get_user_list()
+  treenodes=catmaid::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
+  ul=catmaid::catmaid_get_user_list()
   as.Date(as.POSIXct(z, origin = "1970-01-01"))
   if (is.null(names)){
     names = ul$full_name
   }
   user_ids = subset(ul, full_name%in%names)$id
   treenodes %>%
-    bind_rows %>%
-    filter(user_id%in%user_ids) %>%
-    arrange(last_modified) %>%
-    mutate(last_modified = as.Date(as.POSIXct(last_modified, origin = "1970-01-01"))) %>%
-    select(-one_of(c("id","parent_id","confidence","x","y","z","r", "reviewer_id")))%>%
-    mutate(node_count = 1) %>%
-    group_by(user_id, last_modified) %>%
-    summarize(new_treenodes = n()) %>%
-    group_by(user_id) %>%
-    mutate(full_name = unique(subset(ul$full_name, ul$id==user_id))) %>%
-    mutate(treenode.cum.sum = cumsum(new_treenodes))->
+    dplyr::bind_rows %>%
+    dplyr::filter(user_id%in%user_ids) %>%
+    dplyr::arrange(last_modified) %>%
+    dplyr::mutate(last_modified = as.Date(as.POSIXct(last_modified, origin = "1970-01-01"))) %>%
+    dplyr::select(-one_of(c("id","parent_id","confidence","x","y","z","r", "reviewer_id")))%>%
+    dplyr::mutate(node_count = 1) %>%
+    dplyr::group_by(user_id, last_modified) %>%
+    dplyr::summarize(new_treenodes = n()) %>%
+    dplyr::group_by(user_id) %>%
+    dplyr::mutate(full_name = unique(subset(ul$full_name, ul$id==user_id))) %>%
+    dplyr::mutate(treenode.cum.sum = cumsum(new_treenodes))->
     treenodes.names
   treenodes.names$full_name = ul$full_name[match(treenodes.names$user_id, ul$id)]
   p1 <- ggplot2::qplot(last_modified, new_treenodes, col=full_name,
                        data=treenodes.names,  ylim=c(0, max(treenodes.names$new_treenodes)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_smooth()+
-      theme(legend.position="none")
+    ggplot2::geom_point()+
+    ggplot2::geom_smooth()+
+    ggplot2::theme(legend.position="none")
   p2 <- ggplot2::qplot(last_modified, treenode.cum.sum, col=full_name,
                 data=treenodes.names,  ylim=c(0, max(treenodes.names$treenode.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
-      geom_point()+
-      geom_path()+
-      theme(legend.position="top")
+    ggplot2::geom_point()+
+    ggplot2::geom_path()+
+    ggplot2::theme(legend.position="top")
   easyGgplot2::ggplot2.multiplot(p2,p1,cols=1)
 }
 
 #' @export
 #' @rdname tracer.plot
 tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
-  neuronds.stats=catmaid_get_contributor_stats(skids)
-  ul=catmaid_get_user_list()
+  neuronds.stats=catmaid::catmaid_get_contributor_stats(skids)
+  ul=catmaid::catmaid_get_user_list()
   uls=ul[,c('full_name','id')]
   neuronds.stats$node_contributors
   if (value == "nodes"){
-    inner_join(neuronds.stats$node_contributors, uls, by='id') %>%
-    arrange(desc(n)) %>%
-    mutate(pct=n/sum(n)*100, cpct=cumsum(pct))
+    dplyr::inner_join(neuronds.stats$node_contributors, uls, by='id') %>%
+    dplyr::arrange(desc(n)) %>%
+    dplyr::mutate(pct=n/sum(n)*100, cpct=cumsum(pct))
   }else if (value == "pre"){
-    inner_join(neuronds.stats$pre_contributors, uls, by='id') %>%
-    arrange(desc(n)) %>%
-    mutate(pct=n/sum(n)*100)
+    dplyr::inner_join(neuronds.stats$pre_contributors, uls, by='id') %>%
+    dplyr::arrange(desc(n)) %>%
+    dplyr::mutate(pct=n/sum(n)*100)
   }else if (value == "post"){
-    inner_join(neuronds.stats$post_contributors, uls, by='id') %>%
-    arrange(desc(n)) %>%
-    mutate(pct=n/sum(n)*100)
+    dplyr::inner_join(neuronds.stats$post_contributors, uls, by='id') %>%
+    dplyr::arrange(desc(n)) %>%
+    dplyr::mutate(pct=n/sum(n)*100)
   }
 }
 

@@ -30,7 +30,7 @@ combine.alphashape = function (ashapelist, ...){
 #' Transform the 3D vertices of an alphashape
 #'
 #' @param ashape list of alphashape objects
-#' @param transformation A transformation that can be accepted by nat::xform(). I.e. A registration defined by a matrix, a function, a cmtkreg object, or a character vector specifying a path to one or more registrations on disk
+#' @param transformations A transformation that can be accepted by nat::xform(). I.e. A registration defined by a matrix, a function, a cmtkreg object, or a character vector specifying a path to one or more registrations on disk
 #' @param ... additional arguments passed to methods
 #'
 #' @references Lafarge T, Pateiro-López B, Possolo A, Dunkers J (2014) R Implementation of a Polyhedral Approximation to a 3D Set of Points Using the alpha-Shape. J Stat Softw 56
@@ -39,7 +39,7 @@ combine.alphashape = function (ashapelist, ...){
 #' @export
 #' @rdname transform3dalphashape
 #' @seealso \code{\link{combine.alphashape}} \code{\link{WriteVTKalphashape}}
-transform3dalphashape = function (ashape, transformations){
+transform3dalphashape = function (ashape, transformations, ...){
   positions = ashape$x
   if (is.list(transformations) == F){
     cat("Single transformation")

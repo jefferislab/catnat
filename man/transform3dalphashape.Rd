@@ -4,12 +4,12 @@
 \alias{transform3dalphashape}
 \title{Transform the 3D vertices of an alphashape}
 \usage{
-transform3dalphashape(ashape, transformations)
+transform3dalphashape(ashape, transformations, ...)
 }
 \arguments{
 \item{ashape}{list of alphashape objects}
 
-\item{transformation}{A transformation that can be accepted by nat::xform(). I.e. A registration defined by a matrix, a function, a cmtkreg object, or a character vector specifying a path to one or more registrations on disk}
+\item{transformations}{A transformation that can be accepted by nat::xform(). I.e. A registration defined by a matrix, a function, a cmtkreg object, or a character vector specifying a path to one or more registrations on disk}
 
 \item{...}{additional arguments passed to methods}
 }
