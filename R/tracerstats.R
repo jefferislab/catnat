@@ -86,7 +86,7 @@ tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi R
     skids=as.integer(catmaid::catmaid_fetch(paste("/1/skeletons/?nodecount_gt=1")))
   }
   treenodes=catmaid::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
-  ul=catmaid::catmaid_get_user_list()
+  ul=nat::catmaid_get_user_list()
   as.Date(as.POSIXct(z, origin = "1970-01-01"))
   if (is.null(names)){
     names = ul$full_name
