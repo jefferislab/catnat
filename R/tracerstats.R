@@ -143,3 +143,16 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 
 
 
+applyTransform.neuron <- function(neuron, trafo, inverse = F){
+  xyzmatrix(neuron$d)<-Morpho::applyTransform(xyzmatrix(neuron$d), trafo = trafo, inverse = inverse)
+  neuron
+}
+
+applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
+  nlapply(someneuronlist, applyTransform.neuron, trafo, inverse)
+}
+
+
+
+
+

@@ -57,3 +57,71 @@ assignside <- function(someneuronlist, ...){
 #  m = p[c(n$nn.idx),]
 #}
 
+#' Returns the primary neurite of a neuron
+#'
+#' @description Returns the primary neurite of a neuron, defined as the cable between soma and first branch point
+#'
+#' @param neuron a neuron object
+#' @param ... additional arguments passed to methods
+#'
+#' @return A neuron pruned to its primary dendrite
+#' @export
+#' @rdname primary.neurite
+primary.neurite<-function(someneuronlist, ...) UseMethod("primary.neurite")
+
+#' @export
+#' @rdname primary.neurite
+primary.neurite.neuron <- function(neuron, ...){
+  if (is.null(neuron$tags$soma)){
+      warning("No soma found, using startpoint")
+      som = as.numeric(neuron$StartPoint)
+  }else{som = as.numeric(rownames(soma(neuron)))}
+  not.pn = neuron$SegList[unlist(lapply(neuron$SegList, function(x) x[1] != som))]
+  nat::prune_vertices(neuron, unlist(not.pn))
+}
+
+#' @export
+#' @rdname primary.neurite
+primary.neurite.neuronlist <- function(someneuronlist, ...){
+  nlapply(someneuronlist, primary.neurite.neuron, OmitFailures = T)
+}
+
+
+
+
+longestpath = function (n, UseStartPoint = TRUE, SpatialWeights = TRUE, invert = FALSE,
+                        rval = c("neuron", "length", "ids"), model = NULL)
+{
+  ng <- as.ngraph(n, weights = SpatialWeights)
+  rval = match.arg(rval)
+  if (invert && rval == "length")
+    stop("invert=TRUE is not implemented for rval='length'")
+  if (UseStartPoint) {
+    lps = shortest.paths(graph = ng, n$StartPoint, to = n$EndPoints,
+                         mode = "all")
+    if (rval == "length")
+      return(max(lps))
+    to = n$EndPoints[which.max(lps)]
+    longestpath = get.shortest.paths(ng, from = n$StartPoint,
+                                     to = to, mode = "all")$vpath[[1]]
+  }
+  else {
+    if (rval == "length") {
+      return(diameter(ng, directed = FALSE))
+    }
+    else {
+      longestpath = get.diameter(ng, directed = FALSE)
+    }
+  }
+  if (rval == "ids") {
+    if (invert) {
+      ie = igraph::difference(igraph::E(ng), igraph::E(ng,
+                                                       path = longestpath))
+      edgemat = igraph::ends(ng, ie, names = FALSE)
+      return(unique(as.integer(t(edgemat))))
+    }
+    else return(as.integer(longestpath))
+  }
+  prune_edges(ng, edges = longestpath, invert = !invert)
+}
+

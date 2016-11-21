@@ -9,5 +9,5 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat
-Depends: nat, catmaid, igraph, alphashape3d, Morpho, rgl
-Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2
+Depends: nat, catmaid, igraph, alphashape3d, rgl
+Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2, Morpho
