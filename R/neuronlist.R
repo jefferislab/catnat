@@ -86,10 +86,9 @@ primary.neurite.neuronlist <- function(someneuronlist, ...){
   nlapply(someneuronlist, primary.neurite.neuron, OmitFailures = T)
 }
 
-
-
-
-longestpath = function (n, UseStartPoint = TRUE, SpatialWeights = TRUE, invert = FALSE,
+#' @export
+#' @rdname primary.neurite
+longestpathfromsoma = function (n, UseStartPoint = TRUE, SpatialWeights = TRUE, invert = FALSE,
                         rval = c("neuron", "length", "ids"), model = NULL)
 {
   ng <- as.ngraph(n, weights = SpatialWeights)

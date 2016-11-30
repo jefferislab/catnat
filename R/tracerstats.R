@@ -85,15 +85,15 @@ tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi R
   if (is.null(skids)){
     skids=as.integer(catmaid::catmaid_fetch(paste("/1/skeletons/?nodecount_gt=1")))
   }
-  treenodes=catmaid::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
-  ul=nat::catmaid_get_user_list()
-  as.Date(as.POSIXct(z, origin = "1970-01-01"))
+  treenodes=nat::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
+  ul=catmaid::catmaid_get_user_list()
+  #as.Date(as.POSIXct(z, origin = "1970-01-01"))
   if (is.null(names)){
     names = ul$full_name
   }
   user_ids = subset(ul, full_name%in%names)$id
   treenodes %>%
-    dplyr::bind_rows %>%
+    dplyr::bind_rows() %>%
     dplyr::filter(user_id%in%user_ids) %>%
     dplyr::arrange(last_modified) %>%
     dplyr::mutate(last_modified = as.Date(as.POSIXct(last_modified, origin = "1970-01-01"))) %>%
