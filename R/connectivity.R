@@ -64,7 +64,7 @@ get_connected_skeletons <- function(somneuronlist, X = c(upper = 100000000, lowe
 #'
 #' @return A connectivity matrix. The values are synaptic weights, row and column names are neuron names from CATMAID.
 #' @export
-#' @rdname skeleton_connectivity_matrix
+#' @rdname connectivity_matrix
 #' @seealso \code{\link{get_connected_skeletons}} \code{\link{neurites}} \code{\link{flow.centrality}}
 skeleton_connectivity_matrix <- function(pre, post = NULL, ...){
   outs = nlapply(pre, function(x)subset(x$connectors$connector_id, x$connectors$prepost==0))
@@ -82,3 +82,36 @@ skeleton_connectivity_matrix <- function(pre, post = NULL, ...){
   }
   m
 }
+
+#' @export
+#' @rdname connectivity_matrix
+connectivity_matrix <- function(pre, post = pre, ...){
+  if(is.neuronlist(pre)){pre = names(pre)}
+  if(is.neuronlist(post)){pre = names(post)}
+  outputs = catmaid_query_connected(pre)$outgoing
+  outputs = outputs[outputs$partner%in%post,]
+  m = matrix(0,nrow = length(pre), ncol = length(post))
+  rownames(m) = catmaid_get_neuronnames(pre)
+  colnames(m) = catmaid_get_neuronnames(post)
+  for (skel in 1:length(pre)){
+    for (skel2 in 1:length(post)){
+      syns = outputs[outputs$skid==pre[skel]&outputs$partner==post[skel2],][,"syn.count"]
+      m[skel,skel2] = ifelse(length(syns)==0, 0, syns)
+    }
+  }
+}
+
+#' @export
+#' @rdname connectivity_matrix
+neuron.heatmap <- function(data, col = colorRampPalette(c('navy','cyan','yellow','red')), notecex = 0.7, keysize = 1.5, cexCol = 0.3, cexRow = 0.3, margins = c(5,9), breaks = c(seq(0,0.4,length=100), seq(0.5,3,length=100), seq(4,6,length=100), seq(7,20,length=100)),  ...){
+  require(gplots)
+    heatmap.2(data,
+          col = col,
+          breaks = breaks,
+          keysize = keysize,
+          cexCol = cexCol,
+          cexRow = cexRow,
+          margins = margins)
+}
+
+
