@@ -77,7 +77,7 @@ write_ack <- function(x, ...) {
 
 #' @export
 #' @rdname tracer.plot
-tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi Roberts","istvan taisz", "Greg Jefferis", "Adam Heath", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Melissa Ryan"), from.date = "2016-04-01", to.date = Sys.Date(), ...){
+tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), from.date = "2016-04-01", to.date = Sys.Date(), ...){
   require(ggplot2)
   require(easyGgplot2)
   require(lubridate)
