@@ -14,7 +14,7 @@
 #' @return An alphashape object
 #' @export
 #' @rdname make.anatomical.model
-make.anatomical.model <- function(someneuronlist, substrate = c("connectors","cable", "both"), maxdistance = 10000, groupsize = 100, alpha = 3000, selection = T, chosen.points = NULL, F)
+make.anatomical.model <- function(someneuronlist, substrate = c("connectors","cable", "both"), maxdistance = 10000, groupsize = 100, alpha = 3000, auto.selection = T, chosen.points = NULL)
 {
   require(nabor)
   require(rgl)
@@ -23,10 +23,10 @@ make.anatomical.model <- function(someneuronlist, substrate = c("connectors","ca
   }else if (substrate == "both"){synapse.points = rbind(nat::xyzmatrix(someneuronlist), nat::xyzmatrix(catmaid::connectors(someneuronlist)))}
   rgl::open3d()
   # Generate a good density of points to define neuropil
-  if (selection == TRUE){
+  if (auto.selection == TRUE){
     progress = "n"
     while (progress == "n"){
-      groupsize <- as.numeric (readline(prompt="Select a value for the groupsize  "))
+      groupsize <- as.numeric (readline(prompt="Select a value for the cluster groupsize  "))
       maxdistance <- as.numeric (readline(prompt="Select a value for maximum distance between points  "))
       neighbours = nabor::knn(synapse.points, synapse.points, k = groupsize)
       loose <- apply(neighbours$nn.dists, 1, function(x) {(any(as.numeric(x[1:ncol(neighbours$nn.dists)]) > maxdistance))})
@@ -45,7 +45,7 @@ make.anatomical.model <- function(someneuronlist, substrate = c("connectors","ca
   }
   # Manual point deselection
   selected.points = unique(close.points)
-  if (is.null(chosen.points) == F){ selected.points = chosen.points}
+  if (!is.null(chosen.points)){ selected.points = chosen.points}
   progress = readline(prompt="Remove (r), add (a) or save (s) points?  ")
   while (progress != "s"){
     if (progress == 'r'){
