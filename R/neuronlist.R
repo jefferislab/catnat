@@ -62,6 +62,7 @@ assignside <- function(someneuronlist, ...){
 #' @description Returns the primary neurite of a neuron, defined as the cable between soma and first branch point
 #'
 #' @param neuron a neuron object
+#' @param resample The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuron pruned to its primary dendrite
@@ -71,7 +72,8 @@ primary.neurite<-function(someneuronlist, ...) UseMethod("primary.neurite")
 
 #' @export
 #' @rdname primary.neurite
-primary.neurite.neuron <- function(neuron, ...){
+primary.neurite.neuron <- function(neuron, resample = 1, ...){
+  neuron = resample(neuron, stepsize = 1)
   if (is.null(neuron$tags$soma)){
       warning("No soma found, using startpoint")
       som = as.numeric(neuron$StartPoint)
