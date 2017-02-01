@@ -9,7 +9,6 @@
 #' @param min_nodes Minimum number of nodes wanted in returned neuronlist
 #' @param max_nodes Maximum number of nodes wanted in returned neuronlist
 #' @param min_synapes Minimum number of synapses required from/to any neuron of the query group
-#' @param min_nodes Minimum number of nodes wanted in returned neuronlist
 #' @param prepost Whether to return downstream neurons (0), upstream neurons (1) or both (NULL)
 #' @param soma Whether returned neurons must have a soma or not. Defaults to T.
 #' @param exclude.skids skids of neurons

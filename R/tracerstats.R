@@ -14,36 +14,36 @@
 #' @return tracer.plot() returns a plot for cable length traced and connectors placed by named tracers. tracer.treenodes.plot() visualises data on node generation.
 #' @export
 #' @rdname tracer.plot
-tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts","istvan taisz", "Greg Jefferis", "Adam Heath", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel"), calc.date = "2013-04-01", from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...){
+tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), calc.date = "2013-04-01", from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...){
   require(ggplot2)
   require(easyGgplot2)
   require(lubridate)
   require(dplyr)
-  df = catmaid::catmaid_user_history(from = calc.date)
-  df[is.na(df)] = 0
-  df <- df %>%
+  dataf = catmaid::catmaid_user_history(from = calc.date)
+  dataf[is.na(dataf)] = 0
+  dataf <- dataf %>%
     dplyr::group_by(full_name) %>%
     dplyr::arrange(date) %>%
     dplyr::mutate(cable.cum.sum = cumsum(new_cable), connectors.cum.sum = cumsum(new_connectors))
   if (!cumulative){
     p1 <- ggplot2::qplot(date, new_cable, col=full_name,
-              data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$new_cable)), xlim = c(as.Date(from.date), as.Date(to.date)))+
+              data=filter(dataf, full_name%in%names),  ylim=c(0, max(filter(dataf, full_name%in%names)$new_cable)), xlim = c(as.Date(from.date), as.Date(to.date)))+
       ggplot2::geom_point()+
       ggplot2::geom_smooth()+
       ggplot2::theme(legend.position="none")
     p2 <- ggplot2::qplot(date, new_connectors, col=full_name,
-              data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$new_connectors)), xlim = c(as.Date(from.date), as.Date(to.date)))+
+              data=filter(dataf, full_name%in%names),  ylim=c(0, max(filter(dataf, full_name%in%names)$new_connectors)), xlim = c(as.Date(from.date), as.Date(to.date)))+
       ggplot2::geom_point()+
       ggplot2::geom_smooth()+
       ggplot2::theme(legend.position="top")
   }else{
     p1 <- ggplot2::qplot(date, cable.cum.sum, col=full_name,
-                data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$cable.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
+                data=filter(dataf, full_name%in%names),  ylim=c(0, max(filter(dataf, full_name%in%names)$cable.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
       ggplot2::geom_point()+
       ggplot2::geom_path()+
       ggplot2::theme(legend.position="none")
     p2 <- ggplot2::qplot(date, connectors.cum.sum, col=full_name,
-                data=filter(df, full_name%in%names),  ylim=c(0, max(filter(df, full_name%in%names)$connectors.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
+                data=filter(dataf, full_name%in%names),  ylim=c(0, max(filter(dataf, full_name%in%names)$connectors.cum.sum)), xlim = c(as.Date(from.date), as.Date(to.date)))+
       ggplot2::geom_point()+
       ggplot2::geom_path()+
       ggplot2::theme(legend.position="top")
