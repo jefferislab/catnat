@@ -73,7 +73,12 @@ primary.neurite<-function(someneuronlist, ...) UseMethod("primary.neurite")
 #' @export
 #' @rdname primary.neurite
 primary.neurite.neuron <- function(neuron, resample = 1, ...){
-  neuron = resample(neuron, stepsize = 1)
+  neuron = nat::resample(neuron, stepsize = 1)
+  if (neuron$nTrees>1){
+    s = unique(unlist(as.seglist(neuron)))
+    neuron$SubTrees = NULL
+    neuron$d=neuron$d[neuron$d$PointNo%in%s,]
+  }
   if (is.null(neuron$tags$soma)){
       warning("No soma found, using startpoint")
       som = as.numeric(neuron$StartPoint)
