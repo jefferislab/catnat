@@ -4,8 +4,8 @@
 \alias{arbour.clusters}
 \alias{arbour.clusters.neuron}
 \alias{arbour.clusters.neuronlist}
-\alias{arbours}
 \alias{arbours.neuron}
+\alias{arbours}
 \title{Segregate neurite compartments from a neuron/neuronlist based on synapse clustering}
 \usage{
 arbour.clusters(someneuronlist, ...)
@@ -34,4 +34,3 @@ Fragment a skeleton into compartments that have been assigned cluster_synapses_w
 \seealso{
 \code{\link{neurites}} \code{\link{cluster_synapses_within_skeleton}} \code{\link{seebroken3d}} \code{\link{flow.centrality}} \code{\link{seesplit3d}}
 }
-
