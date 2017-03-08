@@ -27,4 +27,3 @@ Write alphashape as a .vtk file
 \seealso{
 \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
 }
-

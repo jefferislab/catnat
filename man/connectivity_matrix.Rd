@@ -2,9 +2,18 @@
 % Please edit documentation in R/connectivity.R
 \name{skeleton_connectivity_matrix}
 \alias{skeleton_connectivity_matrix}
+\alias{connectivity_matrix}
+\alias{neuron.heatmap}
 \title{Generate connectivity matrix}
 \usage{
 skeleton_connectivity_matrix(pre, post = NULL, ...)
+
+connectivity_matrix(pre, post = pre, ...)
+
+neuron.heatmap(data, col = colorRampPalette(c("navy", "cyan", "yellow",
+  "red")), notecex = 0.7, keysize = 1.5, cexCol = 0.3, cexRow = 0.3,
+  margins = c(5, 9), breaks = c(seq(0, 0.4, length = 100), seq(0.5, 3,
+  length = 100), seq(4, 6, length = 100), seq(7, 20, length = 100)), ...)
 }
 \arguments{
 \item{pre}{skeletons from which connections are to be included}
@@ -25,4 +34,3 @@ CATMAID access required.
 \seealso{
 \code{\link{get_connected_skeletons}} \code{\link{neurites}} \code{\link{flow.centrality}}
 }
-

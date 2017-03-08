@@ -40,4 +40,3 @@ Plot neurons split up by flow centrality
 \seealso{
 \code{\link{flow.centrality}} \code{\link{get.synapses}}
 }
-

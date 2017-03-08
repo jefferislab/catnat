@@ -6,7 +6,7 @@
 \usage{
 make.anatomical.model(someneuronlist, substrate = c("connectors", "cable",
   "both"), maxdistance = 10000, groupsize = 100, alpha = 3000,
-  selection = T, chosen.points = NULL, F)
+  auto.selection = T, chosen.points = NULL)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}
@@ -19,9 +19,9 @@ make.anatomical.model(someneuronlist, substrate = c("connectors", "cable",
 
 \item{alpha}{A single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive}
 
-\item{selection}{Whether or not to interactively select values for maxdistance and groupsize.}
-
 \item{chosen.points}{Whether to feed the function pre-chosen points. A matrix for 3D points}
+
+\item{selection}{Whether or not to interactively select values for maxdistance and groupsize.}
 
 \item{...}{additional arguments passed to methods}
 }
@@ -31,4 +31,3 @@ An alphashape object
 \description{
 implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 }
-

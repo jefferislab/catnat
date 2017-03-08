@@ -33,4 +33,3 @@ Get 3D coordinates of synapse (not connector) positions
 \seealso{
 \code{\link{cluster.by.synapses}} \code{\link{flow.centrality}}
 }
-

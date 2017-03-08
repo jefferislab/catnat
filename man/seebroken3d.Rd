@@ -28,4 +28,3 @@ Plot neurons split up by synapse clusters
 \seealso{
 \code{\link{cluster_synapses_within_skeleton}} \code{\link{seesplit3d}}
 }
-

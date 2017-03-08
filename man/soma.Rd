@@ -2,14 +2,14 @@
 % Please edit documentation in R/somas.R
 \name{soma}
 \alias{soma}
-\alias{soma.neuron}
 \alias{soma.neuronlist}
+\alias{soma.neuron}
 \alias{somaid}
-\alias{somaid.neuron}
 \alias{somaid.neuronlist}
+\alias{somaid.neuron}
 \alias{somapos}
-\alias{somapos.neuron}
 \alias{somapos.neuronlist}
+\alias{somapos.neuron}
 \title{Functions for retrieving soma data}
 \usage{
 soma(x, ...)
@@ -45,4 +45,3 @@ CATMAID access required. Data collected and described in cited publication.
 \references{
 Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
 }
-

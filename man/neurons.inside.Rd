@@ -41,4 +41,3 @@ Find neurites inside of an mesh3d object
 
 \code{\link{neurons.inside}}
 }
-

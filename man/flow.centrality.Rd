@@ -65,4 +65,3 @@ Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T.,
 \seealso{
 \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
 }
-

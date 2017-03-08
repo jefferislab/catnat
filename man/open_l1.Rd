@@ -32,4 +32,3 @@ CATMAID access required. Data collected and described in cited publication.
 \references{
 Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
 }
-

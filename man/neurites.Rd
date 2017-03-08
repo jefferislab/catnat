@@ -29,4 +29,3 @@ Fragment a skeleton into compartments that have been assigned using flow.central
 \seealso{
 \code{\link{get_connected_skeletons}} \code{\link{skeleton_connectivity_matrix}} \code{\link{flow.centrality}}
 }
-

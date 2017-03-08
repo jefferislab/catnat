@@ -20,4 +20,3 @@ Convert an alpha shape to a mesh3D object
 \seealso{
 \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
 }
-

@@ -20,4 +20,3 @@ The percentage of downstream singlet nodes named tracers have contributed to neu
 \description{
 Remove points from a neuron, keeping the root node intact
 }
-

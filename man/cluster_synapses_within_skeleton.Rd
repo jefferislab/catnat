@@ -48,4 +48,3 @@ Schneider-Mizell, C. M., Gerhard, S., Longair, M., Kazimiers, T.,
 \seealso{
 \code{\link{seebroken3d}} \code{\link{flow.centrality}}
 }
-

@@ -31,8 +31,6 @@ get_connected_skeletons(somneuronlist, X = c(upper = 1e+08, lower = 0),
 \item{someneuronlist}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coorinates can be accessed with nat::xyzmatrix()}
 
 \item{min_synapes}{Minimum number of synapses required from/to any neuron of the query group}
-
-\item{min_nodes}{Minimum number of nodes wanted in returned neuronlist}
 }
 \value{
 A neuronlist object
@@ -46,4 +44,3 @@ CATMAID access required.
 \seealso{
 \code{\link{skeleton_connectivity_matrix}}
 }
-

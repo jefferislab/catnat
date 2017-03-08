@@ -18,4 +18,3 @@ scan4matching(someneuronlist, pairs, reference, ...)
 \description{
 implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 }
-

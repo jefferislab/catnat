@@ -19,4 +19,3 @@ A pruned neuron object
 \description{
 Remove points from a neuron, keeping the root node intact
 }
-

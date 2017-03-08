@@ -25,4 +25,3 @@ Lafarge T, Pateiro-López B, Possolo A, Dunkers J (2014) R Implementation of a P
 \seealso{
 \code{\link{combine.alphashape}} \code{\link{WriteVTKalphashape}}
 }
-

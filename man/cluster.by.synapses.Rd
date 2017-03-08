@@ -30,4 +30,3 @@ From Schneider-Mizell et al. (2016): "We use flow centrality for four purposes. 
 \seealso{
 \code{\link{plot3d.split}} \code{\link{get.synapses}}
 }
-

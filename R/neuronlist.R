@@ -131,3 +131,8 @@ longestpathfromsoma = function (n, UseStartPoint = TRUE, SpatialWeights = TRUE, 
   prune_edges(ng, edges = longestpath, invert = !invert)
 }
 
+
+
+
+
+
