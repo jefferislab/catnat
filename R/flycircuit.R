@@ -38,7 +38,6 @@ reroot.flycircuit.neuron <- function(neuron){
 #' @rdname get.skeleton.from.flycircuit
 Chiang2FCWB <- function(x, sex = 'F'){
   if (sex == "M"){
-    system.file("extdata/CMTKreg/", package = 'catnat')
     affinetransform.m = readRDS(system.file("extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
     affinetransform.m2 = readRDS(system.file("extdata/CMTKreg/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
     x = napplyTransform.neuronlist(x, affinetransform.m)
@@ -574,48 +573,48 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root.
 #'
 #' @param someneuronlist a neuronlist object
-#' @param samples a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types
-#' @param samples.dps a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation
+#' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017.
+#' @param most.lhns.dps a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation
 #' @param brain the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB
 #' @param ... additional arguments passed to methods
 #'
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
 #' @rdname assign_lh_neuron
-assign_lh_neuron <- function(someneuronlist, samples = NULL, samples.dps = NULL, brain = NULL){
+assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
   require(doMC)
   registerDoMC()
-  samples = subset(samples, pnt!="notLHproper"&!is.na(pnt))
-  if (!is.null(brain)){ samples = nat.templatebrains::xform_brain(samples, sample = FCWB, reference = brain)}
+  if(is.null(most.lhns)){load(system.file("extdata/lhndump.rda/", package = 'catnat'))}
+  if (!is.null(brain)){ most.lhns = nat.templatebrains::xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites")
-  pnts = sort(unique(samples[,"pnt"]))
+  pnts = sort(unique(most.lhns[,"pnt"]))
   pnts = pnts[pnts!="notLHproper"]
-  samples.pnts = suppressWarnings(primary.neurite(samples,.parallel=TRUE))
+  most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns,.parallel=TRUE))
   someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist, .parallel=TRUE))
   message("Generating dotprops objects")
-  if(length(samples.dps)==0){samples.dps=nat::dotprops(samples, resample = 1, OmitFailures = T,.parallel=TRUE)}
-  samples.pnts.dps = nat::dotprops(samples.pnts, resample = 1, OmitFailures = T,.parallel=TRUE)
-  samples.pnts.dps = subset(samples.pnts.dps, good.trace==T,.parallel=TRUE)
+  if(length(most.lhns.dps)==0){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, OmitFailures = T,.parallel=TRUE)}
+  most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, OmitFailures = T,.parallel=TRUE)
+  most.lhns.pnts.dps = subset(most.lhns.pnts.dps, good.trace==T,.parallel=TRUE)
   someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,.parallel=TRUE)
   someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1,.parallel=TRUE)
   # Now try to find the tract a neuron fits into
   message("Assigning primary neurites")
   if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped.")}
   if (length(someneuronlist)==1){
-    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.pnts.dps, target = samples.pnts.dps, UseAlpha = T))
-    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.pnts.dps, query = samples.pnts.dps, UseAlpha = T))
+    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.pnts.dps, target = most.lhns.pnts.dps, UseAlpha = T))
+    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.pnts.dps, query = most.lhns.pnts.dps, UseAlpha = T))
     results = (results1+results2)/2
   }else{
-    results1 = nat.nblast::nblast(query = someneuronlist.pnts.dps, target = samples.pnts.dps, UseAlpha = T,.parallel=TRUE)
-    results2 = nat.nblast::nblast(target = someneuronlist.pnts.dps, query = samples.pnts.dps, UseAlpha = T,.parallel=TRUE)
+    results1 = nat.nblast::nblast(query = someneuronlist.pnts.dps, target = most.lhns.pnts.dps, UseAlpha = T,.parallel=TRUE)
+    results2 = nat.nblast::nblast(target = someneuronlist.pnts.dps, query = most.lhns.pnts.dps, UseAlpha = T,.parallel=TRUE)
     results = (results1+t(results2))/2
   }
-  pct = samples.pnts.dps[,"pnt"][apply(results,2,which.max)]
+  pct = most.lhns.pnts.dps[,"pnt"][apply(results,2,which.max)]
   attr(someneuronlist, "df") = cbind(attr(someneuronlist, "df"), pnt = pct)
   message("Assigning anatomy group and cell types")
   anatomy.group = cell.type = c()
   for (n in 1:length(someneuronlist)){
-    cluster.dps = subset(samples.dps, pnt==pct[n])
+    cluster.dps = subset(most.lhns.dps, pnt==pct[n])
     results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.dps[n], target = cluster.dps, UseAlpha = T),.parallel=TRUE)
     results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.dps[n], query = cluster.dps, UseAlpha = T),.parallel=TRUE)
     results = (results1+results2)/2

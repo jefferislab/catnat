@@ -4,15 +4,15 @@
 \alias{assign_lh_neuron}
 \title{Assign identitiy to lateral horn neurons}
 \usage{
-assign_lh_neuron(someneuronlist, samples = NULL, samples.dps = NULL,
+assign_lh_neuron(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL,
   brain = NULL)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object}
 
-\item{samples}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types}
+\item{most.lhns}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017.}
 
-\item{samples.dps}{a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation}
+\item{most.lhns.dps}{a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation}
 
 \item{brain}{the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB}
 
