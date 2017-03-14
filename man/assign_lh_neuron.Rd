@@ -24,5 +24,6 @@ a neuronlist with the best guess for primary neurite tract, anatomy group and ce
 \description{
 Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
 Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
-unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root.
+unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root. This fucntion provides a good guess, however if it gets a neurons assignment
+incorrect, that does not necessarily mean the neuron in question is not covered by the naming system.
 }
