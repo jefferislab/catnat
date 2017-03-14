@@ -583,23 +583,26 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @rdname assign_lh_neuron
 assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
   require(doMC)
+  require(nat.nblast)
   registerDoMC()
   if(is.null(most.lhns)){load(system.file("exdata/lhndump.rda", package = 'catnat'))}
+  most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = nat.templatebrains::xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites")
   pnts = sort(unique(most.lhns[,"pnt"]))
   pnts = pnts[pnts!="notLHproper"]
-  most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns,.parallel=TRUE))
-  someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist, .parallel=TRUE))
+  most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns))
+  someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist))
   message("Generating dotprops objects")
   if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, OmitFailures = T,.parallel=TRUE)}
+  most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
   most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, OmitFailures = T,.parallel=TRUE)
-  most.lhns.pnts.dps = subset(most.lhns.pnts.dps, good.trace==T,.parallel=TRUE)
+  most.lhns.pnts.dps = subset(most.lhns.pnts.dps, good.trace==T)
   someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,.parallel=TRUE)
   someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1,.parallel=TRUE)
   # Now try to find the tract a neuron fits into
   message("Assigning primary neurites")
-  if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped.")}
+  if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped!")}
   if (length(someneuronlist)==1){
     results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.pnts.dps, target = most.lhns.pnts.dps, UseAlpha = T))
     results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.pnts.dps, query = most.lhns.pnts.dps, UseAlpha = T))
@@ -638,7 +641,7 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
 #' @rdname rescue.dps
 rescue.dps <- function(someneuronlist,resample,...){
   someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
-  no.points = sapply(someneuronlist.pnts.dps, function(x) nrow(nat::xyzmatrix(x)))
+  no.points = sapply(someneuronlist.dps, function(x) nrow(nat::xyzmatrix(x)))
   tooshort = someneuronlist[!names(someneuronlist)%in%names(someneuronlist.dps)]
   tooshort.dps = nat::nlapply(tooshort, function(x) nat::dotprops(x, resample = summary(x)$cable.length/min(no.points), OmitFailures = F))
   someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
