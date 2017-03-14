@@ -502,3 +502,146 @@ synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T
   }
 }
 
+
+#' Average non-branching tracts
+#'
+#' @description  Function returns an 'average tract' when given a neuronlist of non-branching cable.
+#' The function uses NBlast to find the the neuron within the group that has the highest average similarity score with the rest of
+#' the given cable
+#'
+#' @param cable somneuronlist object
+#' @param sigma smoothing parameter given to nat::smooth_neuron, i.e. the standard deviation of the Gaussian smoothing kernel (which has the same spatial units as the object being smoothed)
+#' @param stepsize the spacing to which cable should be resampled
+#' @param mode Either 1 or 2. Method 1 simply takes the best NBlast match and, for each of its nodes, finds the mean xyz coordinate for that node index in the cable group (soma has index 1), all resampled to the stepsize value.
+#' Method 2 is similar, but takes the closest node in each of the other neurons in the cable neuronlist rather than the nodes of the same index.
+#' @param ... additional arguments passed to methods
+#'
+#' @return a single neuron object, the averaged tract, and containing values for standard deviation for each 3D point.
+#' @export
+#' @rdname average.tracts
+average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
+  require(nabor)
+  if (length(cable)>1){
+    colSD <- function(m){apply(m, 2, sd)}
+    roots = t(sapply(cable,function(x)nat::xyzmatrix(x)[nat::rootpoints(x),]))
+    root.sd = apply(roots, 2, sd)
+    root = colMeans(roots)
+    cable = nat::nlapply(cable,resample,stepsize =stepsize)
+    c.dps = nat::dotprops(cable, OmitFailures = T)
+    csmat=nat.blast::nblast_allbyall(c.dps)
+    best = cable[names(which.max(colMeans(csmat)))]
+    best.points = nat::xyzmatrix(best)
+    points = sapply(cable, function(x) nat::xyzmatrix(x))
+    end.points = t(sapply(points, function(p) p[nrow(p),]))
+    points.averaged = matrix(root,ncol = 3)
+    points.sd = matrix(root.sd, ncol = 3)
+    points.used = matrix(ncol=3)
+    if (mode==1){
+      for(b in 2:nrow(best.points)){
+        points.keep = colMeans(do.call(rbind,lapply(points, function(x) tryCatch(x[b,], error = function(e) NULL))))
+        sd.keep = colSD(do.call(rbind,lapply(points, function(x) tryCatch(x[b,], error = function(e) NULL))))
+        points.averaged = rbind(points.averaged,points.keep)
+        points.sd = rbind(points.sd,sd.keep)
+      }
+    }
+    if (mode==2){
+      for(b in 2:nrow(best.points)){
+        selected.points = do.call(rbind,lapply(points, function(x) x[nabor::knn(data = x,query =matrix(best.points[b,],ncol=3),k=1)$nn.idx[1],]))
+        reused = matrix(selected.points[apply(selected.points,1,function(x) sum(x%in%points.used)>=3),],ncol=3)
+        ends = apply(reused,1,function(x) sum(x%in%end.points)>=3)
+        remove = names(ends)[ends]
+        selected.points = selected.points[!rownames(selected.points)%in%ends,]
+        points = points[!names(points)%in%remove]
+        points.keep = colMeans(selected.points)
+        sd.keep = colSD(selected.points)
+        points.averaged = rbind(points.averaged,points.keep)
+        points.sd = rbind(points.sd,sd.keep)
+        points.used = rbind(points.used, selected.points)
+      }
+    }
+    rownames(points.sd) = rownames(points.averaged) = NULL
+    best[[1]]$d[c("X","Y","Z")] = points.averaged
+    colnames(points.sd) = c("sdX","sdY","sdZ")
+    best[[1]]$d = cbind(best[[1]]$d,points.sd,n=length(cable))
+    as.neuron(nat::smooth_neuron(best[[1]],sigma=sigma))
+  }else {cable[[1]]}
+}
+
+#' Assign identitiy to lateral horn neurons
+#'
+#' @description  Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
+#' Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
+#' unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root.
+#'
+#' @param someneuronlist a neuronlist object
+#' @param samples a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types
+#' @param samples.dps a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation
+#' @param brain the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB
+#' @param ... additional arguments passed to methods
+#'
+#' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
+#' @export
+#' @rdname assign_lh_neuron
+assign_lh_neuron <- function(someneuronlist, samples = NULL, samples.dps = NULL, brain = NULL){
+  require(doMC)
+  registerDoMC()
+  samples = subset(samples, pnt!="notLHproper"&!is.na(pnt))
+  if (!is.null(brain)){ samples = nat.templatebrains::xform_brain(samples, sample = FCWB, reference = brain)}
+  message("Generating primary neurites")
+  pnts = sort(unique(samples[,"pnt"]))
+  pnts = pnts[pnts!="notLHproper"]
+  samples.pnts = suppressWarnings(primary.neurite(samples,.parallel=TRUE))
+  someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist, .parallel=TRUE))
+  message("Generating dotprops objects")
+  if(length(samples.dps)==0){samples.dps=nat::dotprops(samples, resample = 1, OmitFailures = T,.parallel=TRUE)}
+  samples.pnts.dps = nat::dotprops(samples.pnts, resample = 1, OmitFailures = T,.parallel=TRUE)
+  samples.pnts.dps = subset(samples.pnts.dps, good.trace==T,.parallel=TRUE)
+  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,.parallel=TRUE)
+  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1,.parallel=TRUE)
+  # Now try to find the tract a neuron fits into
+  message("Assigning primary neurites")
+  if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped.")}
+  if (length(someneuronlist)==1){
+    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.pnts.dps, target = samples.pnts.dps, UseAlpha = T))
+    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.pnts.dps, query = samples.pnts.dps, UseAlpha = T))
+    results = (results1+results2)/2
+  }else{
+    results1 = nat.nblast::nblast(query = someneuronlist.pnts.dps, target = samples.pnts.dps, UseAlpha = T,.parallel=TRUE)
+    results2 = nat.nblast::nblast(target = someneuronlist.pnts.dps, query = samples.pnts.dps, UseAlpha = T,.parallel=TRUE)
+    results = (results1+t(results2))/2
+  }
+  pct = samples.pnts.dps[,"pnt"][apply(results,2,which.max)]
+  attr(someneuronlist, "df") = cbind(attr(someneuronlist, "df"), pnt = pct)
+  message("Assigning anatomy group and cell types")
+  anatomy.group = cell.type = c()
+  for (n in 1:length(someneuronlist)){
+    cluster.dps = subset(samples.dps, pnt==pct[n])
+    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.dps[n], target = cluster.dps, UseAlpha = T),.parallel=TRUE)
+    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.dps[n], query = cluster.dps, UseAlpha = T),.parallel=TRUE)
+    results = (results1+results2)/2
+    anatomy.group = c(anatomy.group,cluster.dps[,"anatomy.group"][apply(results,2,which.max)])
+    cell.type = c(cell.type,cluster.dps[,"cell.type"][apply(results,2,which.max)])
+  }
+  attr(someneuronlist, "df") = cbind(attr(someneuronlist, "df"), anatomy.group = anatomy.group,cell.type = cell.type)
+  return(someneuronlist)
+}
+
+#' Generate a dps object without dropping small neurons
+#'
+#' @description  Generates a dotprops object, changing the resample size in order to make sure all neurons are kept
+#'
+#' @param someneuronlist a neuronlist object
+#' @param resample the desired resampling. Smaller neurons will have a lower resampling interval than this.
+#' @param ... additional arguments passed to methods
+#'
+#' @return a dotprops object
+#' @export
+#' @rdname rescue.dps
+rescue.dps <- function(someneuronlist,resample,...){
+  someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
+  no.points = sapply(someneuronlist.pnts.dps, function(x) nrow(nat::xyzmatrix(x)))
+  tooshort = someneuronlist[!names(someneuronlist)%in%names(someneuronlist.dps)]
+  tooshort.dps = nat::nlapply(tooshort, function(x) nat::dotprops(x, resample = summary(x)$cable.length/min(no.points), OmitFailures = F))
+  someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
+  someneuronlist.dps
+}
