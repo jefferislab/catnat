@@ -164,7 +164,7 @@ axonic.points<-function(someneuronlist, ...) UseMethod("axonic.points")
 dendritic.points<-function(someneuronlist, ...) UseMethod("dendritic.points")
 #' @export
 #' @rdname extract.cable
-mixed.points<-function(someneuronlist, ...) UseMethod("mixec.points")
+mixed.points<-function(someneuronlist, ...) UseMethod("mixed.points")
 #' @rdname extract.cable
 axonic.points.neuron <- function(neuron){
   points=neuron$d
@@ -598,7 +598,7 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)}
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
   most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)
-  most.lhns.pnts.dps = subset(most.lhns.pnts.dps,k=5, good.trace==T)
+  if (!is.null(most.lhns.pnts.dps[,"good.trace"])){most.lhns.pnts.dps = subset(most.lhns.pnts.dps,k=5, good.trace==T)}
   someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5,.parallel=TRUE)
   someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5,.parallel=TRUE)
   # Now try to find the tract a neuron fits into
