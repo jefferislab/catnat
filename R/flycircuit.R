@@ -595,12 +595,12 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns))
   someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist))
   message("Generating dotprops objects")
-  if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, OmitFailures = T,.parallel=TRUE)}
+  if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)}
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
-  most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, OmitFailures = T,.parallel=TRUE)
-  most.lhns.pnts.dps = subset(most.lhns.pnts.dps, good.trace==T)
-  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,.parallel=TRUE)
-  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1,.parallel=TRUE)
+  most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)
+  most.lhns.pnts.dps = subset(most.lhns.pnts.dps,k=5, good.trace==T)
+  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5,.parallel=TRUE)
+  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5,.parallel=TRUE)
   # Now try to find the tract a neuron fits into
   message("Assigning primary neurites")
   if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped!")}
