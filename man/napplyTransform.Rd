@@ -2,10 +2,13 @@
 % Please edit documentation in R/flycircuit.R
 \name{napplyTransform}
 \alias{napplyTransform}
+\alias{napplyTransform.neuron}
 \alias{napplyTransform.neuronlist}
 \title{Apply a transform to a neruon/neuronlist}
 \usage{
 napplyTransform(someneuronlist, trafo, inverse = F, ...)
+
+\method{napplyTransform}{neuron}(neuron, trafo, inverse = F, ...)
 
 \method{napplyTransform}{neuronlist}(someneuronlist, trafo, inverse = F, ...)
 }
