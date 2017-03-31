@@ -4,7 +4,7 @@
 \alias{assign.cable.polarity}
 \title{Assign axon/dendrite split to skeletons}
 \usage{
-assign.cable.polarity(someneuronlist, ...)
+assign.cable.polarity(someneuronlist, resample = 1, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuron/neuronlist object}

@@ -4,7 +4,7 @@
 \alias{rescue.dps}
 \title{Generate a dps object without dropping small neurons}
 \usage{
-rescue.dps(someneuronlist, resample, ...)
+rescue.dps(someneuronlist, resample = 1, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object}

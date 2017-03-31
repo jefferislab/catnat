@@ -7,7 +7,7 @@ Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
 Description: A selection of functions that created for use alongside the nat and rcatmaid packages.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
 Suggests: testthat
-Depends: nat, catmaid, igraph, alphashape3d, rgl
+Depends: nat, catmaid, igraph, alphashape3d, rgl, nat.nblast
 Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2, Morpho

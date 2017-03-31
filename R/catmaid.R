@@ -1,3 +1,31 @@
+#' Resamle a CATMAID neuron
+#'
+#' @description Resample a catmaid neuron so that connector information is retained
+#'
+#' @param someneuronlist a neuronlist or neuron object
+#' @param neuron A neuron object
+#' @param stepsize The new spacing along the tracing
+#' @param ... additional arguments passed to methods.
+#'
+#' @export
+#' @rdname resample.catmaid
+resample.catmaid <- function(someneuronlist,stepsize=1,...) UseMethod("resample.catmaid")
+#' @export
+#' @rdname resample.catmaid
+resample.catmaid.neuron<-function(neuron,stepsize=1){
+  r = resample(neuron,stepsize=stepsize)
+  c = connectors(neuron)
+  c$treenode_id = nabor::knn(data=nat::xyzmatrix(r),query=nat::xyzmatrix(c),k=1)$nn.idx
+  r$connectors = c
+  r
+}
+#' @export
+#' @rdname resample.catmaid
+resample.catmaid.neuronlist<-function(someneuronlist,stepsize=1){
+  nl = nlapply(someneuronlist,resample.catmaid.neuron,stepsize=stepsize)
+  nl
+}
+
 # Some extra catmaid related functions
 #open_catmaid<-function(x, s=select3d(), mirror=FALSE, sample=FCWB, scale=1) {
 #  xyz=xyzmatrix(x)

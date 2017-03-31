@@ -94,9 +94,9 @@ napplyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F,...){
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
 #' @export
 #' @rdname assign.cable.polarity
-assign.cable.polarity <- function(someneuronlist,...){
+assign.cable.polarity <- function(someneuronlist,resample=1,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-  for (neuron in 1:length(someneuronlist)){
+  for (neuron in 350:length(someneuronlist)){
     clear3d();plot3d(FCWB)
     print(neuron)
     print(names(someneuronlist[neuron]))
@@ -108,7 +108,7 @@ assign.cable.polarity <- function(someneuronlist,...){
       message("Select axonic nodes")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]))
+        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 2}
         clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
@@ -119,7 +119,7 @@ assign.cable.polarity <- function(someneuronlist,...){
       message("Select dendritic nodes")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]))
+        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 3}
         clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
@@ -130,7 +130,7 @@ assign.cable.polarity <- function(someneuronlist,...){
       message("Select mixed/uncertain nodes")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]))
+        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d = someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 8}
         clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
@@ -142,6 +142,12 @@ assign.cable.polarity <- function(someneuronlist,...){
       print(neuron)
       progress = readline(prompt="Review? y/n   ")
     }
+    someneuronlist = nlapply(someneuronlist,resample,stepsize=resample)
+    correct.labels.neuron<-function(neuron){
+      neuron$d$Label[!neuron$d$Label%in%c(0:10)] = 0
+      neuron
+    }
+    someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
     clear3d()
   }
   someneuronlist
@@ -266,7 +272,7 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
 #' @rdname overlap.connectivity.matrix
 overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1){
   if(length(neuropil)>0){
-    points = rbind(dendritic.points.neuronlist(neurons),mixed.points.neuronlist(neurons))
+    points = rbind(axonic.points.neuronlist(neurons),mixed.points.neuronlist(neurons))
     points = points[inashape3d(points=points,as3d=neuropil),]
     neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
     points = rbind(dendritic.points.neuronlist(targets),mixed.points.neuronlist(targets))
@@ -285,6 +291,33 @@ overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1
     message("Working on neuron ", n,"/",length(neurons))
     a = axonic.points(neurons[[n]])
     targets.d = nlapply(targets, dendritic.points)
+    s = sapply(targets.d, function(x)sum(exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2)))) # Score similar to that in Schlegel et al. 2015
+    score.matrix[n,] = s
+  }
+  score.matrix
+}
+
+#' @rdname overlap.connectivity.matrix
+overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,delta =1){
+  message("Calculating flow centrality, splitting neurons")
+  neurons.f = flow.centrality(neurons)
+  neurons = neurites(neurons.f,fragment="axons")
+  targets.f = flow.centrality(targets)
+  message("Calculating flow centrality, splitting targets")
+  targets = neurites(targets.f,fragment="dendrites")
+  if(length(neuropil)>0){
+    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil),]
+    neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
+    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil),]
+    targets = nlapply(targets, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
+  }
+  score.matrix = matrix(0,nrow = length(neurons),ncol = length(targets))
+  rownames(score.matrix) = names(neurons)
+  colnames(score.matrix) = names(targets)
+  for (n in 1:length(neurons)){
+    message("Working on neuron ", n,"/",length(neurons))
+    a = xyzmatrix(neurons[[n]])
+    targets.d = nlapply(targets, xyzmatrix)
     s = sapply(targets.d, function(x)sum(exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2)))) # Score similar to that in Schlegel et al. 2015
     score.matrix[n,] = s
   }
@@ -360,7 +393,7 @@ cable.inside.neuropils.neuron <- function(neuron, brain = FCWBNP.surf, method = 
       sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil))
     }else{0}
   }
-  n = sapply(brain$RegionList, function(x) in.neuropil(neuron,neuropil=subset(brain, x),stepsize =stepsize, min.endpoints=min.endpoints,alpha=alpha))*stepsize
+  sapply(brain$RegionList, function(x) in.neuropil(neuron,neuropil=subset(brain, x),stepsize =stepsize, min.endpoints=min.endpoints,alpha=alpha))*stepsize
 }
 
 #' @rdname cable.inside.neuropils
@@ -640,7 +673,7 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
 #' @return a dotprops object
 #' @export
 #' @rdname rescue.dps
-rescue.dps <- function(someneuronlist,resample,...){
+rescue.dps <- function(someneuronlist,resample=1,...){
   someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
   no.points = sapply(someneuronlist.dps, function(x) nrow(nat::xyzmatrix(x)))
   tooshort = someneuronlist[!names(someneuronlist)%in%names(someneuronlist.dps)]
@@ -648,3 +681,33 @@ rescue.dps <- function(someneuronlist,resample,...){
   someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
   someneuronlist.dps
 }
+
+
+#' NBlast two different sets of neurons forwards and backwards
+#'
+#' @description  NBlast two different sets of neurons forwards and backwards, and take the mean of these results
+#'
+#' @param group1 a neuronlist object
+#' @param group2 a neuronlist object, defaults to group1
+#' @param sd Standard deviation to use in distance dependence of nblast v1 algorithm. Ignored when version=2
+#' @param version the version of the algorithm to use (the default, 2, is the latest)
+#' @param UseAlpha whether to consider local directions in the similarity calculation (default: FALSE)
+#' @param normalised whether to divide scores by the self-match score of the query
+#' @param OmitFailures Whether to omit neurons for which FUN gives an error. The default value (NA) will result in nblast stopping with an error message the moment there is an eror
+#' @param smat the score matrix to be used. See ?nlast.
+#' @param ... additional arguments passed to methods
+#'
+#' @return a dotprops object
+#' @export
+#' @rdname nblast_bothways
+nblast_bothways<-function(group1,group2=group1,smat = NULL,
+                          sd = 3, version = c(2, 1), normalised = FALSE, UseAlpha = FALSE,
+                          OmitFailures = NA){
+  nblast.forward = nblast(query=group1,target=group2,UseAlpha=UseAlpha,normalised=normalised)
+  nblast.backward = nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
+  results = (nblast.forward+t(nblast.backward))/2
+}
+
+
+
+

@@ -164,7 +164,8 @@ cluster_synapses_within_skeleton.neuronlist <- function(someneuronlist, polyadic
 #' @export
 #' @rdname seebroken3d
 #' @seealso \code{\link{cluster_synapses_within_skeleton}} \code{\link{seesplit3d}}
-seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma = 100){
+seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma.size = 100){
+  if(is.neuronlist(neuron)){neuron=neuron[[1]]}
   if(is.null(neuron$cluster.segregation.index)){
     warning("No synapse clustering calculated, dropping neuron")
     break
@@ -179,6 +180,7 @@ seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma = 100){
     cluster = clusters[[c]]
     soma = F
     cluster.v = subset(rownames(neuron$d), neuron$d$cluster == cluster)
+    if(length(cluster.v)<2){next}
     cluster.g = nat::prune_vertices(neuron, verticestoprune = rownames(neuron$d)[!rownames(neuron$d)%in%cluster.v])
     #p.in = 100*cluster.g$d$pre/(cluster.g$d$pre+cluster.g$d$post)# colour by proportion of input synapses
     # col = colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))(100)
@@ -187,7 +189,9 @@ seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma = 100){
     #if(grepl("mixed",cluster)){col = mixed.col}
     #if(grepl("axon",cluster)){col = axon.col}
     if (neuron$StartPoint%in%cluster.v){soma = soma.size}
-    rgl::plot3d(cluster.g, col = col[c], WithNodes = WithNodes, soma = soma)
+    if(nrow(xyzmatrix(cluster.g))>1){
+      rgl::plot3d(cluster.g, col = col[c], WithNodes = WithNodes, soma = soma)
+    }
   }
   if (WithConnectors == T){
     rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')

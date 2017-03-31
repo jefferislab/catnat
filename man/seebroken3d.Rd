@@ -4,18 +4,18 @@
 \alias{seebroken3d}
 \title{Plot neurons split up by synapse clusters}
 \usage{
-seebroken3d(neuron, WithConnectors = T, WithNodes = F, soma = 100)
+seebroken3d(neuron, WithConnectors = T, WithNodes = F, soma.size = 100)
 }
 \arguments{
 \item{WithConnectors}{whether ot plot the anatomical location of pre (red) and post (cyan) synapses.}
 
 \item{WithNodes}{whether to plot branch points}
 
-\item{soma}{whether to plot a soma, and what the radius should be}
-
 \item{someneuronlist}{a neuronlist or neuron object that has been modified by flow.centrality}
 
 \item{col}{colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.}
+
+\item{soma}{whether to plot a soma, and what the radius should be}
 
 \item{...}{additional arguments passed to methods.}
 }

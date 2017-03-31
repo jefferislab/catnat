@@ -2,9 +2,13 @@
 % Please edit documentation in R/flycircuit.R
 \name{overlap.connectivity.matrix}
 \alias{overlap.connectivity.matrix}
+\alias{overlap.connectivity.matrix.catmaid}
 \title{Generate a connectivity matrix based on euclidean distance between points}
 \usage{
 overlap.connectivity.matrix(neurons, targets, neuropil = NULL, delta = 1)
+
+overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
+  delta = 1)
 }
 \arguments{
 \item{neurons}{first set of neurons}

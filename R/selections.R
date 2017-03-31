@@ -101,7 +101,8 @@ connectors.inside <- function(skids, alpha, direction = "BOTH", degree = NULL){
 }
 
 # Select points
-select.points <- function (points){
+select.points <- function (points, plot3d = NULL,...){
+  plot3d(plot3d,col="grey")
   points = nat::xyzmatrix(points)
   selected.points = unique(points)
   points3d(selected.points)
@@ -112,14 +113,14 @@ select.points <- function (points){
       keep.points <- keeps(unique(points))
       keep.points = subset(unique(points), keep.points)
       selected.points = rbind(selected.points, keep.points)
-      clear3d(); points3d(selected.points); points3d(unique(points), col = 'red')
+      clear3d();plot3d(plot3d); points3d(selected.points); points3d(unique(points), col = 'red')
     }
     if (progress == "r"){
       remove.points <- select3d()
       removed.points <- remove.points(selected.points)
       selected.points = subset(selected.points, !removed.points)
     }
-    clear3d()
+    clear3d();plot3d(plot3d,col="grey")
     if (length(selected.points) > 0) {points3d(selected.points)}
     points3d(unique(points), col = 'red')
     progress = readline(prompt="Add (a) or remove (r) neurons, or exit (e)?  ")
