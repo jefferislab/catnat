@@ -6,22 +6,25 @@
 #' @param neuron A neuron object
 #' @param stepsize The new spacing along the tracing
 #' @param ... additional arguments passed to methods.
-#'
 #' @export
-#' @rdname resample.catmaid
-resample.catmaid <- function(someneuronlist,stepsize=1,...) UseMethod("resample.catmaid")
-#' @export
-#' @rdname resample.catmaid
-resample.catmaid.neuron<-function(neuron,stepsize=1){
-  r = resample(neuron,stepsize=stepsize)
+#' @alias resample
+#' @importFrom nat resample
+resample.catmaidneuron<-function(neuron,stepsize=1){
+  r = NextMethod()
   c = connectors(neuron)
-  c$treenode_id = nabor::knn(data=nat::xyzmatrix(r),query=nat::xyzmatrix(c),k=1)$nn.idx
+  c$treenode_id = nabor::knn(
+    data = nat::xyzmatrix(r),
+    query = nat::xyzmatrix(c),
+    k = 1
+  )$nn.idx
   r$connectors = c
   r
 }
+
 #' @export
-#' @rdname resample.catmaid
-resample.catmaid.neuronlist<-function(someneuronlist,stepsize=1){
+#' @alias resample
+#' @importFrom nat resample
+resample.catmaidneuronlist<-function(someneuronlist,stepsize=1){
   nl = nlapply(someneuronlist,resample.catmaid.neuron,stepsize=stepsize)
   nl
 }
@@ -83,5 +86,66 @@ resample.catmaid.neuronlist<-function(someneuronlist,stepsize=1){
 #  m = m[!rownames(m)%in%blacklist,!colnames(m)%in%blacklist]
 #  return(m)
 #}
+
+
+#' Meta-annotate CATMAID annotations
+#'
+#' @description Meta-annotate a grops of CATMAID annotations
+#'
+#' @param annotations annotations to meta-annotate
+#' @param meta_annotations meta-annotation to add
+#' @param conn a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
+#' @param pid project id (default 1)
+#' @param ... additional arguments passed to methods.
+#'
+#' @export
+#' @rdname catmaid_set_meta_annotations
+catmaid_set_meta_annotations<-function(meta_annnotations,annotations,pid=1,conn=NULL,...){
+  post_data = list()
+  post_data[sprintf("annotates[%d]", seq_along(annotations))] = as.list(annotations)
+  path = sprintf("/%d/annotations/add", pid)
+  post_data[sprintf("annotations[%d]", seq_along(meta_annnotations))] = as.list(meta_annnotations)
+  res = catmaid_fetch(path, body = post_data, include_headers = F,
+                      simplifyVector = T, conn = conn, ...)
+  invisible(catmaid_error_check(res))
+}
+
+#' Annotate CATMAID partners
+#'
+#' @description Intended to use to annotate CATMAID left-right cognates, and fetch them
+#'
+#' @param partners a vector of two left-right cognates
+#' @param conn a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
+#' @param pid project id (default 1)
+#' @param skids CATMAID skeleton IDs
+#' @param ... additional arguments passed to methods.
+#'
+#' @export
+#' @rdname catmaid_annotate_partners
+catmaid_annotate_partners<-function(partners,pid=1,conn=NULL,...){
+  if(is.vector(partners)){
+    if (length(partners)!=2){
+      message("Too many skids supplied")
+      break
+    }else{
+      an = paste0("paired with #",partners[1])
+      catmaid_get_annotations_for_skeletons(partners[2],annotations = an,pid=pid,conn=conn)
+      an = paste0("paired with #",partners[2])
+      catmaid_get_annotations_for_skeletons(partners[1],annotations = an,pid=pid,conn=conn)
+    }
+  }
+}
+
+#' @rdname catmaid_annotate_partners
+catmaid_get_annotated_partner<-function(skids,pid=1,conn=NULL,...){
+  an = sapply(skids,function(x) paste0("paired with #",x))
+  ids = catmaid_query_by_annotation(an)$skid
+  read.neurons.catmaid(unique(ids))
+}
+
+
+
+
+
 
 

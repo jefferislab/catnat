@@ -298,13 +298,15 @@ overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1
 }
 
 #' @rdname overlap.connectivity.matrix
-overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,delta =1){
-  message("Calculating flow centrality, splitting neurons")
-  neurons.f = flow.centrality(neurons)
-  neurons = neurites(neurons.f,fragment="axons")
-  targets.f = flow.centrality(targets)
-  message("Calculating flow centrality, splitting targets")
-  targets = neurites(targets.f,fragment="dendrites")
+overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,delta =1, split = TRUE){
+  if (split==TRUE){
+    message("Calculating flow centrality, splitting neurons")
+    neurons.f = flow.centrality(neurons)
+    neurons = neurites(neurons.f,fragment="axons")
+    targets.f = flow.centrality(targets)
+    message("Calculating flow centrality, splitting targets")
+    targets = neurites(targets.f,fragment="dendrites")
+  }
   if(length(neuropil)>0){
     points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil),]
     neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)

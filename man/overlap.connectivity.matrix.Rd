@@ -8,7 +8,7 @@
 overlap.connectivity.matrix(neurons, targets, neuropil = NULL, delta = 1)
 
 overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
-  delta = 1)
+  delta = 1, split = TRUE)
 }
 \arguments{
 \item{neurons}{first set of neurons}

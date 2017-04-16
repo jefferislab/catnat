@@ -10,7 +10,7 @@
 \usage{
 tracer.plot(names = c("Alex Bates", "Ruairi Roberts", "Greg Jefferis",
   "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love",
-  "Amelia Edmondson-Stait"), calc.date = "2013-04-01",
+  "Amelia Edmondson-Stait"), calc.date = "2016-04-01",
   from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...)
 
 summarise_contribution(skids, auth = 5, ack = 3000, ...)

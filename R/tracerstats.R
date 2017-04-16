@@ -14,7 +14,7 @@
 #' @return tracer.plot() returns a plot for cable length traced and connectors placed by named tracers. tracer.treenodes.plot() visualises data on node generation.
 #' @export
 #' @rdname tracer.plot
-tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), calc.date = "2013-04-01", from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...){
+tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), calc.date = "2016-04-01", from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...){
   require(ggplot2)
   require(easyGgplot2)
   require(lubridate)
