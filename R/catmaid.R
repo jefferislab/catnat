@@ -100,14 +100,13 @@ resample.catmaidneuronlist<-function(someneuronlist,stepsize=1){
 #'
 #' @export
 #' @rdname catmaid_set_meta_annotations
-catmaid_set_meta_annotations<-function(meta_annnotations,annotations,pid=1,conn=NULL,...){
+catmaid_set_meta_annotations<-function(meta_annotations,annotations,pid=1,conn=NULL,...){
   post_data = list()
   post_data[sprintf("annotates[%d]", seq_along(annotations))] = as.list(annotations)
   path = sprintf("/%d/annotations/add", pid)
-  post_data[sprintf("annotations[%d]", seq_along(meta_annnotations))] = as.list(meta_annnotations)
+  post_data[sprintf("annotations[%d]", seq_along(meta_annotations))] = as.list(meta_annotations)
   res = catmaid_fetch(path, body = post_data, include_headers = F,
                       simplifyVector = T, conn = conn, ...)
-  invisible(catmaid_error_check(res))
 }
 
 #' Annotate CATMAID partners
@@ -118,6 +117,7 @@ catmaid_set_meta_annotations<-function(meta_annnotations,annotations,pid=1,conn=
 #' @param conn a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
 #' @param pid project id (default 1)
 #' @param skids CATMAID skeleton IDs
+#' @param name a vector of neuron names
 #' @param ... additional arguments passed to methods.
 #'
 #' @export
@@ -129,9 +129,9 @@ catmaid_annotate_partners<-function(partners,pid=1,conn=NULL,...){
       break
     }else{
       an = paste0("paired with #",partners[1])
-      catmaid_get_annotations_for_skeletons(partners[2],annotations = an,pid=pid,conn=conn)
+      catmaid_set_annotations_for_skeletons(partners[2],annotations = an,pid=pid,conn=conn)
       an = paste0("paired with #",partners[2])
-      catmaid_get_annotations_for_skeletons(partners[1],annotations = an,pid=pid,conn=conn)
+      catmaid_set_annotations_for_skeletons(partners[1],annotations = an,pid=pid,conn=conn)
     }
   }
 }
@@ -143,9 +143,43 @@ catmaid_get_annotated_partner<-function(skids,pid=1,conn=NULL,...){
   read.neurons.catmaid(unique(ids))
 }
 
+#' @export
+#' @rdname catmaid_annotate_partners
+reverse.name.side<-function(names){
+  for (n in names){
+    if (grepl("left|Left|_l|L$",n)){
+      left.sub = gsub("left","right",n)
+      left.sub = gsub("Left","Right",left.sub)
+      left.sub = gsub("_l","_r",left.sub)
+      return(gsub("L$","R",left.sub))
+    }else if (grepl("right|Right|_r|R$",n)){
+      right.sub = gsub("right","left",n)
+      right.sub = gsub("Right","Left",right.sub)
+      right.sub = gsub("_r","_l",right.sub)
+      return(gsub("R$","L",right.sub))
+    }
+  }
+}
 
 
+#' Update a local neuronlist with new CATMAID data
+#'
+#' @description Use to update a large neuronlist quickly by pulling just certain neurons from CATMAID
+#'
+#' @param skids sekeleton IDs
+#' @param someneuronlist a neuronlist object
+#' @param ... additional arguments passed to read.neurons.catmaid
+#'
+#' @export
+#' @rdname update.neuronlist
+update.neuronlist<-function(someneuronlist,skids,...){
+  someneuronlist[skids] = read.neurons.catmaid(skids)
+  someneuronlist
+}
 
-
-
-
+#' @export
+#' @rdname update.neuronlist
+update.names.neuronlist<-function(someneuronlist,skids = names(someneuronlist),...){
+  someneuronlist[,"name"] = catmaid_get_neuronnames(skids)
+  someneuronlist
+}

@@ -3,11 +3,14 @@
 \name{catmaid_annotate_partners}
 \alias{catmaid_annotate_partners}
 \alias{catmaid_get_annotated_partner}
+\alias{reverse.name.side}
 \title{Annotate CATMAID partners}
 \usage{
 catmaid_annotate_partners(partners, pid = 1, conn = NULL, ...)
 
 catmaid_get_annotated_partner(skids, pid = 1, conn = NULL, ...)
+
+reverse.name.side(names)
 }
 \arguments{
 \item{partners}{a vector of two left-right cognates}
@@ -19,6 +22,8 @@ catmaid_get_annotated_partner(skids, pid = 1, conn = NULL, ...)
 \item{...}{additional arguments passed to methods.}
 
 \item{skids}{CATMAID skeleton IDs}
+
+\item{name}{a vector of neuron names}
 }
 \description{
 Intended to use to annotate CATMAID left-right cognates, and fetch them
