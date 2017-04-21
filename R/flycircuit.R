@@ -623,13 +623,12 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @rdname assign_lh_neuron
 #' @importFrom nat.templatebrains xform_brain
 assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
-  if(requireNamespace('doMC')) doMC::registerDoMC()
-  # if(is.null(most.lhns)){
-  #   load(system.file("data/most.lhns.rda", package = 'catnat'))
-  #   load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
-  #   load(system.file("data/most.dps.rda", package = 'catnat'))
-  #   load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
-  # }
+  if(is.null(most.lhns)){
+    load(system.file("data/most.lhns.rda", package = 'catnat'))
+    load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
+    load(system.file("data/most.dps.rda", package = 'catnat'))
+    load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
+  }
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
