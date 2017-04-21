@@ -12,3 +12,4 @@ Suggests: testthat
 Depends: nat, catmaid, igraph, alphashape3d, rgl, nat.nblast
 Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2, Morpho
 Remotes: kassambara/easyGgplot2, jefferis/rcatmaid
+Encoding: UTF-8
