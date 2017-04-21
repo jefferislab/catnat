@@ -2,10 +2,13 @@
 % Please edit documentation in R/flycircuit.R
 \name{assign_lh_neuron}
 \alias{assign_lh_neuron}
+\alias{scan_lh_matches}
 \title{Assign identitiy to lateral horn neurons}
 \usage{
 assign_lh_neuron(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL,
   brain = NULL)
+
+scan_lh_matches(someassignedneuronlist)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object}
@@ -15,6 +18,8 @@ assign_lh_neuron(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL,
 \item{most.lhns.dps}{a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation}
 
 \item{brain}{the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB}
+
+\item{someassignedneuronlist}{a neuronlist that has been passed through assign_lh_neuron}
 
 \item{...}{additional arguments passed to methods}
 }
