@@ -2,6 +2,7 @@
 % Please edit documentation in R/prune.R
 \name{prune.catmaidneuron}
 \alias{prune.catmaidneuron}
+\alias{prune}
 \title{Prune nodes from a catmaid neuron, keeping the synapses}
 \usage{
 \method{prune}{catmaidneuron}(neuron, target, maxdist, keep = c("near",

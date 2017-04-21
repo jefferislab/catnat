@@ -63,7 +63,7 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @param ... additional arguments passed to methods.
 #' @return A pruned neuron object
 #' @export
-#' @alias prune
+#' @aliases prune
 #' @importFrom nat prune
 prune.catmaidneuron<- function (neuron,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){

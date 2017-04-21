@@ -1,4 +1,4 @@
-#' Resamle a CATMAID neuron
+#' Resample a CATMAID neuron
 #'
 #' @description Resample a catmaid neuron so that connector information is retained
 #'
@@ -7,7 +7,7 @@
 #' @param stepsize The new spacing along the tracing
 #' @param ... additional arguments passed to methods.
 #' @export
-#' @alias resample
+#' @aliases resample
 #' @importFrom nat resample
 resample.catmaidneuron<-function(neuron,stepsize=1){
   r = NextMethod()
@@ -22,7 +22,7 @@ resample.catmaidneuron<-function(neuron,stepsize=1){
 }
 
 #' @export
-#' @alias resample
+#' @aliases resample
 #' @importFrom nat resample
 resample.catmaidneuronlist<-function(someneuronlist,stepsize=1){
   nl = nlapply(someneuronlist,resample.catmaid.neuron,stepsize=stepsize)

@@ -2,7 +2,8 @@
 % Please edit documentation in R/catmaid.R
 \name{resample.catmaidneuron}
 \alias{resample.catmaidneuron}
-\title{Resamle a CATMAID neuron}
+\alias{resample}
+\title{Resample a CATMAID neuron}
 \usage{
 \method{resample}{catmaidneuron}(neuron, stepsize = 1)
 }
