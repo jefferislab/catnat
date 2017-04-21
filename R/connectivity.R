@@ -103,8 +103,9 @@ connectivity_matrix <- function(pre, post = pre, ...){
 #' @export
 #' @rdname connectivity_matrix
 neuron.heatmap <- function(data, col = colorRampPalette(c('navy','cyan','yellow','red')), notecex = 0.7, keysize = 1.5, cexCol = 0.3, cexRow = 0.3, margins = c(5,9), breaks = c(seq(0,0.4,length=100), seq(0.5,3,length=100), seq(4,6,length=100), seq(7,20,length=100)),  ...){
-  require(gplots)
-    heatmap.2(data,
+  if (!requireNamespace("gplots", quietly = TRUE))
+    stop("You must install suggested package gplots!")
+    gplots::heatmap.2(data,
           col = col,
           breaks = breaks,
           keysize = keysize,

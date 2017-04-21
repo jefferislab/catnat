@@ -94,6 +94,7 @@ napplyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F,...){
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
 #' @export
 #' @rdname assign.cable.polarity
+#' @importFrom grDevices colorRampPalette
 assign.cable.polarity <- function(someneuronlist,resample=1,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
   for (neuron in 350:length(someneuronlist)){
@@ -378,8 +379,8 @@ cable.inside.neuropils<-function(neuron, brain = FCWBNP.surf, method = c("neurit
 
 #' @rdname cable.inside.neuropils
 cable.inside.neuropils.neuron <- function(neuron, brain = FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
-  require(nat.flybrains)
-  require(alphashape3d)
+  if(!requireNamespace('nat.flybrains', quietly = TRUE))
+    stop("You must install suggested package nat.flybrains to use this function!")
   neuron = resample(neuron, stepsize = stepsize)
   targets = c(0,2,3,8)
   if (method=="axons"){targets = c(2)}
@@ -389,7 +390,7 @@ cable.inside.neuropils.neuron <- function(neuron, brain = FCWBNP.surf, method = 
     xyzmatrix(points[points$Label%in%targets,])
   }
   in.neuropil <- function(neuron,neuropil,stepsize =0.1, min.endpoints =2,alpha=30){
-    neuropil = ashape3d(xyzmatrix(neuropil),alpha=alpha)
+    neuropil = alphashape3d::ashape3d(xyzmatrix(neuropil),alpha=alpha)
     if(sum(alphashape3d::inashape3d(points=endings(neuron),as3d=neuropil))>min.endpoints){
       points = neuron$d[neuron$d$Label%in%targets,]
       sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil))
@@ -415,6 +416,7 @@ cable.inside.neuropils.neuronlist <- function(someneuronlist, brain = FCWBNP.sur
 #'
 #' @export
 #' @rdname write.spin.swc
+#' @importFrom stats complete.cases
 write.spin.split.swc<-function(neuron,file){
   dend = neuron$d[neuron$d$Label==3,]
   axon = neuron$d[neuron$d$Label==2,]
@@ -506,6 +508,7 @@ write.spin.swc <- function(neuron, file){
 #'
 #' @export
 #' @rdname synapsecolours.neuron
+#' @importFrom graphics legend plot plot.new
 synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T, outputs = T,printout=F){
   if(is.neuronlist(neuron)){neuron = neuron[[1]]}
   plot3d(neuron,WithNodes=F,soma=T,col=col,lwd=2)
@@ -553,8 +556,8 @@ synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T
 #' @return a single neuron object, the averaged tract, and containing values for standard deviation for each 3D point.
 #' @export
 #' @rdname average.tracts
+#' @importFrom nabor knn
 average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
-  require(nabor)
   if (length(cable)>1){
     colSD <- function(m){apply(m, 2, sd)}
     roots = t(sapply(cable,function(x)nat::xyzmatrix(x)[nat::rootpoints(x),]))
@@ -618,18 +621,17 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
 #' @rdname assign_lh_neuron
+#' @importFrom nat.templatebrains xform_brain
 assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
-  require(doMC)
-  require(nat.nblast)
-  registerDoMC()
-  if(is.null(most.lhns)){
-    load(system.file("data/most.lhns.rda", package = 'catnat'))
-    load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
-    load(system.file("data/most.dps.rda", package = 'catnat'))
-    load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
-  }
+  if(requireNamespace('doMC')) doMC::registerDoMC()
+  # if(is.null(most.lhns)){
+  #   load(system.file("data/most.lhns.rda", package = 'catnat'))
+  #   load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
+  #   load(system.file("data/most.dps.rda", package = 'catnat'))
+  #   load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
+  # }
   most.lhns = subset(most.lhns, pnt!="notLHproper")
-  if (!is.null(brain)){ most.lhns = nat.templatebrains::xform_brain(most.lhns, sample = FCWB, reference = brain)}
+  if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
   pnts = sort(unique(most.lhns[,"pnt"]))
   pnts = pnts[pnts!="notLHproper"]

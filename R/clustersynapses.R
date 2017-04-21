@@ -27,7 +27,6 @@ cluster_synapses_within_skeleton <-function(neuron, polyadic = T, lambda = 30, o
 #' @export
 #' @rdname cluster_synapses_within_skeleton
 cluster_synapses_within_skeleton.neuron <- function(neuron, polyadic = T, lambda = 30, order = 150, e = c(0.3,0.7),...){
-  require(igraph)
   el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
   n = nat::ngraph(data.matrix(el[,2:1]), neuron$d$PointNo, directed = TRUE, xyz = nat::xyzmatrix(neuron$d),
                   diam = neuron$d$W) # Make ngraph object, but for centripetal, invert the el list
@@ -163,6 +162,7 @@ cluster_synapses_within_skeleton.neuronlist <- function(someneuronlist, polyadic
 #' @return Plots neuron(s) with arbours coloured by synapse cluster
 #' @export
 #' @rdname seebroken3d
+#' @importFrom grDevices rainbow
 #' @seealso \code{\link{cluster_synapses_within_skeleton}} \code{\link{seesplit3d}}
 seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma.size = 100){
   if(is.neuronlist(neuron)){neuron=neuron[[1]]}

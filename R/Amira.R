@@ -13,6 +13,7 @@
 #' @return Someneuronlist with cell sidedness in the metadata
 #' @export
 #' @rdname get.hxsurf
+#' @importFrom utils read.table
 get.hxsurf <- function (filename, RegionNames = NULL, RegionChoice = "both",
                           FallbackRegionCol = "grey", Verbose = FALSE, ...)
 {

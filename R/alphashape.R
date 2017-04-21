@@ -68,6 +68,7 @@ transform3dalphashape = function (ashape, transformations, ...){
 #' @return A .vtk file saved to a given location
 #' @export
 #' @seealso \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
+#' @importFrom utils write.table
 WriteVTKalphashape <-function(ashape, filename, title = filename, datatype=c("float","double")){
   d = ashape$x
   if(ncol(d)!=3) stop("Expect N rows x 3 cols of 3d points")

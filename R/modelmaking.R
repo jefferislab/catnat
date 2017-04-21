@@ -16,8 +16,6 @@
 #' @rdname make.anatomical.model
 make.anatomical.model <- function(someneuronlist, substrate = c("connectors","cable", "both"), maxdistance = 10000, groupsize = 100, alpha = 3000, auto.selection = T, chosen.points = NULL)
 {
-  require(nabor)
-  require(rgl)
   if (substrate=="connectors"){synapse.points = nat::xyzmatrix(catmaid::connectors(someneuronlist))
   }else if(substrate =="cable"){synapse.points = nat::xyzmatrix(someneuronlist)
   }else if (substrate == "both"){synapse.points = rbind(nat::xyzmatrix(someneuronlist), nat::xyzmatrix(catmaid::connectors(someneuronlist)))}
@@ -178,9 +176,8 @@ find.neuropil.points=function (someneuronlist, name, maxdistance = 1000, groupsi
 
 
 
-
+#' @importFrom Morpho crossProduct
 spinny <- function(object, target){
-  require(Morpho)
   rotate = 'go!'
   first = 0
   while (rotate != 'e'){

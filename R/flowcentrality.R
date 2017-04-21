@@ -188,6 +188,7 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 #' @export
 #' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
+#' @importFrom stats sd
 seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){
   someneuronlist = as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){

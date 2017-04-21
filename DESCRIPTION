@@ -8,8 +8,8 @@ Description: A selection of functions that created for use alongside the nat and
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Suggests: testthat
-Depends: nat, catmaid, igraph, alphashape3d, rgl, nat.nblast
-Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2, Morpho
+Suggests: testthat, gplots, ggplot2, easyGgplot2, nat.flybrains, doMC
+Depends: nat, catmaid, igraph, alphashape3d, nat.nblast
+Imports: Rvcg, nabor, lubridate, Morpho, dplyr, nat.templatebrains, rgl, plyr
 Remotes: kassambara/easyGgplot2, jefferis/rcatmaid
 Encoding: UTF-8

@@ -15,6 +15,7 @@
 #' @return Appropriate L1 CATMAID url
 #' @export
 #' @rdname open_l1
+#' @importFrom utils browseURL
 open_l1=function(x, s = rgl::select3d(), zoom=1, open = interactive(), scalefac=1, ...){
   if (is.vector(x, mode = "numeric") && length(x) == 3) {
     xyz = matrix(x, ncol = 3)

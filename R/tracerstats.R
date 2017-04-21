@@ -14,11 +14,13 @@
 #' @return tracer.plot() returns a plot for cable length traced and connectors placed by named tracers. tracer.treenodes.plot() visualises data on node generation.
 #' @export
 #' @rdname tracer.plot
+#' @importFrom dplyr filter
 tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), calc.date = "2016-04-01", from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...){
-  require(ggplot2)
-  require(easyGgplot2)
-  require(lubridate)
-  require(dplyr)
+  if(!requireNamespace('ggplot2', quietly = TRUE))
+    stop("You must install the suggested ggplot2 package to use this function!")
+  if(!requireNamespace('easyGgplot2', quietly = TRUE))
+    stop("You must install the suggested easyGgplot2 package to use this function!")
+
   dataf = catmaid::catmaid_user_history(from = calc.date)
   dataf[is.na(dataf)] = 0
   dataf <- dataf %>%
@@ -78,10 +80,6 @@ write_ack <- function(x, ...) {
 #' @export
 #' @rdname tracer.plot
 tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), from.date = "2016-04-01", to.date = Sys.Date(), ...){
-  require(ggplot2)
-  require(easyGgplot2)
-  require(lubridate)
-  require(dplyr)
   if (is.null(skids)){
     skids=as.integer(catmaid::catmaid_fetch(paste("/1/skeletons/?nodecount_gt=1")))
   }
