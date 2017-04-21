@@ -12,8 +12,7 @@
 #'
 #' @return A matrix of similarity scores between inputted neurons, based on synapse positions.
 #' @export
-#' @rdname cluster.by.synapses
-#' @seealso \code{\link{plot3d.split}} \code{\link{get.synapses}}
+#' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
 clusterbysynapses <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T, direction = c(0,1,2)){
   m = matrix(nrow = length(someneuronlist), ncol = length(someneuronlist))
   colnames(m) = rownames(m) = names(someneuronlist)

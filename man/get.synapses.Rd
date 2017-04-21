@@ -31,5 +31,5 @@ Anatomically accurate synapse position (i.e. not just connector positions) as 3D
 Get 3D coordinates of synapse (not connector) positions
 }
 \seealso{
-\code{\link{cluster.by.synapses}} \code{\link{flow.centrality}}
+\code{\link{clusterbysynapses}} \code{\link{flow.centrality}}
 }
