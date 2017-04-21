@@ -11,3 +11,4 @@ RoxygenNote: 6.0.1
 Suggests: testthat
 Depends: nat, catmaid, igraph, alphashape3d, rgl, nat.nblast
 Imports: Rvcg, nabor, lubridate, ggplot2, easyGgplot2, Morpho
+Remotes: remote::"kassambara/easyGgplot2", remote::"jefferis/rcatmaid"
