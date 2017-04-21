@@ -562,7 +562,7 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
     root = colMeans(roots)
     cable = nat::nlapply(cable,resample,stepsize =stepsize)
     c.dps = nat::dotprops(cable, OmitFailures = T)
-    csmat=nat.blast::nblast_allbyall(c.dps)
+    csmat=nat.nblast::nblast_allbyall(c.dps)
     best = cable[names(which.max(colMeans(csmat)))]
     best.points = nat::xyzmatrix(best)
     points = sapply(cable, function(x) nat::xyzmatrix(x))
@@ -621,18 +621,23 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   require(doMC)
   require(nat.nblast)
   registerDoMC()
-  if(is.null(most.lhns)){load(system.file("exdata/lhndump.rda", package = 'catnat'))}
+  if(is.null(most.lhns)){
+    load(system.file("data/most.lhns.rda", package = 'catnat'))
+    load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
+  }
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = nat.templatebrains::xform_brain(most.lhns, sample = FCWB, reference = brain)}
-  message("Generating primary neurites")
+  message("Generating primary neurites across the LHNs")
   pnts = sort(unique(most.lhns[,"pnt"]))
   pnts = pnts[pnts!="notLHproper"]
-  most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns))
+  if(is.null(most.lhns.pns.dps)){
+    most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns))
+    most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)
+  }
   someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist))
   message("Generating dotprops objects")
   if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, k = 5, OmitFailures = T,parallel=TRUE)}
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
-  most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)
   if (!is.null(most.lhns.pnts.dps[,"good.trace"])){most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]}
   someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5,.parallel=TRUE)
   someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5,.parallel=TRUE)
@@ -709,5 +714,9 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   nblast.backward = nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
   results = (nblast.forward+t(nblast.backward))/2
 }
+
+
+
+
 
 
