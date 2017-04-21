@@ -612,6 +612,7 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017.
 #' @param most.lhns.dps a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation
 #' @param brain the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB
+#' @param someassignedneuronlist a neuronlist that has been passed through assign_lh_neuron
 #' @param ... additional arguments passed to methods
 #'
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
@@ -623,6 +624,8 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   registerDoMC()
   if(is.null(most.lhns)){
     load(system.file("data/most.lhns.rda", package = 'catnat'))
+    load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
+    load(system.file("data/most.dps.rda", package = 'catnat'))
     load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
   }
   most.lhns = subset(most.lhns, pnt!="notLHproper")
@@ -639,8 +642,8 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, k = 5, OmitFailures = T,parallel=TRUE)}
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
   if (!is.null(most.lhns.pnts.dps[,"good.trace"])){most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]}
-  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5,.parallel=TRUE)
-  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5,.parallel=TRUE)
+  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5)
+  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5)
   # Now try to find the tract a neuron fits into
   message("Assigning primary neurites")
   if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped!")}
@@ -668,6 +671,32 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = N
   attr(someneuronlist, "df") = cbind(attr(someneuronlist, "df"), anatomy.group = anatomy.group,cell.type = cell.type)
   return(someneuronlist)
 }
+
+#' @export
+#' @rdname assign_lh_neuron
+scan_lh_matches <-function(someassignedneuronlist){
+  load(system.file("data/most.lhns.rda", package = 'catnat'))
+  rgl::open3d(userMatrix=structure(c(0.999696135520935, -0.0139423999935389, 0.0203206837177277,
+                              0, -0.0140735022723675, -0.999880969524384, 0.00632292777299881,
+                              0, 0.0202301144599915, -0.00660702586174011, -0.999773621559143,
+                              0, 0, 0, 0, 1), .Dim = c(4L, 4L)),zoom=0.746215641498566)
+  message("Cell type: Green, Other Anatomy Group members: Red")
+  for(n in 1:length(em.lhns.assigned)){
+    rgl::plot3d(nat.flybrains::FCWB)
+    rgl::plot3d(em.lhns.assigned[n],soma=T,col="black",lwd=3)
+    cluster = as.character(em.lhns.assigned[,"anatomy.group"][n])
+    type = as.character(em.lhns.assigned[,"cell.type"][n])
+    pt = as.character(em.lhns.assigned[,"pnt"][n])
+    rgl::plot3d(subset(most.lhns,cell.type==type),col="green",soma=T,lwd=2)
+    rgl::plot3d(subset(most.lhns,anatomy.group==cluster),col="red",soma=T,lwd=1)
+    #rgl::plot3d(subset(most.lhns,pnt==pt),col="grey",soma=T)
+    message("Press ENTER to continue")
+    progress = readline()
+    clear3d()
+  }
+}
+
+
 
 #' Generate a dps object without dropping small neurons
 #'
