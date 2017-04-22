@@ -96,16 +96,29 @@ WriteVTKalphashape <-function(ashape, filename, title = filename, datatype=c("fl
 #'
 #' @param shape An alpha shape or mesh3d object
 #' @param db Neuronlist object that serves as the search database
-#' @param min_nodes Number of nodes a neuron has to have within the alpha shape to be selected
+#' @param min_nodes Number of nodes a neuron has to have within the alpha shape
+#'   to be selected
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuronlist
 #' @export
-#' @seealso \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
-neurons.inside <- function(shape, db, min_nodes = 1){
-  if(is.null(shape$triang)){selection = someneuronlist[unlist(nat::nlapply(someneuronlist, function(x) sum(pointsinsidemesh(shape, indexAlpha = 1, nat::xyzmatrix(x)))>min_nodes))]
-  }else{
-  selection = someneuronlist[unlist(nat::nlapply(someneuronlist, function(x) sum(pointsinsidemesh(sur = shape, indexAlpha = 1, x = nat::xyzmatrix(x)))>min_nodes))]
+#' @seealso \code{\link{combine.alphashape}},
+#'   \code{\link{transform3dalphashape}}, \code{\link[nat]{find.neuron}}
+neurons.inside <- function(shape, db, min_nodes = 1) {
+  if (is.null(shape$triang)) {
+    selection = db[unlist(nat::nlapply(db, function(x)
+      sum(pointsinsidemesh(
+        shape, indexAlpha = 1, nat::xyzmatrix(x)
+      )) > min_nodes))]
+  } else{
+    selection = db[unlist(nat::nlapply(db, function(x)
+      sum(
+        pointsinsidemesh(
+          sur = shape,
+          indexAlpha = 1,
+          x = nat::xyzmatrix(x)
+        )
+      ) > min_nodes))]
   }
   selection
 }

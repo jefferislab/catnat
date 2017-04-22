@@ -22,7 +22,8 @@ pointsinsidemesh(x, surf, ..., rval = c("logical", "distance", "mesh3d"))
 
 \item{shape}{An alpha shape or mesh3d object}
 
-\item{min_nodes}{Number of nodes a neuron has to have within the alpha shape to be selected}
+\item{min_nodes}{Number of nodes a neuron has to have within the alpha shape
+to be selected}
 
 \item{...}{additional arguments passed to methods}
 }
@@ -37,7 +38,8 @@ Find neurites inside of an alphashape
 Find neurites inside of an mesh3d object
 }
 \seealso{
-\code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
+\code{\link{combine.alphashape}},
+  \code{\link{transform3dalphashape}}, \code{\link[nat]{find.neuron}}
 
 \code{\link{neurons.inside}}
 }
