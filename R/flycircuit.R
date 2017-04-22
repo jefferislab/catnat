@@ -730,9 +730,9 @@ rescue.dps <- function(someneuronlist,resample=1,...){
 nblast_bothways<-function(group1,group2=group1,smat = NULL,
                           sd = 3, version = c(2, 1), normalised = FALSE, UseAlpha = FALSE,
                           OmitFailures = NA){
-  nblast.forward = nblast(query=group1,target=group2,UseAlpha=UseAlpha,normalised=normalised)
-  nblast.backward = nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
-  results = (nblast.forward+t(nblast.backward))/2
+  nblast.forward = nat.nblast::nblast(query=group1,target=group2,UseAlpha=UseAlpha,normalised=normalised)
+  nblast.backward = nat.nblast::nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
+  (nblast.forward+t(nblast.backward))/2
 }
 
 
