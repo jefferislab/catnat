@@ -8,7 +8,6 @@
 #'
 #' @return Neurites as a neuronlist object, complete with  synaptic information relevant to that fragment.
 #' @export
-#' @rdname neurites
 #' @seealso \code{\link{get_connected_skeletons}} \code{\link{skeleton_connectivity_matrix}} \code{\link{flow.centrality}}
 neurites <-function(someneuronlist, fragment = c("axons","dendrites","primary dendrite","primary neurite","nulls"), ...) UseMethod("neurites")
 
@@ -66,7 +65,6 @@ neurites.neuronlist <- function(someneuronlist, fragment, ... ){
 #' @return Segmented arbours as a neuronlist object, complete with  synaptic information relevant to that fragment. If a neuronlist is given, subsequently plotting the neuronlist will not reveal the fragments. However, plotting individual neurons double indexed in the lists will. arbours() returns a neurinlist, where each entry is an arbour fragment with a unique skid and name.
 #' @seealso \code{\link{neurites}} \code{\link{cluster_synapses_within_skeleton}} \code{\link{seebroken3d}} \code{\link{flow.centrality}} \code{\link{seesplit3d}}
 #' @export
-#' @rdname arbour.clusters
 arbour.clusters <-function(someneuronlist, ...) UseMethod("arbour.clusters")
 
 #' @export

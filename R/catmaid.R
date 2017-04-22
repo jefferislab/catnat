@@ -99,7 +99,6 @@ resample.catmaidneuronlist<-function(someneuronlist,stepsize=1){
 #' @param ... additional arguments passed to methods.
 #'
 #' @export
-#' @rdname catmaid_set_meta_annotations
 catmaid_set_meta_annotations<-function(meta_annotations,annotations,pid=1,conn=NULL,...){
   post_data = list()
   post_data[sprintf("annotates[%d]", seq_along(annotations))] = as.list(annotations)
@@ -121,7 +120,6 @@ catmaid_set_meta_annotations<-function(meta_annotations,annotations,pid=1,conn=N
 #' @param ... additional arguments passed to methods.
 #'
 #' @export
-#' @rdname catmaid_annotate_partners
 catmaid_annotate_partners<-function(partners,pid=1,conn=NULL,...){
   if(is.vector(partners)){
     if (length(partners)!=2){

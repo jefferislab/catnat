@@ -8,7 +8,6 @@
 #' @param ... additional arguments passed to methods.
 #'
 #' @export
-#' @rdname scan4matching
 scan4matching <- function(someneuronlist, pairs, reference, ...){
   open3d(userMatrix = structure(c(0.999989449977875, -0.00419542612507939, -0.00183705519884825,
                                   0, -0.00426193978637457, -0.999274253845215, -0.0378473773598671,

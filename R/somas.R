@@ -8,7 +8,6 @@
 #' @references Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
 #' @return Either the soma's 3D coorindates (soma) its id number (somaid) or its posiiton in the neuron's skeleton (somapos)
 #' @export
-#' @rdname soma
 soma<-function(x, ...) UseMethod("soma")
 
 #' @export

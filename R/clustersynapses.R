@@ -20,7 +20,6 @@
 #'   estimation of neuronal type (intertneuron or PN) based on this score (>0.05
 #'   = PN).
 #' @export
-#' @rdname cluster_synapses_within_skeleton
 #' @seealso \code{\link{seebroken3d}} \code{\link{flow.centrality}}
 cluster_synapses_within_skeleton <-function(neuron, polyadic = T, lambda = 30, order = 150, e = c(0.3,0.7),...) UseMethod("cluster_synapses_within_skeleton")
 
@@ -161,7 +160,6 @@ cluster_synapses_within_skeleton.neuronlist <- function(someneuronlist, polyadic
 #'
 #' @return Plots neuron(s) with arbours coloured by synapse cluster
 #' @export
-#' @rdname seebroken3d
 #' @importFrom grDevices rainbow
 #' @seealso \code{\link{cluster_synapses_within_skeleton}} \code{\link{seesplit3d}}
 seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma.size = 100){

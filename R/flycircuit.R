@@ -9,7 +9,6 @@
 #'
 #' @return A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space
 #' @export
-#' @rdname get.skeleton.from.flycircuit
 get.skeleton.from.flycircuit <- function(fcneurons, ...){
   ids = c()
   fcns = neuronlist()
@@ -65,7 +64,6 @@ Chiang2FCWB <- function(x, sex = 'F'){
 #'
 #' @return Transformed neuron/neuronlist object
 #' @export
-#' @rdname napplyTransform
 napplyTransform<-function(someneuronlist, trafo, inverse = F, ...) UseMethod("napplyTransform")
 
 #' @export
@@ -93,7 +91,6 @@ napplyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F,...){
 #'
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
 #' @export
-#' @rdname assign.cable.polarity
 #' @importFrom grDevices colorRampPalette
 assign.cable.polarity <- function(someneuronlist,resample=1,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
@@ -223,7 +220,6 @@ dendritic.endings <- function(neuron){
 #'
 #' @return a matrix of 3D points
 #' @export
-#' @rdname correctsoma
 correctsoma <- function(someneuronlist, brain = NULL,...){
   correctedsomas = neuronlist()
   nopen3d()
@@ -270,7 +266,6 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
 #'
 #' @return a matrix of 3D points
 #' @export
-#' @rdname overlap.connectivity.matrix
 overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1){
   if(length(neuropil)>0){
     points = rbind(axonic.points.neuronlist(neurons),mixed.points.neuronlist(neurons))
@@ -374,7 +369,6 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
-#' @rdname cable.inside.neuropils
 cable.inside.neuropils<-function(neuron, brain = FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
 
 #' @rdname cable.inside.neuropils
@@ -478,6 +472,7 @@ write.spin.split.swc<-function(neuron,file){
   write.neuron(neuron,file = file,format="swc",Force=T) # Write file
 }
 
+#' @export
 #' @rdname write.spin.swc
 write.spin.swc <- function(neuron, file){
   s = unique(unlist(as.seglist(neuron)))
@@ -507,7 +502,6 @@ write.spin.swc <- function(neuron, file){
 #' @param ... additional arguments passed to methods
 #'
 #' @export
-#' @rdname synapsecolours.neuron
 #' @importFrom graphics legend plot plot.new
 synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T, outputs = T,printout=F){
   if(is.neuronlist(neuron)){neuron = neuron[[1]]}
@@ -555,7 +549,6 @@ synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T
 #'
 #' @return a single neuron object, the averaged tract, and containing values for standard deviation for each 3D point.
 #' @export
-#' @rdname average.tracts
 #' @importFrom nabor knn
 average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
   if (length(cable)>1){
@@ -620,7 +613,6 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #'
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
-#' @rdname assign_lh_neuron
 #' @importFrom nat.templatebrains xform_brain
 assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
   if(is.null(most.lhns)){
@@ -709,7 +701,6 @@ scan_lh_matches <-function(someassignedneuronlist){
 #'
 #' @return a dotprops object
 #' @export
-#' @rdname rescue.dps
 rescue.dps <- function(someneuronlist,resample=1,...){
   someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
   no.points = sapply(someneuronlist.dps, function(x) nrow(nat::xyzmatrix(x)))
@@ -736,7 +727,6 @@ rescue.dps <- function(someneuronlist,resample=1,...){
 #'
 #' @return a dotprops object
 #' @export
-#' @rdname nblast_bothways
 nblast_bothways<-function(group1,group2=group1,smat = NULL,
                           sd = 3, version = c(2, 1), normalised = FALSE, UseAlpha = FALSE,
                           OmitFailures = NA){

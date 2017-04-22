@@ -7,7 +7,6 @@
 #'
 #' @return Anatomically accurate synapse position (i.e. not just connector positions) as 3D coordinates
 #' @export
-#' @rdname get.synapses
 #' @seealso \code{\link{clusterbysynapses}} \code{\link{flow.centrality}}
 get.synapses <-function(someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T, ...) UseMethod("get.synapses")
 

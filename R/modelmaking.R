@@ -13,7 +13,6 @@
 #'
 #' @return An alphashape object
 #' @export
-#' @rdname make.anatomical.model
 make.anatomical.model <- function(someneuronlist, substrate = c("connectors","cable", "both"), maxdistance = 10000, groupsize = 100, alpha = 3000, auto.selection = T, chosen.points = NULL)
 {
   if (substrate=="connectors"){synapse.points = nat::xyzmatrix(catmaid::connectors(someneuronlist))

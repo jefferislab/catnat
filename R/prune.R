@@ -7,7 +7,6 @@
 #' @param ... additional arguments passed to methods.
 #' @return A pruned neuron object
 #' @export
-#' @rdname prune_distal
 prune_distal <- function(neuron, bad_vertex_labels, invert=FALSE, ...) {
   # remove points **keeping same origin**
   origin=n$d$PointNo[rootpoints(neuron)]
@@ -27,7 +26,6 @@ prune_distal <- function(neuron, bad_vertex_labels, invert=FALSE, ...) {
 #' @param ... additional arguments passed to methods.
 #' @return The percentage of downstream singlet nodes named tracers have contributed to neuron in
 #' @export
-#' @rdname downstream.deletion.test
 downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Ruairi Roberts"), ...){
   neurons.treenodes=nlapply(names(someneuronlist), catmaid_get_treenode_table)
   user_ids = subset(ul, full_name%in%names)$id

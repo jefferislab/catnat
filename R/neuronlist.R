@@ -7,7 +7,6 @@
 #'
 #' @return Someneuronlist with cell sidedness in the metadata
 #' @export
-#' @rdname assignside
 assignside <- function(someneuronlist, ...){
   sdf=as.data.frame(someneuronlist)
   sdf=transform(sdf, side=factor(ifelse(grepl("right|Right|_r$|R$|r$|left|Left|_l$|L$|l$", name),ifelse(grepl("right|Right|_r|R$|r$", name),"R","L"), "NA")))
@@ -67,7 +66,6 @@ assignside <- function(someneuronlist, ...){
 #'
 #' @return A neuron pruned to its primary dendrite
 #' @export
-#' @rdname primary.neurite
 primary.neurite<-function(someneuronlist, ...) UseMethod("primary.neurite")
 
 #' @export

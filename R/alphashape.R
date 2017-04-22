@@ -9,7 +9,6 @@
 #'
 #' @return An alpha shape object
 #' @export
-#' @rdname combine.alphashape
 #' @seealso \code{\link{transform3dalphashape}},
 #'   \code{\link{WriteVTKalphashape}}
 combine.alphashape <- function (ashapelist, ...){
@@ -102,7 +101,6 @@ WriteVTKalphashape <-function(ashape, filename, title = filename, datatype=c("fl
 #'
 #' @return A neuronlist
 #' @export
-#' @rdname neurons.inside
 #' @seealso \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
 neurons.inside <- function(shape, db, min_nodes = 1){
   if(is.null(shape$triang)){selection = someneuronlist[unlist(nat::nlapply(someneuronlist, function(x) sum(pointsinsidemesh(shape, indexAlpha = 1, nat::xyzmatrix(x)))>min_nodes))]
@@ -119,7 +117,6 @@ neurons.inside <- function(shape, db, min_nodes = 1){
 #'
 #' @return A mesh3D object
 #' @export
-#' @rdname ashape2mesh3d
 #' @seealso \code{\link{combine.alphashape}} \code{\link{transform3dalphashape}}
 ashape2mesh3d <- function(ashape){
   triangles = ashape$triang[apply(ashape$triang, 1, function(x) {( any(as.numeric(x[9]) > 1))} ),][,1:3]

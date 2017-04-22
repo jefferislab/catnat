@@ -18,7 +18,6 @@
 #'
 #' @return A neuronlist object
 #' @export
-#' @rdname get_connected_skeletons
 #' @seealso \code{\link{skeleton_connectivity_matrix}}
 get_connected_skeletons <- function(somneuronlist, X = c(upper = 100000000, lower = 0), Y = c(upper = 100000000, lower = 0), Z = c(upper = 100000000, lower = 0), min_nodes = 1000, max_nodes = NULL, min_synapses = 4, prepost = NULL, soma = T, exclude.skids = NULL, ...){
   dlconns=subset(catmaid::connectors(somneuronlist), x<ifelse(is.null(X[1]),100000000,X[1]) & y<ifelse(is.null(Y[1]),100000000,Y[1]) & z < ifelse(is.null(Z[1]),100000000,Z[1])) # Remove synapses above greater than xyz

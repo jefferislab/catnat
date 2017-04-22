@@ -38,7 +38,6 @@
 #'   estimation of neuronal type (intertneuron or PN) based on this score (>0.05
 #'   = PN).
 #' @export
-#' @rdname flow.centrality
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
 flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
 
@@ -186,7 +185,6 @@ flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centr
 #'
 #' @return Plots coloured neuron(s)
 #' @export
-#' @rdname seesplit3d
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
 #' @importFrom stats sd
 seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F){

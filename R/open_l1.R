@@ -14,7 +14,6 @@
 #' @references Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
 #' @return Appropriate L1 CATMAID url
 #' @export
-#' @rdname open_l1
 #' @importFrom utils browseURL
 open_l1=function(x, s = rgl::select3d(), zoom=1, open = interactive(), scalefac=1, ...){
   if (is.vector(x, mode = "numeric") && length(x) == 3) {
