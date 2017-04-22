@@ -5,17 +5,21 @@
 \alias{resample}
 \title{Resample a CATMAID neuron}
 \usage{
-\method{resample}{catmaidneuron}(neuron, stepsize = 1)
+\method{resample}{catmaidneuron}(x, stepsize = 1, ...)
 }
 \arguments{
-\item{neuron}{A neuron object}
+\item{x}{A neuron or neuronlist object}
 
 \item{stepsize}{The new spacing along the tracing}
-
-\item{someneuronlist}{a neuronlist or neuron object}
 
 \item{...}{additional arguments passed to methods.}
 }
 \description{
-Resample a catmaid neuron so that connector information is retained
+Resample a catmaid neuron so that connector information is
+  retained
+}
+\details{
+\bold{NB} the connector \code{treenode_id} column will retain all
+  the original CATMAID node ids and will therefore no longer match the
+  PointNo identifiers for segments in the resampled neuron.
 }

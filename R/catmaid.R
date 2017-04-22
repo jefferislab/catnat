@@ -1,15 +1,17 @@
 #' Resample a CATMAID neuron
 #'
-#' @description Resample a catmaid neuron so that connector information is retained
-#'
-#' @param someneuronlist a neuronlist or neuron object
-#' @param neuron A neuron object
+#' @description Resample a catmaid neuron so that connector information is
+#'   retained
+#' @details \bold{NB} the connector \code{treenode_id} column will retain all
+#'   the original CATMAID node ids and will therefore no longer match the
+#'   PointNo identifiers for segments in the resampled neuron.
+#' @param x A neuron or neuronlist object
 #' @param stepsize The new spacing along the tracing
 #' @param ... additional arguments passed to methods.
 #' @export
 #' @aliases resample
 #' @importFrom nat resample
-resample.catmaidneuron<-function(neuron,stepsize=1){
+resample.catmaidneuron<-function(x, stepsize=1, ...){
   r = NextMethod()
   c = connectors(neuron)
   c$treenode_id = nabor::knn(
@@ -24,9 +26,16 @@ resample.catmaidneuron<-function(neuron,stepsize=1){
 #' @export
 #' @aliases resample
 #' @importFrom nat resample
-resample.catmaidneuronlist<-function(someneuronlist,stepsize=1){
-  nl = nlapply(someneuronlist,resample.catmaid.neuron,stepsize=stepsize)
-  nl
+resample.neuronlist<-function(x, stepsize, ...){
+  nlapply(x, resample, stepsize=stepsize, ...)
+}
+
+#' @export
+#' @aliases resample
+#' @importFrom nat resample
+resample.catmaidneuronlist <- function(x,stepsize=1, ...) {
+  .Deprecated("resample")
+  resample(x, stepsize=stepsize)
 }
 
 # Some extra catmaid related functions
