@@ -615,7 +615,7 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
 #' @importFrom nat.templatebrains xform_brain
-assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL){
+assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = catnat::most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL){
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
