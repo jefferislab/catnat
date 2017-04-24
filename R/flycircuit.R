@@ -614,27 +614,14 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
 #' @importFrom nat.templatebrains xform_brain
-assign_lh_neuron <- function(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL, brain = NULL){
-  if(is.null(most.lhns)){
-    load(system.file("data/most.lhns.rda", package = 'catnat'))
-    load(system.file("data/primary.neurites.tracts.rda", package = 'catnat'))
-    load(system.file("data/most.dps.rda", package = 'catnat'))
-    load(system.file("data/most.lhns.pnts.dps.rda", package = 'catnat'))
-  }
+assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL){
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
-  pnts = sort(unique(most.lhns[,"pnt"]))
-  pnts = pnts[pnts!="notLHproper"]
-  if(is.null(most.lhns.pns.dps)){
-    most.lhns.pnts = suppressWarnings(primary.neurite(most.lhns))
-    most.lhns.pnts.dps = nat::dotprops(most.lhns.pnts, resample = 1, k = 5, OmitFailures = T,.parallel=TRUE)
-  }
   someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist))
   message("Generating dotprops objects")
-  if(is.null(most.lhns.dps)){most.lhns.dps=nat::dotprops(most.lhns, resample = 1, k = 5, OmitFailures = T,parallel=TRUE)}
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
-  if (!is.null(most.lhns.pnts.dps[,"good.trace"])){most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]}
+  most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]
   someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5)
   someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5)
   # Now try to find the tract a neuron fits into
