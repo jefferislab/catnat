@@ -42,7 +42,7 @@ assignside <- function(someneuronlist, ...){
 #  return(assignside(neurons))
 #}
 
-#primary.neurite <- function(someneuron, k = 100){      # Find the first 100 points of the primary neurite
+#primary.neurite.first <- function(someneuron, k = 100){      # Find the first 100 points of the primary neurite
  # som = soma.neuron(someneuron)
 #  if (is.na(som[1])){
 #    if (length(someneuron[[1]]$tags$soma[[1]])>0){

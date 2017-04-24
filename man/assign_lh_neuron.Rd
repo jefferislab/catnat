@@ -6,7 +6,7 @@
 \title{Assign identitiy to lateral horn neurons}
 \usage{
 assign_lh_neuron(someneuronlist, most.lhns = catnat::most.lhns,
-  most.lhns.dps = most.lhns.dps,
+  most.lhns.dps = catnat::most.lhns.dps,
   most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL)
 
 scan_lh_matches(someassignedneuronlist)

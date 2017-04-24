@@ -619,7 +619,7 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
-  someneuronlist.pnts = suppressWarnings(primary.neurite(someneuronlist))
+  someneuronlist.pnts = suppressWarnings(catnat::primary.neurite(someneuronlist))
   message("Generating dotprops objects")
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
   most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]
