@@ -13,7 +13,7 @@
 #' @importFrom nat resample
 resample.catmaidneuron<-function(x, stepsize=1, ...){
   r = NextMethod()
-  c = connectors(neuron)
+  c = connectors(x)
   c$treenode_id = nabor::knn(
     data = nat::xyzmatrix(r),
     query = nat::xyzmatrix(c),
