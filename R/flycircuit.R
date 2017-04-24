@@ -605,8 +605,9 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' incorrect, that does not necessarily mean the neuron in question is not covered by the naming system.
 #'
 #' @param someneuronlist a neuronlist object
-#' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017.
-#' @param most.lhns.dps a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation
+#' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017, as do the two arguments below
+#' @param most.lhns.dps a dotprops object of the above
+#' @param most.lhns.pnts.dps the primary neurite tracts to search against as a dotrpops object
 #' @param brain the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB
 #' @param someassignedneuronlist a neuronlist that has been passed through assign_lh_neuron
 #' @param ... additional arguments passed to methods
