@@ -9,6 +9,6 @@
 primary.neurite.tracts
 }
 \description{
-The known primary neurite tracts that laterla horn neurons can occupy
+The known primary neurite tracts that lateral horn neurons can occupy
 }
 \keyword{datasets}

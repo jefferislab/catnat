@@ -5,17 +5,20 @@
 \alias{scan_lh_matches}
 \title{Assign identitiy to lateral horn neurons}
 \usage{
-assign_lh_neuron(someneuronlist, most.lhns = NULL, most.lhns.dps = NULL,
-  brain = NULL)
+assign_lh_neuron(someneuronlist, most.lhns = catnat::most.lhns,
+  most.lhns.dps = most.lhns.dps,
+  most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL)
 
 scan_lh_matches(someassignedneuronlist)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object}
 
-\item{most.lhns}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017.}
+\item{most.lhns}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017, as do the two arguments below}
 
-\item{most.lhns.dps}{a dotprops object of the above. If left NULL, then the function will calculate this, but this is a time consuming operation}
+\item{most.lhns.dps}{a dotprops object of the above}
+
+\item{most.lhns.pnts.dps}{the primary neurite tracts to search against as a dotrpops object}
 
 \item{brain}{the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB}
 
