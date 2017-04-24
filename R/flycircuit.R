@@ -37,17 +37,17 @@ reroot.flycircuit.neuron <- function(neuron){
 #' @rdname get.skeleton.from.flycircuit
 Chiang2FCWB <- function(x, sex = 'F'){
   if (sex == "M"){
-    affinetransform.m = readRDS(system.file("exdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
-    affinetransform.m2 = readRDS(system.file("exdata/CMTKreg/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
+    affinetransform.m = readRDS(system.file("extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
+    affinetransform.m2 = readRDS(system.file("extdata/CMTKreg/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
     x = napplyTransform.neuronlist(x, affinetransform.m)
-    x = nat::xform(x,reg=system.file("exdata/CMTKreg/Registration/warp/FCWB_typicalbrainmale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
+    x = nat::xform(x,reg=system.file("extdata/CMTKreg/Registration/warp/FCWB_typicalbrainmale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
     x = napplyTransform.neuronlist(x, affinetransform.m2)
   }
   if (sex == "F"){
-    affinetransform.f = readRDS(system.file("exdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
-    affinetransform.f2 = readRDS(system.file("exdata/CMTKreg/InitialAffine/finalaffine_ChiangFemaleTowardsFCWB.rds", package = 'catnat'))
+    affinetransform.f = readRDS(system.file("extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
+    affinetransform.f2 = readRDS(system.file("extdata/CMTKreg/InitialAffine/finalaffine_ChiangFemaleTowardsFCWB.rds", package = 'catnat'))
     x = napplyTransform.neuronlist(x, affinetransform.f)
-    x = nat::xform(x,reg=system.file("exdata/CMTKreg/Registration/warp/FCWB_typicalbrainfemale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
+    x = nat::xform(x,reg=system.file("extdata/CMTKreg/Registration/warp/FCWB_typicalbrainfemale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
     x = napplyTransform.neuronlist(x, affinetransform.f2)
   }
   x
