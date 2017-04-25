@@ -9,7 +9,7 @@
 #'
 #' @return A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space
 #' @export
-get.skeleton.from.flycircuit <- function(fcneurons, ...){
+get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
   ids = c()
   fcns = neuronlist()
   for (n in 1:length(fcneurons)){
@@ -20,8 +20,9 @@ get.skeleton.from.flycircuit <- function(fcneurons, ...){
       ids = c(ids, fcneurons[n])
     }
   }
-  fcns = c(Chiang2FCWB(fcns[grepl("-F-",names(fcns))],sex="F"), Chiang2FCWB(fcns[grepl("-M-",names(fcns))],sex="M"))
+  # fcns = c(Chiang2FCWB(fcns[grepl("-F-",names(fcns))],sex="F"), Chiang2FCWB(fcns[grepl("-M-",names(fcns))],sex="M"))
   names(fcns) = ids
+  fcns=Chiang2FCWB(fcns)
   fcns = nat::nlapply(fcns,reroot.flycircuit.neuron)
   fcns
 }
@@ -35,23 +36,12 @@ reroot.flycircuit.neuron <- function(neuron){
 }
 
 #' @rdname get.skeleton.from.flycircuit
-Chiang2FCWB <- function(x, sex = 'F'){
-  if (sex == "M"){
-    affinetransform.m = readRDS(system.file("extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
-    affinetransform.m2 = readRDS(system.file("extdata/CMTKreg/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
-    x = napplyTransform.neuronlist(x, affinetransform.m)
-    x = nat::xform(x,reg=system.file("extdata/CMTKreg/Registration/warp/FCWB_typicalbrainmale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
-    x = napplyTransform.neuronlist(x, affinetransform.m2)
-  }
-  if (sex == "F"){
-    affinetransform.f = readRDS(system.file("extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds", package = 'catnat'))
-    affinetransform.f2 = readRDS(system.file("extdata/CMTKreg/InitialAffine/finalaffine_ChiangFemaleTowardsFCWB.rds", package = 'catnat'))
-    x = napplyTransform.neuronlist(x, affinetransform.f)
-    x = nat::xform(x,reg=system.file("extdata/CMTKreg/Registration/warp/FCWB_typicalbrainfemale_01_warp_m0g80c8e1e-1x26r4.list/", package = 'catnat'))
-    x = napplyTransform.neuronlist(x, affinetransform.f2)
-  }
-  x
+Chiang2FCWB <- function(x, sex = flycircuit::fc_sex(x), xform_version=1) {
+  template_to_use=ifelse(sex, "chiangf","chiangm")
+  if(xform_version>1) template_to_use=paste0(template_to_use, xform_version)
+  nat::nmapply(xform_brain, x, sample=template_to_use, MoreArgs = list(reference=nat.flybrains::FCWB))
 }
+
 
 #' Apply a transform to a neruon/neuronlist
 #'
