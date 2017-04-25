@@ -4,22 +4,25 @@
 \alias{arbour.clusters}
 \alias{arbour.clusters.neuron}
 \alias{arbour.clusters.neuronlist}
+\alias{arbours}
 \alias{arbours.neuron}
 \alias{arbours}
 \title{Segregate neurite compartments from a neuron/neuronlist based on synapse clustering}
 \usage{
-arbour.clusters(someneuronlist, ...)
+arbour.clusters(x, ...)
 
-\method{arbour.clusters}{neuron}(someneuron, ...)
+\method{arbour.clusters}{neuron}(x, ...)
 
-\method{arbour.clusters}{neuronlist}(someneuronlist, ...)
+\method{arbour.clusters}{neuronlist}(x, ...)
+
+arbours(arbourcluster, ...)
 
 arbours.neuron(arbourcluster, ...)
 
 arbours(arbourcluster, ...)
 }
 \arguments{
-\item{someneuronlist}{A neuronlist that has been processed by flow.centrality()}
+\item{x}{A neuronlist that has been processed by flow.centrality()}
 
 \item{...}{additional arguments passed to methods.}
 

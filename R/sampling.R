@@ -1,14 +1,14 @@
 
 
-randomly_sample_connections <- function(someneuronlist, direction = 0, all.connections = T, experiments = 10, clustering = c("None","flow centrality","Synapse Clusters"), soma = T, min.nodes = 1000, min.strength = 1){
-  c = catmaid_get_connectors(subset(connectors(neuron)$connector_id,connectors(neuron)$prepost==direction))
-  all.post = read.neurons.catmaid(unique(c$post), OmitFailures = T)
-  post = subset(all.post, sapply(all.post, function(x) x$NumPoints>min.nodes))
-  post = su
-  if(soma){post=post[sapply(post, function(x) !is.null(x$tags$soma))]}
-  frags = c$post[c$post%in%post]
-  chance.its.new
-}
+#randomly_sample_connections <- function(someneuronlist, direction = 0, all.connections = T, experiments = 10, clustering = c("None","flow centrality","Synapse Clusters"), soma = T, min.nodes = 1000, min.strength = 1){
+#  c = catmaid_get_connectors(subset(connectors(neuron)$connector_id,connectors(neuron)$prepost==direction))
+#  all.post = read.neurons.catmaid(unique(c$post), OmitFailures = T)
+#  post = subset(all.post, sapply(all.post, function(x) x$NumPoints>min.nodes))
+#  post = su
+#  if(soma){post=post[sapply(post, function(x) !is.null(x$tags$soma))]}
+#  frags = c$post[c$post%in%post]
+#  chance.its.new
+#}
 
 #partner_progression <- function(someneuronlist, direction = 0, all.connections = T, soma = T, min_nodes = 1000, min_strength = 1){
 #  connected = get_connected_skeletons(someneuronlist, soma=soma,prepost=direction,min_nodes=min_nodes,min_synapse = min_strength)

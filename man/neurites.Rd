@@ -6,15 +6,15 @@
 \alias{neurites.neuronlist}
 \title{Segregate neurite compartments from a neuron/neuronlist}
 \usage{
-neurites(someneuronlist, fragment = c("axons", "dendrites",
-  "primary dendrite", "primary neurite", "nulls"), ...)
+neurites(x, fragment = c("axons", "dendrites", "primary dendrite",
+  "primary neurite", "nulls"), ...)
 
-\method{neurites}{neuron}(neuron, fragment, ...)
+\method{neurites}{neuron}(x, fragment, ...)
 
-\method{neurites}{neuronlist}(someneuronlist, fragment, ...)
+\method{neurites}{neuronlist}(x, fragment, ...)
 }
 \arguments{
-\item{someneuronlist}{A neuronlist that has been processed by flow.centrality()}
+\item{x}{A neuronlist that has been processed by flow.centrality()}
 
 \item{fragment}{The type of neurite fragment to retrieve. 'Nulls' refers to areas of zero flow. See Schnieder-Mizell et al. (2016)}
 

@@ -6,16 +6,18 @@
 \alias{cluster_synapses_within_skeleton.neuronlist}
 \title{Cluster synapses within a neuron's skeleton}
 \usage{
-cluster_synapses_within_skeleton(neuron, polyadic = T, lambda = 30,
+cluster_synapses_within_skeleton(x, polyadic = T, lambda = 30,
   order = 150, e = c(0.3, 0.7), ...)
 
-\method{cluster_synapses_within_skeleton}{neuron}(neuron, polyadic = T,
+\method{cluster_synapses_within_skeleton}{neuron}(x, polyadic = T,
   lambda = 30, order = 150, e = c(0.3, 0.7), ...)
 
-\method{cluster_synapses_within_skeleton}{neuronlist}(someneuronlist,
-  polyadic = T, lambda = 30, order = 150, e = c(0.3, 0.7), ...)
+\method{cluster_synapses_within_skeleton}{neuronlist}(x, polyadic = T,
+  lambda = 30, order = 150, e = c(0.3, 0.7), ...)
 }
 \arguments{
+\item{x}{a neuronlist or neuron object}
+
 \item{polyadic}{Whether to count presynapses as a single synapse or as the number of connections that prsynapse makes for the purpose of clustering. Defaults to true.}
 
 \item{lambda}{A bandwidth parameter that effectively determines the size of clusters}
@@ -25,8 +27,6 @@ cluster_synapses_within_skeleton(neuron, polyadic = T, lambda = 30,
 \item{e}{The entropy value calculated between post and pre synapses in a cluster abvoe which we assign that cluster as part of a dendrite, and below which we assign as an axonic segment. In between these values we assign the cluster as mixed.}
 
 \item{...}{additional arguments passed to methods.}
-
-\item{x}{a neuronlist or neuron object}
 }
 \value{
 the neuron or neuron list object inputted, with centipetal flow

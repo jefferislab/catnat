@@ -6,11 +6,11 @@
 \alias{Chiang2FCWB}
 \title{Fetch Flycircuit neuron skeletons from the Tawian Flycircuit server}
 \usage{
-get.skeleton.from.flycircuit(fcneurons, ...)
+get.skeleton.from.flycircuit(fcneurons, xform_version = 1, ...)
 
 reroot.flycircuit.neuron(neuron)
 
-Chiang2FCWB(x, sex = "F")
+Chiang2FCWB(x, sex = flycircuit::fc_sex(x), xform_version = 1)
 }
 \arguments{
 \item{fcneurons}{a vectors of valid FlyCircuit neuron ids}

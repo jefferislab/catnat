@@ -6,17 +6,16 @@
 \alias{get.synapses.neuronlist}
 \title{Get 3D coordinates of synapse (not connector) positions}
 \usage{
-get.synapses(someneuronlist, target = c("BOTH", "PRE", "POST"), polypre = T,
-  ...)
+get.synapses(x, target = c("BOTH", "PRE", "POST"), polypre = T, ...)
 
-\method{get.synapses}{neuron}(neuron, target = c("BOTH", "PRE", "POST"),
+\method{get.synapses}{neuron}(x, target = c("BOTH", "PRE", "POST"),
   polypre = T, ...)
 
-\method{get.synapses}{neuronlist}(someneuronlist, target = c("BOTH", "PRE",
-  "POST"), polypre = T, ...)
+\method{get.synapses}{neuronlist}(x, target = c("BOTH", "PRE", "POST"),
+  polypre = T, ...)
 }
 \arguments{
-\item{someneuronlist}{a neuronlist or neuron object}
+\item{x}{a neuronlist or neuron object}
 
 \item{target}{whether post or presynapse are ot be returned, or both}
 
