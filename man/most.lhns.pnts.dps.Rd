@@ -3,20 +3,12 @@
 \docType{data}
 \name{most.lhns.pnts.dps}
 \alias{most.lhns.pnts.dps}
-\alias{most.lhns.pnts.dps}
 \title{Lateral horn primary neurite tracts as a dotprops object}
 \format{An object of class \code{neuronlist} (inherits from \code{list}) of length 796.}
-\source{
-\url{http://www.flycircuit.tw/}
-}
 \usage{
-most.lhns.pnts.dps
-
 most.lhns.pnts.dps
 }
 \description{
-A dotprops dataset containing the known primary neurite tracts that lateral horn neurons can occupy
-
 A dotprops dataset containing the known primary neurite tracts that lateral horn neurons can occupy
 }
 \keyword{datasets}

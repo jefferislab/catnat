@@ -2,8 +2,6 @@
 % Please edit documentation in R/tracerstats.R
 \name{tracer.plot}
 \alias{tracer.plot}
-\alias{summarise_contribution}
-\alias{write_ack}
 \alias{tracer.treenodes.plot}
 \alias{tracer.neuron.stats}
 \title{Get data and plots describing tracer activity statistics}
@@ -12,10 +10,6 @@ tracer.plot(names = c("Alex Bates", "Ruairi Roberts", "Greg Jefferis",
   "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love",
   "Amelia Edmondson-Stait"), calc.date = "2016-04-01",
   from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T, ...)
-
-summarise_contribution(skids, auth = 5, ack = 3000, ...)
-
-write_ack(x, ...)
 
 tracer.treenodes.plot(skids = NULL, names = c("Alex Bates",
   "Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft",

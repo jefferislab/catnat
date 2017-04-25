@@ -179,14 +179,14 @@ reverse.name.side<-function(names){
 #'
 #' @export
 #' @rdname update.neuronlist
-update.neuronlist<-function(someneuronlist,skids,...){
+update_neurons<-function(someneuronlist,skids,...){
   someneuronlist[skids] = read.neurons.catmaid(skids)
   someneuronlist
 }
 
 #' @export
 #' @rdname update.neuronlist
-update.names.neuronlist<-function(someneuronlist,skids = names(someneuronlist),...){
+update_names<-function(someneuronlist,skids = names(someneuronlist),...){
   someneuronlist[,"name"] = catmaid_get_neuronnames(skids)
   someneuronlist
 }

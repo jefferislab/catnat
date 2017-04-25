@@ -1,7 +1,8 @@
 #' Functions for retrieving soma data
 #'
 #' @description Functions for retrieving data amout somata from skeletons, that has been assigned in CATMAID using the tag system
-#' @param ... additional arguments passed to methods.
+#' @param x a neuron or neuronlist object
+#' @param ... additional arguments passed to methods
 #'
 #' @details CATMAID access required. Data collected and described in cited publication.
 #'
@@ -41,7 +42,7 @@ somaid.neuronlist<-function(x, ...) {
 
 #' @export
 #' @rdname soma
-somaid.neuron <- function(n) unlist(n$tags$soma)
+somaid.neuron <- function(x, ...) unlist(n$tags$soma)
 
 #' @export
 #' @rdname soma

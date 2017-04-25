@@ -53,17 +53,17 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #'
 #' @description Prune nodes from a catmaid neuron, keeping the synapses
 #'
-#' @param neuron a neuron object
+#' @param x a neuron object
 #' @param target Nodes ids for removal
 #' @param maxdist The threshold distance for keeping points
 #' @param keep Whether to keep points in x that are near or far from the target
 #' @param return.indices Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)
-#' @param ... additional arguments passed to methods.
+#' @param ... additional arguments passed to methods
 #' @return A pruned neuron object
 #' @export
 #' @aliases prune
 #' @importFrom nat prune
-prune.catmaidneuron<- function (neuron,target,maxdist, keep = c("near", "far"),
+prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
   pruned = prune(neuron,target,maxdist=maxdist, keep = keep,
                  return.indices = return.indices)
