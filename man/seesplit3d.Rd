@@ -27,9 +27,21 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
 
 \item{highflow}{wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)}
 
-\item{...}{additional arguments passed to methods.}
+\item{Verbose}{logical indicating that info about each selected neuron should be printed (default TRUE)}
 
-\item{primary.dendrite}{Type of object for Deformetrica deformation. See Deformetrica's documentation. Default is appropriate for neuron skeletons.}
+\item{Wait}{logical indicating that there should be a pause between each displayed neuron}
+
+\item{sleep}{time to pause between each displayed neuron when Wait=TRUE}
+
+\item{extrafun}{an optional function called when each neuron is plotted, with two arguments: the current neuron name and the current selected neurons}
+
+\item{selected_file}{an optional path to a yaml file that already contains a selection}
+
+\item{selected_col}{the color in which selected neurons (such as those specified in selected_file) should be plotted}
+
+\item{yaml}{a logical indicating that selections should be saved to disk in (human-readable) yaml rather than (machine-readable) rda format}
+
+\item{...}{additional arguments passed to methods.}
 }
 \value{
 Plots coloured neuron(s)

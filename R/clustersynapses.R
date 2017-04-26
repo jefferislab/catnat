@@ -152,9 +152,8 @@ cluster_synapses_within_skeleton.neuronlist <- function(x, polyadic = T, lambda 
 #' Plot neurons split up by synapse clusters
 #'
 #' @param neuron a neuron object that has been modified by flow.centrality
-#' @param col colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.
 #' @param WithConnectors whether ot plot the anatomical location of pre (red) and post (cyan) synapses.
-#' @param soma whether to plot a soma, and what the radius should be
+#' @param soma.size whether to plot a soma, and what the radius should be
 #' @param WithNodes whether to plot branch points
 #' @param ... additional arguments passed to methods.
 #'

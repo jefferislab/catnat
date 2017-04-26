@@ -54,7 +54,7 @@ select.neurons =function (someneuronlist){
   return (thechosen)
 }
 
-neurons.inside <- function(alpha, db, synapse = "BOTH", degree = NULL){
+neurons.inside.alphashape <- function(alpha, db, synapse = "BOTH", degree = NULL){
   selection = c()
   for (neuron in 1:length(db)){
     neuron = db[neuron]

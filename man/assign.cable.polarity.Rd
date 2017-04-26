@@ -9,6 +9,8 @@ assign.cable.polarity(someneuronlist, resample = 1, ...)
 \arguments{
 \item{someneuronlist}{a neuron/neuronlist object}
 
+\item{resample}{the unit lengths to which neurons should be resampled}
+
 \item{...}{additional arguments passed to methods}
 }
 \value{

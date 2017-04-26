@@ -12,6 +12,8 @@ synapsecolours.neuron(neuron, skids = NULL, col = "black", inputs = T,
 
 \item{skids}{the skeleton ids of neurons with which synapses are to be shown. Defaults to all partners.}
 
+\item{col}{the colour of the neuron skeleton}
+
 \item{inputs}{whether or not to show input synapses are to be shown}
 
 \item{outputs}{whether or not output synapses are to be shown}

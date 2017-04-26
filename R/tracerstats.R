@@ -4,10 +4,10 @@
 #'
 #' @param skids The skids of the neurons to consider
 #' @param names Full names of tracers
-#' @param clac.date The date from which to retrieve data for the graphs
+#' @param calc.date The date from which to retrieve data for the graphs
 #' @param from.date The date from which to plot the graphs
 #' @param to.date The date to which to plot the graphs
-#' @param Cumulative Whether to generate a cumulative plot. Defaults to true.
+#' @param cumulative Whether to generate a cumulative plot. Defaults to true.
 #' @param value Whether to look at tree node, pre synapse connector or post synaptic node data.
 #' @param ... additional arguments passed to methods.
 #'

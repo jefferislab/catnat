@@ -60,18 +60,19 @@ assignside <- function(someneuronlist, ...){
 #'
 #' @description Returns the primary neurite of a neuron, defined as the cable between soma and first branch point
 #'
-#' @param neuron a neuron object
+#' @param x a neuron or neuronlist object
 #' @param resample The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
+#' @param k the number of nodes from the soma to include
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuron pruned to its primary dendrite
 #' @export
-primary.neurite<-function(someneuronlist, ...) UseMethod("primary.neurite")
+primary.neurite<-function(x, ...) UseMethod("primary.neurite")
 
 #' @export
 #' @rdname primary.neurite
-primary.neurite.neuron <- function(neuron, resample = 1, ...){
-  neuron = nat::resample(neuron, stepsize = 1)
+primary.neurite.neuron <- function(x, resample = 1, ...){
+  neuron = nat::resample(x, stepsize = 1)
   if (neuron$nTrees>1){
     s = unique(unlist(as.seglist(neuron)))
     neuron$SubTrees = NULL
@@ -87,13 +88,39 @@ primary.neurite.neuron <- function(neuron, resample = 1, ...){
 
 #' @export
 #' @rdname primary.neurite
-primary.neurite.neuronlist <- function(someneuronlist, ...){
-  nlapply(someneuronlist, primary.neurite.neuron, OmitFailures = T)
+primary.neurite.neuronlist <- function(x, ...){
+  nlapply(x, primary.neurite.neuron, OmitFailures = T)
 }
 
 #' @export
 #' @rdname primary.neurite
-longestpathfromsoma = function (n, UseStartPoint = TRUE, SpatialWeights = TRUE, invert = FALSE,
+starting.neurite<-function(x, k, ...) UseMethod("starting.neurite")
+
+#' @export
+#' @rdname primary.neurite
+starting.neurite.neuron <- function(x, k = 100, ...){      # Find the first 100 points of the primary neurite
+  som = soma.neuron(x)
+  if (is.na(som[1])){
+    if (length(x[[1]]$tags$soma[[1]])>0){
+      som = matrix(xyzmatrix(x)[x[[1]]$d$PointNo%in%x[[1]]$tags$soma,], ncol = 3)
+    }else{
+      som = matrix(xyzmatrix(x)[x[[1]]$StartPoint,], ncol = 3)
+    }
+  }
+  p = nat::xyzmatrix(x)
+  n = nabor::knn(p, som, ifelse(nrow(p)>k,k,nrow(p)))
+  m = p[c(n$nn.idx),]
+}
+
+#' @export
+#' @rdname primary.neurite
+starting.neurite.neuronlist  <- function(x, k = 100, ...){
+  nlapply(x, starting.neurite.neuron, OmitFailures = T)
+}
+
+# @export
+# @rdname primary.neurite
+longestpathfromsoma = function (x, UseStartPoint = TRUE, SpatialWeights = TRUE, invert = FALSE,
                         rval = c("neuron", "length", "ids"), model = NULL)
 {
   ng <- as.ngraph(n, weights = SpatialWeights)

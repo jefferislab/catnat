@@ -4,6 +4,7 @@
 #'
 #' @param neuron a neuron object
 #' @param bad_vertex_labels Nodes ids for removal
+#' @param invert whether to keep vertices rather than dropping them (default FALSE)
 #' @param ... additional arguments passed to methods.
 #' @return A pruned neuron object
 #' @export
@@ -21,7 +22,7 @@ prune_distal <- function(neuron, bad_vertex_labels, invert=FALSE, ...) {
 #'
 #' @description Remove points from a neuron, keeping the root node intact
 #'
-#' @param someneuron a neuronlist object. Should be the downstream partners of (a) neuron(s) of interest
+#' @param someneuronlist a neuronlist object. Should be the downstream partners of (a) neuron(s) of interest
 #' @param names Full names of tracers to consider
 #' @param ... additional arguments passed to methods.
 #' @return The percentage of downstream singlet nodes named tracers have contributed to neuron in

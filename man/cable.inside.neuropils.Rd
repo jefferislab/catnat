@@ -4,33 +4,38 @@
 \alias{cable.inside.neuropils}
 \alias{cable.inside.neuropils.neuron}
 \alias{cable.inside.neuropils.neuronlist}
-\title{Generate a connectivity matrix based on euclidean distance between points}
+\title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
-cable.inside.neuropils(neuron, brain = nat.flybrains::FCWBNP.surf,
+cable.inside.neuropils(x, brain = nat.flybrains::FCWBNP.surf,
   method = c("neurites", "axons", "dendrites"), stepsize = 0.1,
   min.endpoints = 2, alpha = 30, ...)
 
-\method{cable.inside.neuropils}{neuron}(neuron,
-  brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
-  "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30)
+\method{cable.inside.neuropils}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
+  method = c("neurites", "axons", "dendrites"), stepsize = 0.1,
+  min.endpoints = 2, alpha = 30)
 
-\method{cable.inside.neuropils}{neuronlist}(someneuronlist,
+\method{cable.inside.neuropils}{neuronlist}(x,
   brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
   "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30)
 }
 \arguments{
+\item{x}{a set of neurons}
+
+\item{brain}{the .surf brainspace in which the neurons are registered, must be segmented into neuropils}
+
+\item{method}{whether to use the neurons' axons or dendrites, or both}
+
+\item{stepsize}{the unit to which neurons should be resampled for counting}
+
+\item{min.endpoints}{the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it}
+
+\item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion}
+
 \item{...}{additional arguments passed to methods}
-
-\item{neurons}{first set of neurons}
-
-\item{targets}{second set of neurons}
 }
 \value{
 a matrix of 3D points
 }
 \description{
-Generates an 'overlap matrix' of overlap scores between neurons in the 'neurons' and 'targets' pools.
-For every point in a given neuron in 'neurons', a distance score is calculated to every point in a neuron in 'targets'.
-The sum of this score is added to the final output matrix. The score is calculated as e(-d^2/2δ^2), where d is the euclidean distance between the two points,
-and δ is the expected distance in um that is considered 'close'.
+Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 }

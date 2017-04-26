@@ -3,12 +3,13 @@
 #' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 #'
 #' @param someneuronlist a neuronlist or neuron object
-#' @param substrate Whether to make the model based off of connectors, neuron cable or both
-#' @param maxdistance For automated cluster identification. Maximum distance at which nodes can be part of a cluster
-#' @param groupsize An integer number of nearest neighbours to find using nabor::knn()
-#' @param selection Whether or not to interactively select values for maxdistance and groupsize.
-#' @param chosen.points Whether to feed the function pre-chosen points. A matrix for 3D points
-#' @param alpha A single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive
+#' @param substrate whether to make the model based off of connectors, neuron cable or both
+#' @param maxdistance for automated cluster identification. Maximum distance at which nodes can be part of a cluster
+#' @param groupsize an integer number of nearest neighbours to find using nabor::knn()
+#' @param selection whether or not to interactively select values for maxdistance and groupsize.
+#' @param chosen.points whether to feed the function pre-chosen points. A matrix for 3D points
+#' @param alpha a single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive
+#' @param auto.selection whether to try and remove points based on interactively chosen values for 'groupsize' and 'maxdistance'
 #' @param ... additional arguments passed to methods
 #'
 #' @return An alphashape object
@@ -174,7 +175,6 @@ find.neuropil.points=function (someneuronlist, name, maxdistance = 1000, groupsi
 }
 
 
-
 #' @importFrom Morpho crossProduct
 spinny <- function(object, target){
   rotate = 'go!'
@@ -215,9 +215,8 @@ spinny <- function(object, target){
 #'
 #' @return A neuronlist
 #' @export
-#' @rdname neurons.inside
 #' @seealso \code{\link{neurons.inside}}
-pointsinsidemesh <- function (x, surf, ..., rval = c("logical", "distance", "mesh3d"))
+pointsinsidemesh <- function (x, surf, rval = c("logical", "distance", "mesh3d"),...)
 {
   if (!requireNamespace("Rvcg", quietly = TRUE))
     stop("Please install suggested library Rvcg to use pointsinside")

@@ -58,8 +58,8 @@ neurites.neuronlist <- function(x, fragment, ... ){
 #'
 #' @description Fragment a skeleton into compartments that have been assigned cluster_synapses_within_skeleton() or flow.centrality(). Note that this will break down a neuron regardless of the segregation score calculated across the arbour.
 #'
-#' @param x A neuronlist that has been processed by flow.centrality()
-#' @param arbourlist A neuronlist produced from arbour.custers
+#' @param x a neuronlist that has been processed by flow.centrality()
+#' @param arbourcluster a neuronlist produced from arbour.custers
 #' @param ... additional arguments passed to methods.
 #'
 #' @return Segmented arbours as a neuronlist object, complete with  synaptic information relevant to that fragment. If a neuronlist is given, subsequently plotting the neuronlist will not reveal the fragments. However, plotting individual neurons double indexed in the lists will. arbours() returns a neurinlist, where each entry is an arbour fragment with a unique skid and name.

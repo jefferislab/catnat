@@ -13,7 +13,13 @@ overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
 \arguments{
 \item{neurons}{first set of neurons}
 
-\item{targets}{secodn set of neurons}
+\item{targets}{second set of neurons}
+
+\item{neuropil}{an as3d object of the neuropil in which to consider connectivity. Defaults to whole brain.}
+
+\item{delta}{the distance (in um) at which a synapse might occur}
+
+\item{split}{with a CATMAID neuron, whether or not to split the neuron using flow centrality}
 
 \item{...}{additional arguments passed to methods}
 }

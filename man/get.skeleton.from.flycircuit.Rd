@@ -8,14 +8,20 @@
 \usage{
 get.skeleton.from.flycircuit(fcneurons, xform_version = 1, ...)
 
-reroot.flycircuit.neuron(neuron)
+reroot.flycircuit.neuron(x)
 
-Chiang2FCWB(x, sex = flycircuit::fc_sex(x), xform_version = 1)
+Chiang2FCWB(x, female = grepl("-F-", x), xform_version = 1)
 }
 \arguments{
 \item{fcneurons}{a vectors of valid FlyCircuit neuron ids}
 
+\item{xform_version}{the version of nat.templatebrains::xform_brain to use}
+
 \item{...}{additional arguments passed to methods}
+
+\item{x}{some neuron or neuronlist}
+
+\item{female}{whether the neurons to be transformed are female (TRUE) or male (FALSE)}
 }
 \value{
 A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space

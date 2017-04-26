@@ -23,7 +23,7 @@ reverse.name.side(names)
 
 \item{skids}{CATMAID skeleton IDs}
 
-\item{name}{a vector of neuron names}
+\item{names}{a vector of neuron names}
 }
 \description{
 Intended to use to annotate CATMAID left-right cognates, and fetch them

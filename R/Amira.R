@@ -2,7 +2,7 @@
 #'
 #' @description Read Amira surface (aka HxSurface or HyperSurface) files into hxsurf object. Modified version of similar nat function, nat::read.hxsurf()
 #'
-#' @param someneuronlist a neuronlist or neuron object
+#' @param filename file path from which to read
 #' @param RegionNames Character vector specifying which regions should be read from file. Default value of NULL => all regions
 #' @param RegionChoice Whether the Inner or Outer material, or both (default), should define the material of the patch. See details
 #' @param FallbackRegionCol Colour to set regions when no colour is defined

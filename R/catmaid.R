@@ -125,7 +125,7 @@ catmaid_set_meta_annotations<-function(meta_annotations,annotations,pid=1,conn=N
 #' @param conn a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
 #' @param pid project id (default 1)
 #' @param skids CATMAID skeleton IDs
-#' @param name a vector of neuron names
+#' @param names a vector of neuron names
 #' @param ... additional arguments passed to methods.
 #'
 #' @export

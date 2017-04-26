@@ -21,19 +21,19 @@ tracer.neuron.stats(skids, value = c("nodes", "pre", "post"), ...)
 \arguments{
 \item{names}{Full names of tracers}
 
+\item{calc.date}{The date from which to retrieve data for the graphs}
+
 \item{from.date}{The date from which to plot the graphs}
 
 \item{to.date}{The date to which to plot the graphs}
+
+\item{cumulative}{Whether to generate a cumulative plot. Defaults to true.}
 
 \item{...}{additional arguments passed to methods.}
 
 \item{skids}{The skids of the neurons to consider}
 
 \item{value}{Whether to look at tree node, pre synapse connector or post synaptic node data.}
-
-\item{clac.date}{The date from which to retrieve data for the graphs}
-
-\item{Cumulative}{Whether to generate a cumulative plot. Defaults to true.}
 }
 \value{
 tracer.plot() returns a plot for cable length traced and connectors placed by named tracers. tracer.treenodes.plot() visualises data on node generation.

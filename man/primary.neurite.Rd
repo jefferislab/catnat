@@ -4,24 +4,31 @@
 \alias{primary.neurite}
 \alias{primary.neurite.neuron}
 \alias{primary.neurite.neuronlist}
-\alias{longestpathfromsoma}
+\alias{starting.neurite}
+\alias{starting.neurite.neuron}
+\alias{starting.neurite.neuronlist}
 \title{Returns the primary neurite of a neuron}
 \usage{
-primary.neurite(someneuron, k = 100)
+primary.neurite(x, ...)
 
-primary.neurite.neuron(neuron, resample = 1, ...)
+\method{primary.neurite}{neuron}(x, resample = 1, ...)
 
-primary.neurite.neuronlist(someneuronlist, ...)
+\method{primary.neurite}{neuronlist}(x, ...)
 
-longestpathfromsoma(n, UseStartPoint = TRUE, SpatialWeights = TRUE,
-  invert = FALSE, rval = c("neuron", "length", "ids"), model = NULL)
+starting.neurite(x, k, ...)
+
+\method{starting.neurite}{neuron}(x, k = 100, ...)
+
+\method{starting.neurite}{neuronlist}(x, k = 100, ...)
 }
 \arguments{
-\item{neuron}{a neuron object}
+\item{x}{a neuron or neuronlist object}
+
+\item{...}{additional arguments passed to methods}
 
 \item{resample}{The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.}
 
-\item{...}{additional arguments passed to methods}
+\item{k}{the number of nodes from the soma to include}
 }
 \value{
 A neuron pruned to its primary dendrite

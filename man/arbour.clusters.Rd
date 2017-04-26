@@ -22,11 +22,11 @@ arbours.neuron(arbourcluster, ...)
 arbours(arbourcluster, ...)
 }
 \arguments{
-\item{x}{A neuronlist that has been processed by flow.centrality()}
+\item{x}{a neuronlist that has been processed by flow.centrality()}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{arbourlist}{A neuronlist produced from arbour.custers}
+\item{arbourcluster}{a neuronlist produced from arbour.custers}
 }
 \value{
 Segmented arbours as a neuronlist object, complete with  synaptic information relevant to that fragment. If a neuronlist is given, subsequently plotting the neuronlist will not reveal the fragments. However, plotting individual neurons double indexed in the lists will. arbours() returns a neurinlist, where each entry is an arbour fragment with a unique skid and name.

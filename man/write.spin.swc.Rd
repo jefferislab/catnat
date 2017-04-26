@@ -12,7 +12,7 @@ write.spin.swc(neuron, file)
 \arguments{
 \item{neuron}{a neuron object}
 
-\item{targets}{secodn set of neurons}
+\item{file}{file path to which to write output}
 
 \item{...}{additional arguments passed to methods}
 }

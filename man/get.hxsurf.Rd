@@ -8,6 +8,8 @@ get.hxsurf(filename, RegionNames = NULL, RegionChoice = "both",
   FallbackRegionCol = "grey", Verbose = FALSE, ...)
 }
 \arguments{
+\item{filename}{file path from which to read}
+
 \item{RegionNames}{Character vector specifying which regions should be read from file. Default value of NULL => all regions}
 
 \item{RegionChoice}{Whether the Inner or Outer material, or both (default), should define the material of the patch. See details}
@@ -17,8 +19,6 @@ get.hxsurf(filename, RegionNames = NULL, RegionChoice = "both",
 \item{Verbose}{Print status messages during parsing when TRUE}
 
 \item{...}{additional arguments passed to methods}
-
-\item{someneuronlist}{a neuronlist or neuron object}
 }
 \value{
 Someneuronlist with cell sidedness in the metadata

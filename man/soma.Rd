@@ -22,13 +22,13 @@ somaid(x, ...)
 
 \method{somaid}{neuronlist}(x, ...)
 
-\method{somaid}{neuron}(x)
+\method{somaid}{neuron}(x, ...)
 
 somapos(x, ...)
 
 \method{somapos}{neuronlist}(x, ...)
 
-\method{somapos}{neuron}(n)
+\method{somapos}{neuron}(x)
 }
 \arguments{
 \item{x}{a neuron or neuronlist object}

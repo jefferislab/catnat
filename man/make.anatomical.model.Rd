@@ -11,17 +11,19 @@ make.anatomical.model(someneuronlist, substrate = c("connectors", "cable",
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}
 
-\item{substrate}{Whether to make the model based off of connectors, neuron cable or both}
+\item{substrate}{whether to make the model based off of connectors, neuron cable or both}
 
-\item{maxdistance}{For automated cluster identification. Maximum distance at which nodes can be part of a cluster}
+\item{maxdistance}{for automated cluster identification. Maximum distance at which nodes can be part of a cluster}
 
-\item{groupsize}{An integer number of nearest neighbours to find using nabor::knn()}
+\item{groupsize}{an integer number of nearest neighbours to find using nabor::knn()}
 
-\item{alpha}{A single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive}
+\item{alpha}{a single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive}
 
-\item{chosen.points}{Whether to feed the function pre-chosen points. A matrix for 3D points}
+\item{auto.selection}{whether to try and remove points based on interactively chosen values for 'groupsize' and 'maxdistance'}
 
-\item{selection}{Whether or not to interactively select values for maxdistance and groupsize.}
+\item{chosen.points}{whether to feed the function pre-chosen points. A matrix for 3D points}
+
+\item{selection}{whether or not to interactively select values for maxdistance and groupsize.}
 
 \item{...}{additional arguments passed to methods}
 }

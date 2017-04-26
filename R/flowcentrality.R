@@ -176,11 +176,17 @@ flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","cent
 #'
 #' @param someneuronlist a neuronlist or neuron object that has been modified by flow.centrality
 #' @param col colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.
-#' @param primary.dendrite Type of object for Deformetrica deformation. See Deformetrica's documentation. Default is appropriate for neuron skeletons.
 #' @param WithConnectors whether ot plot the anatomical location of pre (red) and post (cyan) synapses.
 #' @param soma whether to plot a soma, and what the radius should be
 #' @param WithNodes whether to plot branch points
 #' @param highflow wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)
+#' @param Verbose logical indicating that info about each selected neuron should be printed (default TRUE)
+#' @param Wait logical indicating that there should be a pause between each displayed neuron
+#' @param sleep time to pause between each displayed neuron when Wait=TRUE
+#' @param extrafun an optional function called when each neuron is plotted, with two arguments: the current neuron name and the current selected neurons
+#' @param selected_file an optional path to a yaml file that already contains a selection
+#' @param selected_col the color in which selected neurons (such as those specified in selected_file) should be plotted
+#' @param yaml a logical indicating that selections should be saved to disk in (human-readable) yaml rather than (machine-readable) rda format
 #' @param ... additional arguments passed to methods.
 #'
 #' @return Plots coloured neuron(s)

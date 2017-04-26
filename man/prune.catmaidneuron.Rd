@@ -19,7 +19,7 @@
 
 \item{return.indices}{Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)}
 
-\item{...}{additional arguments passed to methods.}
+\item{...}{additional arguments passed to methods}
 }
 \value{
 A pruned neuron object

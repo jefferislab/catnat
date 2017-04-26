@@ -56,21 +56,6 @@ assignsides.l1 <- function(db, nan2microns = F){
 }
 
 
-primary.neurite <- function(someneuron, k = 100){      # Find the first 100 points of the primary neurite
-  som = soma.neuron(someneuron)
-  if (is.na(som[1])){
-    if (length(someneuron[[1]]$tags$soma[[1]])>0){
-      som = matrix(xyzmatrix(someneuron)[someneuron[[1]]$d$PointNo%in%someneuron[[1]]$tags$soma,], ncol = 3)
-    }else{
-      som = matrix(xyzmatrix(someneuron)[someneuron[[1]]$StartPoint,], ncol = 3)
-    }
-  }
-  p = nat::xyzmatrix(someneuron)
-  n = nabor::knn(p, som, ifelse(nrow(p)>k,k,nrow(p)))
-  m = p[c(n$nn.idx),]
-}
-
-
 assignside.names <- function(someneuronlist){
   sdf=as.data.frame(someneuronlist)
   sdf=transform(sdf, side=factor(ifelse(grepl("right|Right|_r$|R$|r$|left|Left|_l$|L$|l$", name),ifelse(grepl("right|Right|_r|R$|r$", name),"R","L"), "NA")))

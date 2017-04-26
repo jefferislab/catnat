@@ -5,6 +5,9 @@
 #' @description Assigns cell body side based in neuron name.
 #'
 #' @param fcneurons a vectors of valid FlyCircuit neuron ids
+#' @param xform_version the version of nat.templatebrains::xform_brain to use
+#' @param female whether the neurons to be transformed are female (TRUE) or male (FALSE)
+#' @param x some neuron or neuronlist
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space
@@ -27,11 +30,11 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
 }
 
 #' @rdname get.skeleton.from.flycircuit
-reroot.flycircuit.neuron <- function(neuron){
-  neuron =as.neuron(as.ngraph(neuron), origin = which(neuron$d$Label==4))
-  neuron$d$Label = 0
-  neuron$d$Label[neuron$StartPoint] = 1
-  neuron
+reroot.flycircuit.neuron <- function(x){
+  x =as.neuron(as.ngraph(x), origin = which(x$d$Label==4))
+  x$d$Label = 0
+  x$d$Label[x$StartPoint] = 1
+  x
 }
 
 #' @rdname get.skeleton.from.flycircuit
@@ -76,6 +79,7 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 #' @description manually cycle through and assign a label to points in a neuron to mark out axonic, dednritic and mixed/uncertain cable
 #'
 #' @param someneuronlist a neuron/neuronlist object
+#' @param resample the unit lengths to which neurons should be resampled
 #' @param ... additional arguments passed to methods
 #'
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
@@ -250,7 +254,10 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
 #' and δ is the expected distance in um that is considered 'close'.
 #'
 #' @param neurons first set of neurons
-#' @param targets secodn set of neurons
+#' @param targets second set of neurons
+#' @param neuropil an as3d object of the neuropil in which to consider connectivity. Defaults to whole brain.
+#' @param delta the distance (in um) at which a synapse might occur
+#' @param split with a CATMAID neuron, whether or not to split the neuron using flow centrality
 #' @param ... additional arguments passed to methods
 #'
 #' @return a matrix of 3D points
@@ -345,26 +352,27 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
   return(m)
 }
 
-#' Generate a connectivity matrix based on euclidean distance between points
+#' Calculate the cable length inside of different neuropils in a segmented .surf brain
 #'
-#' @description Generates an 'overlap matrix' of overlap scores between neurons in the 'neurons' and 'targets' pools.
-#' For every point in a given neuron in 'neurons', a distance score is calculated to every point in a neuron in 'targets'.
-#' The sum of this score is added to the final output matrix. The score is calculated as e(-d^2/2δ^2), where d is the euclidean distance between the two points,
-#' and δ is the expected distance in um that is considered 'close'.
+#' @description Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 #'
-#' @param neurons first set of neurons
-#' @param targets second set of neurons
+#' @param x a set of neurons
+#' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
+#' @param method whether to use the neurons' axons or dendrites, or both
+#' @param stepsize the unit to which neurons should be resampled for counting
+#' @param min.endpoints the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it
+#' @param alpha the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion
 #' @param ... additional arguments passed to methods
 #'
 #' @return a matrix of 3D points
 #' @export
-cable.inside.neuropils<-function(neuron, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
+cable.inside.neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuron <- function(neuron, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
+cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
-  neuron = resample(neuron, stepsize = stepsize)
+  neuron = resample(x, stepsize = stepsize)
   targets = c(0,2,3,8)
   if (method=="axons"){targets = c(2)}
   if (method=="dendrites"){targets = c(3)}
@@ -383,8 +391,8 @@ cable.inside.neuropils.neuron <- function(neuron, brain = nat.flybrains::FCWBNP.
 }
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuronlist <- function(someneuronlist, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1,min.endpoints = 2,alpha=30){
-  nlapply(someneuronlist, cable.inside.neuropils.neuron, brain=brain, method=method,stepsize=stepsize)
+cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1,min.endpoints = 2,alpha=30){
+  nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method,stepsize=stepsize)
 }
 
 
@@ -394,7 +402,7 @@ cable.inside.neuropils.neuronlist <- function(someneuronlist, brain = nat.flybra
 #' One can also write separate files for a neuron's axon, dendrite and other cable
 #'
 #' @param neuron a neuron object
-#' @param targets secodn set of neurons
+#' @param file file path to which to write output
 #' @param ... additional arguments passed to methods
 #'
 #' @export
@@ -485,6 +493,7 @@ write.spin.swc <- function(neuron, file){
 #'
 #' @param neuron a neuron to plot
 #' @param skids the skeleton ids of neurons with which synapses are to be shown. Defaults to all partners.
+#' @param col the colour of the neuron skeleton
 #' @param inputs whether or not to show input synapses are to be shown
 #' @param outputs whether or not output synapses are to be shown
 #' @param printout whether or not to plot a basic legend to indicate what colours mean which neuron
@@ -709,3 +718,4 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   nblast.backward = nat.nblast::nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
   (nblast.forward+t(nblast.backward))/2
 }
+

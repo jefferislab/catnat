@@ -8,11 +8,11 @@ downstream.deletion.test(someneuronlist, names = c("Alex Bates",
   "Ruairi Roberts"), ...)
 }
 \arguments{
+\item{someneuronlist}{a neuronlist object. Should be the downstream partners of (a) neuron(s) of interest}
+
 \item{names}{Full names of tracers to consider}
 
 \item{...}{additional arguments passed to methods.}
-
-\item{someneuron}{a neuronlist object. Should be the downstream partners of (a) neuron(s) of interest}
 }
 \value{
 The percentage of downstream singlet nodes named tracers have contributed to neuron in
