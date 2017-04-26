@@ -6,14 +6,14 @@
 \alias{napplyTransform.neuronlist}
 \title{Apply a transform to a neruon/neuronlist}
 \usage{
-napplyTransform(someneuronlist, trafo, inverse = F, ...)
+napplyTransform(x, trafo, inverse = F, ...)
 
-\method{napplyTransform}{neuron}(neuron, trafo, inverse = F, ...)
+\method{napplyTransform}{neuron}(x, trafo, inverse = F, ...)
 
-\method{napplyTransform}{neuronlist}(someneuronlist, trafo, inverse = F, ...)
+\method{napplyTransform}{neuronlist}(x, trafo, inverse = F, ...)
 }
 \arguments{
-\item{someneuronlist}{a neuron/neuronlist object}
+\item{x}{a neuron/neuronlist object}
 
 \item{trafo}{A valid transformation for Morpho:applyTransform}
 

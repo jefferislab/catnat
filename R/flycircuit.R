@@ -46,29 +46,29 @@ Chiang2FCWB <- function(x, female = grepl("-F-",x), xform_version=1) {
 #'
 #' @description Apply a transform to a neruon/neuronlist object using Morpho::applyTransform
 #'
-#' @param someneuronlist a neuron/neuronlist object
+#' @param x a neuron/neuronlist object
 #' @param trafo A valid transformation for Morpho:applyTransform
 #' @param inverse whether to calculate the inverse of trafo
 #' @param ... additional arguments passed to methods
 #'
 #' @return Transformed neuron/neuronlist object
 #' @export
-napplyTransform<-function(someneuronlist, trafo, inverse = F, ...) UseMethod("napplyTransform")
+napplyTransform<-function(x, trafo, inverse = F, ...) UseMethod("napplyTransform")
 
 #' @export
 #' @rdname napplyTransform
-napplyTransform.neuron <- function(neuron, trafo, inverse = F,...){
-  xyzmatrix(neuron$d)<-Morpho::applyTransform(xyzmatrix(neuron$d), trafo = trafo, inverse = inverse)
-  if (!is.null(neuron$connectors)){
-    xyzmatrix(neuron$connectors)<-Morpho::applyTransform(xyzmatrix(neuron$connectors), trafo = trafo, inverse = inverse)
+napplyTransform.neuron <- function(x, trafo, inverse = F,...){
+  xyzmatrix(x$d)<-Morpho::applyTransform(xyzmatrix(x$d), trafo = trafo, inverse = inverse)
+  if (!is.null(x$connectors)){
+    xyzmatrix(x$connectors)<-Morpho::applyTransform(xyzmatrix(x$connectors), trafo = trafo, inverse = inverse)
   }
-  neuron
+  x
 }
 
 #' @export
 #' @rdname napplyTransform
-napplyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F,...){
-  nlapply(someneuronlist, napplyTransform.neuron, trafo, inverse)
+napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
+  nlapply(x, napplyTransform.neuron, trafo, inverse)
 }
 
 #' Assign axon/dendrite split to skeletons
@@ -84,10 +84,10 @@ napplyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F,...){
 assign.cable.polarity <- function(someneuronlist,resample=1,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
   for (neuron in 350:length(someneuronlist)){
-    clear3d();plot3d(FCWB)
+    rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB)
     print(neuron)
     print(names(someneuronlist[neuron]))
-    plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F)
+    rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F)
     cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
     points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
     progress = readline(prompt="Change? y/n   ")
@@ -97,9 +97,9 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 2}
-        clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
+        rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
-        points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
+        rgl::points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
         continue = readline(prompt="Select again? y/n   ")
         if (nrow(s)>0){if (continue=="y"){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 0}}
       }
@@ -108,9 +108,9 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 3}
-        clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
+        rgl::clear3d();rgl::plot3d(nat.templatebrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
-        points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
+        rgl::points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
         continue = readline(prompt="Select again? y/n   ")
         if (nrow(s)>0){if (continue=="y"){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 0}}
       }
@@ -119,9 +119,9 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d = someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 8}
-        clear3d();plot3d(FCWB);plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
+        rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
-        points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
+        rgl::points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
         continue = readline(prompt="Select again? y/n   ")
         if (nrow(s)>0){if (continue=="y"){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 0}}
       }
@@ -135,7 +135,7 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       neuron
     }
     someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
-    clear3d()
+    rgl::clear3d()
   }
   someneuronlist
 }
@@ -145,56 +145,56 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
 #'
 #' @description Extract axonic/dendritic points/endpoints from a neuron/neuronlist object
 #'
-#' @param someneuronlist a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes
+#' @param x a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes
 #' @param ... additional arguments passed to methods
 #'
 #' @return a matrix of 3D points
 #' @export
 #' @rdname extract.cable
-axonic.points<-function(someneuronlist, ...) UseMethod("axonic.points")
+axonic.points<-function(x, ...) UseMethod("axonic.points")
 #' @export
 #' @rdname extract.cable
-dendritic.points<-function(someneuronlist, ...) UseMethod("dendritic.points")
+dendritic.points<-function(x, ...) UseMethod("dendritic.points")
 #' @export
 #' @rdname extract.cable
-mixed.points<-function(someneuronlist, ...) UseMethod("mixed.points")
+mixed.points<-function(x, ...) UseMethod("mixed.points")
 #' @rdname extract.cable
-axonic.points.neuron <- function(neuron){
-  points=neuron$d
+axonic.points.neuron <- function(x){
+  points=x$d
   xyzmatrix(points[points$Label%in%c(-2,2),])
 }
 #' @rdname extract.cable
-dendritic.points.neuron <- function(neuron){
-  points=neuron$d
+dendritic.points.neuron <- function(x){
+  points=x$d
   xyzmatrix(points[points$Label%in%c(-3,3),])
 }
 #' @rdname extract.cable
-mixed.points.neuron <- function(neuron){ # Mised also means that I do not know
-  points=neuron$d
+mixed.points.neuron <- function(x){ # Mised also means that I do not know
+  points=x$d
   xyzmatrix(points[points$Label%in%c(8),])
 }
 #' @rdname extract.cable
-dendritic.points.neuronlist <- function(someneuronlist){
-  do.call(rbind,nlapply(someneuronlist,dendritic.points.neuron))
+dendritic.points.neuronlist <- function(x){
+  do.call(rbind,nlapply(x,dendritic.points.neuron))
 }
 #' @rdname extract.cable
-axonic.points.neuronlist <- function(someneuronlist){
-  do.call(rbind,nlapply(someneuronlist,axonic.points.neuron))
+axonic.points.neuronlist <- function(x){
+  do.call(rbind,nlapply(x,axonic.points.neuron))
 }
 #' @rdname extract.cable
-mixed.points.neuronlist <- function(someneuronlist){
-  do.call(rbind,nlapply(someneuronlist,mixed.points.neuron))
+mixed.points.neuronlist <- function(x){
+  do.call(rbind,nlapply(x,mixed.points.neuron))
 }
 #' @export
 #' @rdname extract.cable
-axonal.endings <- function(neuron){
-  points=neuron$d[nat::endpoints(neuron)[which(endpoints(neuron)!=rootpoints(neuron))],]
+axonal.endings <- function(x){
+  points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
   xyzmatrix(points[points$Label%in%c(-2,2),])
 }
 #' @export
 #' @rdname extract.cable
-dendritic.endings <- function(neuron){
-  points=neuron$d[nat::endpoints(neuron)[which(endpoints(neuron)!=rootpoints(neuron))],]
+dendritic.endings <- function(x){
+  points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
   xyzmatrix(points[points$Label%in%c(-3,3),])
 }
 
@@ -216,8 +216,8 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
     print(n)
     w = someneuronlist[[n]]
     print(names(someneuronlist[n]))
-    if(!is.null(brain)){plot3d(brain)}
-    plot3d(w, soma = T)
+    if(!is.null(brain)){rgl::plot3d(brain)}
+    rgl::plot3d(w, soma = T)
     eps.xyz=w$d[nat::endpoints(w),]
     progress =F
     while(progress == F){
@@ -231,11 +231,11 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
         message("Multiple end points selected, try again")
       }else{
         corrected =as.neuron(as.ngraph(w), origin = selected.point)
-        plot3d(corrected, soma = T, col = "blue")
+        rgl::plot3d(corrected, soma = T, col = "blue")
         progress = readline(prompt="Good enough? T/F  ")
       }
     }
-    clear3d()
+    rgl::clear3d()
     correctedsomas = c(correctedsomas, as.neuronlist(corrected))
   }
   attr(correctedsomas, "df") = attr(someneuronlist, "df")
@@ -358,10 +358,10 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
-cable.inside.neuropils<-function(neuron, brain = FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
+cable.inside.neuropils<-function(neuron, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuron <- function(neuron, brain = FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
+cable.inside.neuropils.neuron <- function(neuron, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
   neuron = resample(neuron, stepsize = stepsize)
@@ -383,7 +383,7 @@ cable.inside.neuropils.neuron <- function(neuron, brain = FCWBNP.surf, method = 
 }
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuronlist <- function(someneuronlist, brain = FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1,min.endpoints = 2,alpha=30){
+cable.inside.neuropils.neuronlist <- function(someneuronlist, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1,min.endpoints = 2,alpha=30){
   nlapply(someneuronlist, cable.inside.neuropils.neuron, brain=brain, method=method,stepsize=stepsize)
 }
 
@@ -494,8 +494,8 @@ write.spin.swc <- function(neuron, file){
 #' @importFrom graphics legend plot plot.new
 synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T, outputs = T,printout=F){
   if(is.neuronlist(neuron)){neuron = neuron[[1]]}
-  plot3d(neuron,WithNodes=F,soma=T,col=col,lwd=2)
-  plot.new()
+  rgl::plot3d(neuron,WithNodes=F,soma=T,col=col,lwd=2)
+  graphics::plot.new()
   if (inputs)
     inputs = neuron$connectors[neuron$connectors$prepost==1,]
   c = subset(catmaid_get_connectors(inputs$connector_id),post==neuron$skid)[,-3]
@@ -606,7 +606,7 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @importFrom nat.templatebrains xform_brain
 assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = catnat::most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL){
   most.lhns = subset(most.lhns, pnt!="notLHproper")
-  if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = FCWB, reference = brain)}
+  if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = nat.flybrains::FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
   someneuronlist.pnts = suppressWarnings(primary.neurite.neuronlist(someneuronlist,resample=1))
   message("Generating dotprops objects")
@@ -632,8 +632,8 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most
   anatomy.group = cell.type = c()
   for (n in 1:length(someneuronlist)){
     cluster.dps = subset(most.lhns.dps, pnt==pct[n])
-    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.dps[n], target = cluster.dps, UseAlpha = T),.parallel=TRUE)
-    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.dps[n], query = cluster.dps, UseAlpha = T),.parallel=TRUE)
+    results1 = as.matrix(nat.nblast::nblast(query = someneuronlist.dps[n], target = cluster.dps, UseAlpha = T,.parallel=TRUE))
+    results2 = as.matrix(nat.nblast::nblast(target = someneuronlist.dps[n], query = cluster.dps, UseAlpha = T,.parallel=TRUE))
     results = (results1+results2)/2
     anatomy.group = c(anatomy.group,cluster.dps[,"anatomy.group"][apply(results,2,which.max)])
     cell.type = c(cell.type,cluster.dps[,"cell.type"][apply(results,2,which.max)])
@@ -662,11 +662,9 @@ scan_lh_matches <-function(someassignedneuronlist){
     #rgl::plot3d(subset(most.lhns,pnt==pt),col="grey",soma=T)
     message("Press ENTER to continue")
     progress = readline()
-    clear3d()
+    rgl::clear3d()
   }
 }
-
-
 
 #' Generate a dps object without dropping small neurons
 #'
@@ -711,9 +709,3 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   nblast.backward = nat.nblast::nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
   (nblast.forward+t(nblast.backward))/2
 }
-
-
-
-
-
-

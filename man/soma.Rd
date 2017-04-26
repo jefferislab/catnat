@@ -22,7 +22,7 @@ somaid(x, ...)
 
 \method{somaid}{neuronlist}(x, ...)
 
-\method{somaid}{neuron}(n)
+\method{somaid}{neuron}(x)
 
 somapos(x, ...)
 
@@ -31,7 +31,9 @@ somapos(x, ...)
 \method{somapos}{neuron}(n)
 }
 \arguments{
-\item{...}{additional arguments passed to methods.}
+\item{x}{a neuron or neuronlist object}
+
+\item{...}{additional arguments passed to methods}
 }
 \value{
 Either the soma's 3D coorindates (soma) its id number (somaid) or its posiiton in the neuron's skeleton (somapos)

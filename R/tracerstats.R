@@ -53,30 +53,6 @@ tracer.plot <- function(names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis"
   easyGgplot2::ggplot2.multiplot(p2,p1,cols=1)
 }
 
-
-#' @export
-#' @rdname tracer.plot
-summarise_contribution <- function(skids, auth=5.0, ack=3000, ...) {
-  ul=catmaid::catmaid_get_user_list()
-  uls=ul[,c('full_name','id')]
-  stats=catmaid::catmaid_get_contributor_stats(skids, ...)
-  stats.summ <- inner_join(stats$node_contributors, uls, by='id') %>%
-    dplyr::arrange(desc(n)) %>%
-    dplyr::mutate(pct=n/sum(n)*100, cpct=cumsum(pct)) %>%
-    dplyr::filter(n>=ack) %>%
-    dplyr::mutate(action=ifelse(pct>=auth, "auth", "ack"))
-  stats.summ
-}
-
-#' @export
-#' @rdname tracer.plot
-write_ack <- function(x, ...) {
-  with(subset(x, action=='ack'),
-       cat("We thank", paste(full_name, collapse=", "),
-           "for contributing", round(sum(pct), digits = 1),
-           "% of reconstructed arbour cable."))
-}
-
 #' @export
 #' @rdname tracer.plot
 tracer.treenodes.plot <- function(skids = NULL, names = c("Alex Bates","Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"), from.date = "2016-04-01", to.date = Sys.Date(), ...){
@@ -139,16 +115,14 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
   }
 }
 
+#applyTransform.neuron <- function(neuron, trafo, inverse = F){
+#  xyzmatrix(neuron$d)<-Morpho::applyTransform(xyzmatrix(neuron$d), trafo = trafo, inverse = inverse)
+#  neuron
+#}
 
-
-applyTransform.neuron <- function(neuron, trafo, inverse = F){
-  xyzmatrix(neuron$d)<-Morpho::applyTransform(xyzmatrix(neuron$d), trafo = trafo, inverse = inverse)
-  neuron
-}
-
-applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
-  nlapply(someneuronlist, applyTransform.neuron, trafo, inverse)
-}
+#applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
+#  nlapply(someneuronlist, applyTransform.neuron, trafo, inverse)
+#}
 
 
 

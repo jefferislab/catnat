@@ -14,30 +14,30 @@
 \alias{dendritic.endings}
 \title{Extract axonic/dendritic points from a neuron/neuronlist}
 \usage{
-axonic.points(someneuronlist, ...)
+axonic.points(x, ...)
 
-dendritic.points(someneuronlist, ...)
+dendritic.points(x, ...)
 
-mixed.points(someneuronlist, ...)
+mixed.points(x, ...)
 
-\method{axonic.points}{neuron}(neuron)
+\method{axonic.points}{neuron}(x)
 
-\method{dendritic.points}{neuron}(neuron)
+\method{dendritic.points}{neuron}(x)
 
-\method{mixed.points}{neuron}(neuron)
+\method{mixed.points}{neuron}(x)
 
-\method{dendritic.points}{neuronlist}(someneuronlist)
+\method{dendritic.points}{neuronlist}(x)
 
-\method{axonic.points}{neuronlist}(someneuronlist)
+\method{axonic.points}{neuronlist}(x)
 
-\method{mixed.points}{neuronlist}(someneuronlist)
+\method{mixed.points}{neuronlist}(x)
 
-axonal.endings(neuron)
+axonal.endings(x)
 
-dendritic.endings(neuron)
+dendritic.endings(x)
 }
 \arguments{
-\item{someneuronlist}{a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes}
+\item{x}{a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes}
 
 \item{...}{additional arguments passed to methods}
 }

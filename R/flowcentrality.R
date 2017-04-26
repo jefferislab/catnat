@@ -39,21 +39,21 @@
 #'   = PN).
 #' @export
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
-flow.centrality <-function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
+flow.centrality <-function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
+flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
-  el = neuron$d[neuron$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
-  n = nat::ngraph(data.matrix(el[,2:1]), neuron$d$PointNo, directed = TRUE, xyz = nat::xyzmatrix(neuron$d),
-                  diam = neuron$d$W) # Make ngraph object, but for centripetal, invert the el list
+  el = x$d[x$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
+  n = nat::ngraph(data.matrix(el[,2:1]), x$d$PointNo, directed = TRUE, xyz = nat::xyzmatrix(x$d),
+                  diam = x$d$W) # Make ngraph object, but for centripetal, invert the el list
   # Get comprehensive paths list
   leaves = which(igraph::degree(n, v = igraph::V(n), mode = "in")==0, useNames = T)
   root= which(igraph::degree(n, v = igraph::V(n), mode = "out")==0, useNames = T)
-  segs = neuron$SegList # Get the segment list
-  nodes = neuron$d # get neuron's node data
+  segs = x$SegList # Get the segment list
+  nodes = x$d # get neuron's node data
   nodes[,"post"] <- 0 # raw synapse number at this location
   nodes[,"pre"] <- 0 # raw synapse number at this location
   nodes[,"up.syns.in"] <- 0 # Here, we are going to culmulatively count synapses
@@ -61,13 +61,13 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   nodes[,"flow.cent"] <- 0 # We'll addd the score for each node here
   nodes[,"compartment"] <- 'dendrite'
   nodes = nodes[unlist(c(root, lapply(segs, function (x) x[-1]))),]
-  syns.in = neuron$connectors[neuron$connectors[,3]==1,][,1]
+  syns.in = x$connectors[x$connectors[,3]==1,][,1]
   if (polypre == T){
-    pres = neuron$connectors[neuron$connectors[,3]==0,][,2]
+    pres = x$connectors[x$connectors[,3]==0,][,2]
     pre.cons = catmaid_get_connectors(pres)$connector_id
-    syns.out = neuron$connectors[,1][match(pre.cons, neuron$connectors[,2])]
+    syns.out = x$connectors[,1][match(pre.cons, x$connectors[,2])]
   }else{
-    syns.out = neuron$connectors[neuron$connectors[,3]==0,][,1]
+    syns.out = x$connectors[x$connectors[,3]==0,][,1]
   }
   # Rearrange so nodes are the indices and we can count no. of synapses to which nodes connect
   point.no.in = rownames(nodes)[match(syns.in,nodes[,"PointNo"])]
@@ -158,16 +158,16 @@ flow.centrality.neuron <- function(neuron, mode = c("average","centrifugal","cen
   segregation.index = 1 - (entropy.score/control.score)
   if(is.na(segregation.index)) { segregation.index = 0 }
   # Add new data to object
-  neuron$d = nodes
-  neuron$AD.segregation.index = segregation.index
-  neuron$type = ifelse(segregation.index < 0.05, "interneuron", "PN")
-  neuron
+  x$d = nodes
+  x$AD.segregation.index = segregation.index
+  x$type = ifelse(segregation.index < 0.05, "interneuron", "PN")
+  x
 }
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(someneuronlist, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
-  neurons = nat::nlapply(someneuronlist, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
+flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
+  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
   neurons
 }
 

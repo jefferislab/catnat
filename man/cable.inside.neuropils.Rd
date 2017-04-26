@@ -6,17 +6,17 @@
 \alias{cable.inside.neuropils.neuronlist}
 \title{Generate a connectivity matrix based on euclidean distance between points}
 \usage{
-cable.inside.neuropils(neuron, brain = FCWBNP.surf, method = c("neurites",
-  "axons", "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30,
-  ...)
-
-\method{cable.inside.neuropils}{neuron}(neuron, brain = FCWBNP.surf,
+cable.inside.neuropils(neuron, brain = nat.flybrains::FCWBNP.surf,
   method = c("neurites", "axons", "dendrites"), stepsize = 0.1,
-  min.endpoints = 2, alpha = 30)
+  min.endpoints = 2, alpha = 30, ...)
+
+\method{cable.inside.neuropils}{neuron}(neuron,
+  brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
+  "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30)
 
 \method{cable.inside.neuropils}{neuronlist}(someneuronlist,
-  brain = FCWBNP.surf, method = c("neurites", "axons", "dendrites"),
-  stepsize = 0.1, min.endpoints = 2, alpha = 30)
+  brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
+  "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30)
 }
 \arguments{
 \item{...}{additional arguments passed to methods}
