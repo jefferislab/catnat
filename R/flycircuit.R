@@ -687,7 +687,7 @@ scan_lh_matches <-function(someassignedneuronlist){
 #' @export
 rescue.dps <- function(someneuronlist,resample=1,...){
   someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
-  no.points = sapply(someneuronlist.dps, function(x) nrow(nat::xyzmatrix(x)))
+  no.points = sapply(someneuronlist, function(x) nrow(nat::xyzmatrix(x)))
   tooshort = someneuronlist[!names(someneuronlist)%in%names(someneuronlist.dps)]
   tooshort.dps = nat::nlapply(tooshort, function(x) nat::dotprops(x, resample = summary(x)$cable.length/min(no.points), OmitFailures = F))
   someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
