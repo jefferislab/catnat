@@ -20,7 +20,6 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
       ids = c(ids, fcneurons[n])
     }
   }
-  # fcns = c(Chiang2FCWB(fcns[grepl("-F-",names(fcns))],sex="F"), Chiang2FCWB(fcns[grepl("-M-",names(fcns))],sex="M"))
   names(fcns) = ids
   fcns=Chiang2FCWB(fcns)
   fcns = nat::nlapply(fcns,reroot.flycircuit.neuron)
@@ -36,8 +35,8 @@ reroot.flycircuit.neuron <- function(neuron){
 }
 
 #' @rdname get.skeleton.from.flycircuit
-Chiang2FCWB <- function(x, sex = flycircuit::fc_sex(x), xform_version=1) {
-  template_to_use=ifelse(sex, "chiangf","chiangm")
+Chiang2FCWB <- function(x, female = grepl("-F-",x), xform_version=1) {
+  template_to_use=ifelse(female, "chiangf","chiangm")
   if(xform_version>1) template_to_use=paste0(template_to_use, xform_version)
   nat::nmapply(xform_brain, x, sample=template_to_use, MoreArgs = list(reference=nat.flybrains::FCWB))
 }
