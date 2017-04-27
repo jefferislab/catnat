@@ -680,16 +680,16 @@ scan_lh_matches <-function(someassignedneuronlist){
 #' @description  Generates a dotprops object, changing the resample size in order to make sure all neurons are kept
 #'
 #' @param someneuronlist a neuronlist object
-#' @param resample the desired resampling. Smaller neurons will have a lower resampling interval than this.
+#' @param resample.unit the desired resampling. Smaller neurons will have a lower resampling interval than this.
 #' @param ... additional arguments passed to methods
 #'
 #' @return a dotprops object
 #' @export
-rescue.dps <- function(someneuronlist,resample=1,...){
-  someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample, OmitFailures = T)
-  no.points = sapply(someneuronlist, function(x) nrow(nat::xyzmatrix(x)))
+rescue.dps <- function(someneuronlist,resample.unit=1,...){
+  someneuronlist.dps = nat::dotprops(someneuronlist, resample = resample.unit, OmitFailures = T)
+  no.points = summary(someneuronlist)$cable.length
   tooshort = someneuronlist[!names(someneuronlist)%in%names(someneuronlist.dps)]
-  tooshort.dps = nat::nlapply(tooshort, function(x) nat::dotprops(x, resample = summary(x)$cable.length/min(no.points), OmitFailures = F))
+  tooshort.dps = nat::nlapply(tooshort, function(x) nat::dotprops(x, resample = resample.unit/min(no.points), OmitFailures = F))
   someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
   someneuronlist.dps
 }
