@@ -4,12 +4,12 @@
 \alias{rescue.dps}
 \title{Generate a dps object without dropping small neurons}
 \usage{
-rescue.dps(someneuronlist, resample = 1, ...)
+rescue.dps(someneuronlist, resample.unit = 1, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object}
 
-\item{resample}{the desired resampling. Smaller neurons will have a lower resampling interval than this.}
+\item{resample.unit}{the desired resampling. Smaller neurons will have a lower resampling interval than this.}
 
 \item{...}{additional arguments passed to methods}
 }
