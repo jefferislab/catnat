@@ -4,7 +4,7 @@
 \name{primary.neurite.tracts}
 \alias{primary.neurite.tracts}
 \title{Lateral horn primary neurite tracts}
-\format{An object of class \code{neuronlist} (inherits from \code{list}) of length 28.}
+\format{An object of class \code{neuronlist} (inherits from \code{list}) of length 30.}
 \usage{
 primary.neurite.tracts
 }

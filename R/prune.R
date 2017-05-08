@@ -66,9 +66,10 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @importFrom nat prune
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
-  pruned = prune(neuron,target,maxdist=maxdist, keep = keep,
+  class(x) = c("neuron")
+  pruned = prune(x,target,maxdist=maxdist, keep = keep,
                  return.indices = return.indices)
-  pruned$connectors = neuron$connectors[neuron$connectors$treenode_id%in%pruned$d$PointNo,]
+  pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   pruned
 }
 
