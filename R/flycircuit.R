@@ -613,7 +613,7 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
 #' @return a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 #' @export
 #' @importFrom nat.templatebrains xform_brain
-assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = catnat::most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL, strahler=1){
+assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most.lhns.dps = catnat::most.lhns.dps, most.lhns.pnts.dps = catnat::most.lhns.pnts.dps, brain = NULL){
   most.lhns = subset(most.lhns, pnt!="notLHproper")
   if (!is.null(brain)){ most.lhns = xform_brain(most.lhns, sample = nat.flybrains::FCWB, reference = brain)}
   message("Generating primary neurites across the LHNs")
@@ -621,8 +621,8 @@ assign_lh_neuron <- function(someneuronlist, most.lhns = catnat::most.lhns, most
   message("Generating dotprops objects")
   most.lhns.dps = subset(most.lhns.dps, pnt!="notLHproper")
   most.lhns.pnts.dps = most.lhns.pnts.dps[most.lhns.pnts.dps[,"good.trace"]==T]
-  someneuronlist.dps = rescue.dps(someneuronlist, resample = 1,k=5)
-  someneuronlist.pnts.dps = rescue.dps(someneuronlist.pnts, resample = 1, k=5)
+  someneuronlist.dps = catnat::rescue.dps(someneuronlist, resample = 1,k=5)
+  someneuronlist.pnts.dps = catnat::rescue.dps(someneuronlist.pnts, resample = 1, k=5)
   # Now try to find the tract a neuron fits into
   message("Assigning primary neurites")
   if(length(someneuronlist.pnts.dps)!=length(someneuronlist)){warning("Neurons dropped!")}
@@ -693,7 +693,6 @@ rescue.dps <- function(someneuronlist,resample.unit=1,...){
   someneuronlist.dps = c(someneuronlist.dps,tooshort.dps)[names(someneuronlist)]
   someneuronlist.dps
 }
-
 
 #' NBlast two different sets of neurons forwards and backwards
 #'
