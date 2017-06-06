@@ -87,7 +87,7 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 #' @importFrom grDevices colorRampPalette
 assign.cable.polarity <- function(someneuronlist,resample=1,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-  for (neuron in 350:length(someneuronlist)){
+  for (neuron in 1:length(someneuronlist)){
     rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB)
     print(neuron)
     print(names(someneuronlist[neuron]))
@@ -112,7 +112,7 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 3}
-        rgl::clear3d();rgl::plot3d(nat.templatebrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
+        rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
         rgl::points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
         continue = readline(prompt="Select again? y/n   ")
@@ -133,14 +133,14 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
       print(neuron)
       progress = readline(prompt="Review? y/n   ")
     }
-    someneuronlist = nlapply(someneuronlist,resample,stepsize=resample)
-    correct.labels.neuron<-function(neuron){
-      neuron$d$Label[!neuron$d$Label%in%c(0:10)] = 0
-      neuron
-    }
-    someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
     rgl::clear3d()
   }
+  someneuronlist = nlapply(someneuronlist,nat::resample,stepsize=resample)
+  correct.labels.neuron<-function(neuron){
+    neuron$d$Label[!neuron$d$Label%in%c(0:10)] = 0
+    neuron
+  }
+  someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
   someneuronlist
 }
 
