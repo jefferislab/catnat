@@ -150,6 +150,7 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
 #' @description Extract axonic/dendritic points/endpoints from a neuron/neuronlist object
 #'
 #' @param x a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes
+#' @param mixed whether or not to include points assigned as uncertain or mixed polarity cable
 #' @param ... additional arguments passed to methods
 #'
 #' @return a matrix of 3D points
@@ -201,6 +202,47 @@ dendritic.endings <- function(x){
   points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
   xyzmatrix(points[points$Label%in%c(-3,3),])
 }
+#' @export
+#' @rdname extract.cable
+axonic.cable<-function(x, ...) UseMethod("axonic.cable")
+#' @export
+#' @rdname extract.cable
+dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
+#' @export
+#' @rdname extract.cable
+axonic.cable.neuron <- function(x,mixed=FALSE){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-2,2,8)
+  }else{
+    chosen = c(-2,2)
+  }
+  xyz = xyzmatrix(points[points$Label%in%chosen,])
+  nat::prune(x,target=xyz,keep="near",maxdist=0)
+}
+#' @export
+#' @rdname extract.cable
+dendritic.cable.neuron <- function(x,mixed = FALSE){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-3,3,8)
+  }else{
+    chosen = c(-3,3)
+  }
+  xyz = xyzmatrix(points[points$Label%in%chosen,])
+  nat::prune(x,target=xyz,keep="near",maxdist=0)
+}
+#' @export
+#' @rdname extract.cable
+axonic.cable.neuronlist <- function(x,mixed=FALSE){
+  nlapply(x,axonic.cable.neuron,mixed=mixed,OmitFailures = T)
+}
+#' @export
+#' @rdname extract.cable
+dendritic.cable.neuronlist <- function(x,mixed=FALSE){
+  nlapply(x,dendritic.cable.neuron,mixed=mixed,OmitFailures = T)
+}
+
 
 
 #' Re-root neurons to their soma
@@ -366,33 +408,36 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
-cable.inside.neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30, ...) UseMethod("cable.inside.neuropils")
+cable.inside.neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable.inside.neuropils")
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1, min.endpoints = 2,alpha=30){
+cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
-  neuron = resample(x, stepsize = stepsize)
   targets = c(0,2,3,8)
-  if (method=="axons"){targets = c(2)}
-  if (method=="dendrites"){targets = c(3)}
-  endings <- function(neuron){
-    points=neuron$d[nat::endpoints(neuron)[which(endpoints(neuron)!=rootpoints(neuron))],]
+  if (method=="axons"){targets = c(-2,2)}
+  if (method=="dendrites"){targets = c(-3,3)}
+  endings <- function(x){
+    points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
     xyzmatrix(points[points$Label%in%targets,])
   }
-  in.neuropil <- function(neuron,neuropil,stepsize =0.1, min.endpoints =2,alpha=30){
+  in.neuropil <- function(x,neuropil,min.endpoints =1,alpha=30){
     neuropil = alphashape3d::ashape3d(xyzmatrix(neuropil),alpha=alpha)
-    if(sum(alphashape3d::inashape3d(points=endings(neuron),as3d=neuropil))>min.endpoints){
-      points = neuron$d[neuron$d$Label%in%targets,]
-      sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil))
+    if(sum(alphashape3d::inashape3d(points=endings(x),as3d=neuropil))>min.endpoints){
+      points = x$d[x$d$Label%in%targets,]
+      #sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil))
+      points.in = points[alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil),]
+      pruned = tryCatch(prune(x,keep="near",maxdist=0,target=points.in),error = function(e)NULL)
+      if(!is.null(pruned)){summary(pruned)$cable.length
+        }else{0}
     }else{0}
   }
-  sapply(brain$RegionList, function(x) in.neuropil(neuron,neuropil=subset(brain, x),stepsize =stepsize, min.endpoints=min.endpoints,alpha=alpha))*stepsize
+  sapply(brain$RegionList, function(n) in.neuropil(x=x,neuropil=subset(brain, n),min.endpoints=min.endpoints,alpha=alpha))
 }
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), stepsize = 0.1,min.endpoints = 2,alpha=30){
-  nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method,stepsize=stepsize)
+cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
+  nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method)
 }
 
 
