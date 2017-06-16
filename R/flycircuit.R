@@ -398,7 +398,7 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @description Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 #'
-#' @param x a set of neurons
+#' @param x a set of neurons or, for points.in.neuropil a mxn matrix of 3D points
 #' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
 #' @param method whether to use the neurons' axons or dendrites, or both
 #' @param stepsize the unit to which neurons should be resampled for counting
@@ -438,6 +438,19 @@ cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
 #' @rdname cable.inside.neuropils
 cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
   nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method)
+}
+
+#' @rdname cable.inside.neuropils
+points.in.neuropil <- function(x, brain, alpha = 30, ...){
+  nps = brain$RegionList
+  df = cbind(as.data.frame(x),neuropil=0)
+  for (n in nps){
+    neuropil = subset(brain, n)
+    neuropil = alphashape3d::ashape3d(xyzmatrix(neuropil),alpha=alpha)
+    a = alphashape3d::inashape3d(points=nat::xyzmatrix(x),as3d=neuropil)
+    df$neuropil[which(a==T)] = n
+  }
+  df
 }
 
 
