@@ -230,7 +230,8 @@ dendritic.cable.neuron <- function(x,mixed = FALSE){
     chosen = c(-3,3)
   }
   xyz = xyzmatrix(points[points$Label%in%chosen,])
-  nat::prune(x,target=xyz,keep="near",maxdist=0)
+  d = nat::prune(x,target=xyz,keep="near",maxdist=0)
+  d$d$Label=3
 }
 #' @export
 #' @rdname extract.cable
