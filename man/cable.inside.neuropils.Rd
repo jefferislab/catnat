@@ -4,34 +4,37 @@
 \alias{cable.inside.neuropils}
 \alias{cable.inside.neuropils.neuron}
 \alias{cable.inside.neuropils.neuronlist}
+\alias{points.in.neuropil}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
 cable.inside.neuropils(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("neurites", "axons", "dendrites"), stepsize = 0.1,
-  min.endpoints = 2, alpha = 30, ...)
+  method = c("neurites", "axons", "dendrites"), min.endpoints = 1,
+  alpha = 30, ...)
 
 \method{cable.inside.neuropils}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("neurites", "axons", "dendrites"), stepsize = 0.1,
-  min.endpoints = 2, alpha = 30)
+  method = c("neurites", "axons", "dendrites"), min.endpoints = 1,
+  alpha = 30, ...)
 
 \method{cable.inside.neuropils}{neuronlist}(x,
   brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
-  "dendrites"), stepsize = 0.1, min.endpoints = 2, alpha = 30)
+  "dendrites"), min.endpoints = 2, alpha = 30, ...)
+
+\method{points}{in.neuropil}(x, brain, alpha = 30, ...)
 }
 \arguments{
-\item{x}{a set of neurons}
+\item{x}{a set of neurons or, for points.in.neuropil a mxn matrix of 3D points}
 
 \item{brain}{the .surf brainspace in which the neurons are registered, must be segmented into neuropils}
 
 \item{method}{whether to use the neurons' axons or dendrites, or both}
-
-\item{stepsize}{the unit to which neurons should be resampled for counting}
 
 \item{min.endpoints}{the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it}
 
 \item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion}
 
 \item{...}{additional arguments passed to methods}
+
+\item{stepsize}{the unit to which neurons should be resampled for counting}
 }
 \value{
 a matrix of 3D points

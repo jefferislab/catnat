@@ -149,7 +149,7 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
 #'
 #' @description Extract axonic/dendritic points/endpoints from a neuron/neuronlist object
 #'
-#' @param x a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes
+#' @param x a neuron/neuronlist object that has its axons/dendrites labelled in swc format in its neuron$d dataframes
 #' @param mixed whether or not to include points assigned as uncertain or mixed polarity cable
 #' @param ... additional arguments passed to methods
 #'

@@ -12,6 +12,12 @@
 \alias{mixed.points.neuronlist}
 \alias{axonal.endings}
 \alias{dendritic.endings}
+\alias{axonic.cable}
+\alias{dendritic.cable}
+\alias{axonic.cable.neuron}
+\alias{dendritic.cable.neuron}
+\alias{axonic.cable.neuronlist}
+\alias{dendritic.cable.neuronlist}
 \title{Extract axonic/dendritic points from a neuron/neuronlist}
 \usage{
 axonic.points(x, ...)
@@ -35,11 +41,25 @@ mixed.points(x, ...)
 axonal.endings(x)
 
 dendritic.endings(x)
+
+axonic.cable(x, ...)
+
+dendritic.cable(x, ...)
+
+\method{axonic.cable}{neuron}(x, mixed = FALSE)
+
+\method{dendritic.cable}{neuron}(x, mixed = FALSE)
+
+\method{axonic.cable}{neuronlist}(x, mixed = FALSE)
+
+\method{dendritic.cable}{neuronlist}(x, mixed = FALSE)
 }
 \arguments{
-\item{x}{a neuron/neuronlist object, which has its axons/dendrites labelled in swc format in its neuron$d dataframes}
+\item{x}{a neuron/neuronlist object that has its axons/dendrites labelled in swc format in its neuron$d dataframes}
 
 \item{...}{additional arguments passed to methods}
+
+\item{mixed}{whether or not to include points assigned as uncertain or mixed polarity cable}
 }
 \value{
 a matrix of 3D points
