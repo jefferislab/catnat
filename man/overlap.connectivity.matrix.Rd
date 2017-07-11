@@ -8,7 +8,7 @@
 overlap.connectivity.matrix(neurons, targets, neuropil = NULL, delta = 1)
 
 overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
-  delta = 1, split = TRUE)
+  delta = 1, split = FALSE, rval = c("score.matrix", "neuronlist"))
 }
 \arguments{
 \item{neurons}{first set of neurons}
@@ -20,6 +20,8 @@ overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
 \item{delta}{the distance (in um) at which a synapse might occur}
 
 \item{split}{with a CATMAID neuron, whether or not to split the neuron using flow centrality}
+
+\item{rval}{whether to return an overlap score matrix or a neuronlist in which every point is given an overlap score against each of the target neurons}
 
 \item{...}{additional arguments passed to methods}
 }

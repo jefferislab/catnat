@@ -302,6 +302,7 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
 #' @param neuropil an as3d object of the neuropil in which to consider connectivity. Defaults to whole brain.
 #' @param delta the distance (in um) at which a synapse might occur
 #' @param split with a CATMAID neuron, whether or not to split the neuron using flow centrality
+#' @param rval whether to return an overlap score matrix or a neuronlist in which every point is given an overlap score against each of the target neurons
 #' @param ... additional arguments passed to methods
 #'
 #' @return a matrix of 3D points
@@ -334,7 +335,7 @@ overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1
 }
 
 #' @rdname overlap.connectivity.matrix
-overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,delta =1, split = TRUE){
+overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,delta =1, split = FALSE, rval = c("score.matrix","neuronlist")){
   if (split==TRUE){
     message("Calculating flow centrality, splitting neurons")
     neurons.f = flow.centrality(neurons)
@@ -356,12 +357,21 @@ overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,
     message("Working on neuron ", n,"/",length(neurons))
     a = xyzmatrix(neurons[[n]])
     targets.d = nlapply(targets, xyzmatrix)
-    s = sapply(targets.d, function(x)sum(exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2)))) # Score similar to that in Schlegel et al. 2015
-    score.matrix[n,] = s
+    if(rval=="neuronlist"){
+      s = sapply(targets.d, function(x)exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2))) # Score similar to that in Schlegel et al. 2015
+      rms = do.call(cbind,lapply(s, rowSums))
+      neurons[[n]]$d = cbind(neurons[[n]]$d, rms)
+    }else{
+      s = sapply(targets.d, function(x)sum(exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2)))) # Score similar to that in Schlegel et al. 2015
+      score.matrix[n,] = s
+    }
   }
-  score.matrix
+  if(rval=="neuronlist"){
+    return(neurons)
+  }else{
+   return(score.matrix)
+  }
 }
-
 
 polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T){
   m = matrix(nrow = length(someneuronlist), ncol = length(someneuronlist))
@@ -777,4 +787,12 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   nblast.backward = nat.nblast::nblast(query=group2,target=group1,UseAlpha=UseAlpha,normalised=normalised)
   (nblast.forward+t(nblast.backward))/2
 }
+
+
+
+pd2b1 = c("Cha-F-000421","Cha-F-800096","121015c0","121016c0","131009c4")
+
+
+
+
 

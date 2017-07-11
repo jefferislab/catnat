@@ -20,6 +20,10 @@
 \item{return.indices}{Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)}
 
 \item{...}{additional arguments passed to methods}
+
+\item{verticestoprune}{an integer vector describing which vertices to remove}
+
+\item{invert}{whether to keep vertices rather than dropping them (default FALSE)}
 }
 \value{
 A pruned neuron object

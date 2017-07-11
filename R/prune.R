@@ -59,6 +59,8 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @param maxdist The threshold distance for keeping points
 #' @param keep Whether to keep points in x that are near or far from the target
 #' @param return.indices Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)
+#' @param verticestoprune	an integer vector describing which vertices to remove
+#' @param invert	whether to keep vertices rather than dropping them (default FALSE)
 #' @param ... additional arguments passed to methods
 #' @return A pruned neuron object
 #' @export
@@ -72,4 +74,45 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   pruned
 }
+
+
+#' @aliases prune_vertices
+#' @importFrom nat prune_vertices
+prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
+  class(x) = c("neuron")
+  pruned = prune_vertices(x,verticestoprune,invert = invert)
+  pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
+  pruned
+}
+
+#' Prune a neuron interactively
+#'
+#' @description Remove points from a neuron, keeping the root node intact
+#'
+#' @param x a neuron/neuronlist object
+#' @param ... additional arguments passed to methods
+#' @return A pruned neuron/neuronlist object
+#' @export
+#' @rdname prune_online
+prune_online <-function(x, ...) UseMethod("prune_online")
+
+#' @export
+#' @rdname prune_online
+prune_online.neuron <- function(x, ...){
+  continue = "no"
+  while(!continue%in%c("y","yes")){
+    selected = catnat:::select.points(nat::xyzmatrix(x))
+    neuron = nat::prune(x, target = selected, keep = "near", maxdist = 0)
+    rgl::plot3d(x, col ="grey")
+    continue = readline("Continue? yes/no ")
+  }
+  x
+}
+
+#' @export
+#' @rdname prune_online
+prune_online.neuronlist <- function(x, ...){
+  nat::nlapply(x,prune_online.neuron)
+}
+
 

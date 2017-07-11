@@ -5,7 +5,7 @@
 \alias{resample}
 \title{Resample a CATMAID neuron}
 \usage{
-resample.catmaidneuron(x, stepsize = 1, ...)
+\method{resample}{catmaidneuron}(x, stepsize = 1, ...)
 }
 \arguments{
 \item{x}{A neuron or neuronlist object}

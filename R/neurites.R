@@ -60,6 +60,7 @@ neurites.neuronlist <- function(x, fragment, ... ){
 #'
 #' @param x a neuronlist that has been processed by flow.centrality()
 #' @param arbourcluster a neuronlist produced from arbour.custers
+#' @param neuronlist whether or not to return a neuronlist where each entry is one of the broken up arbours (TRUE)
 #' @param ... additional arguments passed to methods.
 #'
 #' @return Segmented arbours as a neuronlist object, complete with  synaptic information relevant to that fragment. If a neuronlist is given, subsequently plotting the neuronlist will not reveal the fragments. However, plotting individual neurons double indexed in the lists will. arbours() returns a neurinlist, where each entry is an arbour fragment with a unique skid and name.
@@ -93,15 +94,25 @@ arbour.clusters.neuron <- function(x, ...){
   }
   # Modify name
   names(arbours) = clusters
+  attr(arbours,"df") = clusters
   arbours
 }
 
 #' @export
 #' @rdname arbour.clusters
-arbour.clusters.neuronlist <- function(x, ...){
-  arbours = nat::nlapply(x, arbour.clusters.neuron, OmitFailures = T)
+arbour.clusters.neuronlist <- function(x, neuronlist = FALSE,...){
+  if (neuronlist){
+    arbours = neuronlist()
+    for(n in 1:length(x)){
+      a = arbour.clusters.neuron(x[n][[1]])
+      attr(a,"df") = cbind(attr(x[n],"df"),arbour = names(a))
+      names(a) = sapply(names(a),paste0,names(x[n]))
+      arbours = c(arbours,a)
+    }
+  }else{arbours = nat::nlapply(x, arbour.clusters.neuron, OmitFailures = T)
   # work out names
   # For some reason, plotting synapses WithConnectors does not work with these
+  }
   arbours
 }
 
@@ -130,9 +141,9 @@ arbours.neuron <- function(arbourcluster, ...){
 
 #' @export
 #' @rdname arbour.clusters
-arbours <- function(arbourcluster, ...){
+arbours.neuronlist <- function(arbourcluster, ...){
   if (length(arbourcluster)>1){
-    skeletons <- nlapply(arbourcluster, arbours, OmitFailures = T)
+    skeletons <- nlapply(arbourcluster, arbours.neuron, OmitFailures = T)
   }else{skeletons = arbours.neuron(arbourcluster)}
   skeletons
 }

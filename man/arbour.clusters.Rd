@@ -6,25 +6,27 @@
 \alias{arbour.clusters.neuronlist}
 \alias{arbours}
 \alias{arbours.neuron}
-\alias{arbours}
+\alias{arbours.neuronlist}
 \title{Segregate neurite compartments from a neuron/neuronlist based on synapse clustering}
 \usage{
 arbour.clusters(x, ...)
 
 \method{arbour.clusters}{neuron}(x, ...)
 
-\method{arbour.clusters}{neuronlist}(x, ...)
+\method{arbour.clusters}{neuronlist}(x, neuronlist = FALSE, ...)
 
 arbours(arbourcluster, ...)
 
-arbours.neuron(arbourcluster, ...)
+\method{arbours}{neuron}(arbourcluster, ...)
 
-arbours(arbourcluster, ...)
+\method{arbours}{neuronlist}(arbourcluster, ...)
 }
 \arguments{
 \item{x}{a neuronlist that has been processed by flow.centrality()}
 
 \item{...}{additional arguments passed to methods.}
+
+\item{neuronlist}{whether or not to return a neuronlist where each entry is one of the broken up arbours (TRUE)}
 
 \item{arbourcluster}{a neuronlist produced from arbour.custers}
 }

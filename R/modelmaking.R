@@ -231,3 +231,71 @@ pointsinsidemesh <- function (x, surf, rval = c("logical", "distance", "mesh3d")
          mesh3d = rmesh)
 }
 
+
+#' @aliases applyTransform
+#' @importFrom Morpho applyTransform
+applyTransform.neuron <- function(neuron, trafo, inverse = F){
+  xyzmatrix(neuron$d)<-Morpho::applyTransform(xyzmatrix(neuron$d), trafo = trafo, inverse = inverse)
+  neuron
+}
+
+#' @aliases applyTransform
+#' @importFrom Morpho applyTransform
+applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
+  nlapply(someneuronlist, applyTransform.neuron, trafo, inverse)
+}
+
+
+#' Get the transformation matrix from the Morpho::mirror function
+#'
+#' @param x k x 3 matrix or mesh3d
+#' @param subsample integer: use only a subset for icp matching
+#' @param pcAlign if TRUE, the icp will be preceeded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data
+#' @param mirroraxis integer: which axis to mirror at
+#' @param initPC logical: if TRUE the data will be prealigned by its principal axes
+#' @param initCenter logical: if TRUE and initPC=FALSE, x will be translated to its centroid before mirroring
+#' @param mc.cores use parallel processing to find best alignment to original shape
+#' @param ... additional arguments passed to methods
+#'
+#' @export
+make.mirror.transform <- function (x, icpiter = 50, subsample = NULL, pcAlign = FALSE,
+                                   mirroraxis = 1, initPC = TRUE, initCenter = TRUE, mc.cores = 2)
+{
+  m <- ncol(x)
+  if (m == 2) {
+    x <- cbind(x, 0)
+    pcAlign <- FALSE
+  }
+  if (initPC) {
+    pca <- Morpho::prcompfast(x, scale. = F)
+    pca$rotation <- cbind(rbind(pca$rotation, 0), 0)
+    pca$rotation[4, 4] <- 1
+  }
+  else if (initCenter) {
+    xcenter <- scale(x, scale = F)
+    rotmat <- Morpho::computeTransform(xcenter, x)
+    pca <- list(x = xcenter, rotation = rotmat, center = rep(0,
+                                                             3))
+  }
+  else {
+    pca <- list(x = x, rotation = diag(m + 1), center = rep(0,
+                                                            3))
+  }
+  mirmat <- diag(c(1, 1, 1))
+  mirmat[mirroraxis, mirroraxis] <- -1
+  out <- pca$x %*% t(mirmat)
+  if (pcAlign)
+    out <- Morpho::pcAlign(out, pca$x, iterations = icpiter, subsample = subsample,
+                   mc.cores = mc.cores)
+  else if (icpiter > 0)
+    out <- Morpho::icpmat(out, pca$x, icpiter, subsample = subsample)
+  out <- Morpho::applyTransform(out, pca$rotation, inverse = !initPC)
+  out <- t(t(out) + pca$center)
+  if (m == 2)
+    out <- out[, 1:2]
+  return(Morpho::computeTransform(x,out,type="tps"))
+}
+
+
+
+
