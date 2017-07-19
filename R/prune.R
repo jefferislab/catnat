@@ -116,3 +116,39 @@ prune_online.neuronlist <- function(x, ...){
 }
 
 
+
+
+mark.microtubules <- function(x){
+  if(is.null(x$d$microtubules)){
+    if(is.null(x$tags$`microtubules end`)){
+      message("No microtubular endings marked in CATMAID neuron")
+      break
+    }
+    root = nat::rootpoints(x)
+    microtubule.endings.pointno = x$tags$`microtubules end`
+    microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
+    p = unique(unlist(shortest_paths(as.directed(as.ngraph(x)), from = root, to = microtubule.endings)))
+    x$d$microtubules = FALSE
+    x$d[p,]$microtubules = TRUE
+  }
+  x
+}
+
+prune_microtubules <- function(x, microtubules = TRUE){
+  if(is.null(x$d$microtubules)){
+    x = mark.microtubules(x)
+  }
+  mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
+  nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
+}
+
+visualise.microtubules <-function(x, soma = TRUE, lwd = 1, WithConnectors= TRUE, WithNodes =FALSE){
+  mt = prune_microtubules(x,microtubules = TRUE)
+  twigs = prune_microtubules(x,microtubules = FALSE)
+  rgl::plot3d(mt, col = "darkred", soma = soma, lwd = lwd, WithConnectors = WithConnectors, WithNodes = WithNodes)
+  rgl::plot3d(twigs, col = "chartreuse4", soma = soma, lwd = lwd, WithConnectors = WithConnectors, WithNodes = WithNodes)
+}
+
+
+
+

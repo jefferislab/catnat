@@ -452,6 +452,7 @@ cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.s
   nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method)
 }
 
+#' @export
 #' @rdname cable.inside.neuropils
 points.in.neuropil <- function(x, brain, alpha = 30, ...){
   nps = brain$RegionList
@@ -789,8 +790,6 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
 }
 
 
-
-pd2b1 = c("Cha-F-000421","Cha-F-800096","121015c0","121016c0","131009c4")
 
 
 
