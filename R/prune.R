@@ -101,12 +101,12 @@ prune_online <-function(x, ...) UseMethod("prune_online")
 prune_online.neuron <- function(x, ...){
   continue = "no"
   while(!continue%in%c("y","yes")){
-    selected = catnat:::select.points(nat::xyzmatrix(x))
+    selected = catnat:::select.points(nat::xyzmatrix(x), plot3d = x)
     neuron = nat::prune(x, target = selected, keep = "near", maxdist = 0)
-    rgl::plot3d(x, col ="grey")
+    rgl::plot3d(neuron, col ="grey")
     continue = readline("Continue? yes/no ")
   }
-  x
+  neuron
 }
 
 #' @export
