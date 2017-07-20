@@ -72,6 +72,7 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   pruned = prune(x,target,maxdist=maxdist, keep = keep,
                  return.indices = return.indices)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
+  pruned$skid = x$skid
   pruned
 }
 
@@ -82,6 +83,7 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = prune_vertices(x,verticestoprune,invert = invert)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
+  pruned$skid = x$skid
   pruned
 }
 
@@ -106,6 +108,7 @@ prune_online.neuron <- function(x, ...){
     rgl::plot3d(neuron, col ="black")
     continue = readline("Finished with this neuron? yes/no ")
   }
+  neuron$skid = x$skid
   neuron
 }
 
@@ -116,8 +119,59 @@ prune_online.neuronlist <- function(x, ...){
 }
 
 
+#' Manually assign the dendrite and axon to a neuron
+#'
+#' @description Manually assign the dendrite and axon to neurons / a neuron
+#'
+#' @param x a neuron/neuronlist object
+#' @param ... additional arguments passed to methods
+#' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
+#' @export
+#' @rdname manually_assign_axon_dendrite
+manually_assign_axon_dendrite <-function(x, ...) UseMethod("manually_assign_axon_dendrite")
+
+#' @export
+#' @rdname manually_assign_axon_dendrite
+manually_assign_axon_dendrite.neuron <- function(x){
+  happy = "no"
+  rgl::open3d()
+  skid = x$skid
+  while(!happy%in%c("y","yes")){
+    rgl::clear3d()
+    message("Please choose dendrites for your neuron")
+    dend = prune_online(x)
+    x$d$Label[x$d$PointNo%in%dend$d$PointNo] = 3
+    rgl::clear3d()
+    message("Please choose axon for your neuron")
+    axon = prune_online(x)
+    x$d$Label[x$d$PointNo%in%dend$d$PointNo] = 2
+    x$d$Label[nat::rootpoints(x)] = 1
+    rgl::clear3d()
+    rgl::plot3d(dend,col="blue")
+    rgl::plot3d(axon, col = "orange")
+    rgl::plot3d(x, col = "purple")
+    happy = readline("Happy with this division? yes/no  ")
+  }
+  x$skid = skid
+  x
+}
+
+#' @export
+#' @rdname manually_assign_axon_dendrite
+manually_assign_axon_dendrite.neuronlist<-function(x){
+  nat::nlapply(x, manually_assign_axon_dendrite.neuron)
+}
 
 
+#' Functions to assign and visualise microtubule rich and twig portions of a neuron
+#'
+#' @description Manually assign the dendrite and axon to neurons / a neuron
+#'
+#' @param x a neuron/neuronlist object
+#' @param microtubules whether to return the microtubule containing arbour (TRUE) or twigs (FALSE)
+#' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
+#' @export
+#' @rdname microtubules
 mark.microtubules <- function(x){
   if(is.null(x$d$microtubules)){
     if(is.null(x$tags$`microtubules end`)){
@@ -134,6 +188,8 @@ mark.microtubules <- function(x){
   x
 }
 
+#' @export
+#' @rdname microtubules
 prune_microtubules <- function(x, microtubules = TRUE){
   if(is.null(x$d$microtubules)){
     x = mark.microtubules(x)
@@ -142,11 +198,13 @@ prune_microtubules <- function(x, microtubules = TRUE){
   nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
 }
 
-visualise.microtubules <-function(x, soma = TRUE, lwd = 1, WithConnectors= TRUE, WithNodes =FALSE){
+#' @export
+#' @rdname microtubules
+visualise.microtubules <-function(x, ...){
   mt = prune_microtubules(x,microtubules = TRUE)
   twigs = prune_microtubules(x,microtubules = FALSE)
-  rgl::plot3d(mt, col = "darkred", soma = soma, lwd = lwd, WithConnectors = WithConnectors, WithNodes = WithNodes)
-  rgl::plot3d(twigs, col = "chartreuse4", soma = soma, lwd = lwd, WithConnectors = WithConnectors, WithNodes = WithNodes)
+  rgl::plot3d(mt, col = "darkred")
+  rgl::plot3d(twigs, col = "chartreuse4")
 }
 
 

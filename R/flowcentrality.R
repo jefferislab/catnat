@@ -59,7 +59,7 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   nodes[,"up.syns.in"] <- 0 # Here, we are going to culmulatively count synapses
   nodes[,"up.syns.out"] <- 0 # Same but for outputs
   nodes[,"flow.cent"] <- 0 # We'll addd the score for each node here
-  nodes[,"compartment"] <- 'dendrite'
+  nodes[,"Label"] <- 'dendrite'
   nodes = nodes[unlist(c(root, lapply(segs, function (x) x[-1]))),]
   syns.in = x$connectors[x$connectors[,3]==1,][,1]
   if (polypre == T){
@@ -118,11 +118,11 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, ais, to = leaves, mode = "in")$vpath)))
   upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
   if (sum(nodes[as.character(downstream),"pre"]) > sum(nodes[as.character(upstream),"pre"])){
-    nodes[as.character(downstream),"compartment"] = "axon"
+    nodes[as.character(downstream),"Label"] = 2
   }else {
-    nodes[as.character(upstream),"compartment"] = "axon"
+    nodes[as.character(upstream),"Label"] = 2
   }
-  # Work out the primary neurite and empty leaf compartments
+  # Work out the primary neurite and empty leaf Labels
   zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
   remove = rownames(nodes)[!rownames(nodes)%in%zeros]
   igraph::V(n)$name = igraph::V(n)
@@ -130,21 +130,21 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   clust = igraph::clusters(nn)
   soma.group = clust$membership[names(clust$membership)==root]
   p.n = names(clust$membership)[clust$membership==soma.group]
-  nodes[p.n,"compartment"] = "primary neurite"
-  nodes[zeros[!zeros%in%p.n],"compartment"] = "null"
+  nodes[p.n,"Label"] = 7
+  nodes[zeros[!zeros%in%p.n],"Label"] = 4
   if(!is.null(primary.dendrite)){
     highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
-    nodes[as.character(highs),"compartment"] = "primary dendrite"
+    nodes[as.character(highs),"Label"] = 4
   }
   # Calculate segregation score
-  dendrites = subset(nodes, nodes$compartment == "dendrite")
+  dendrites = subset(nodes, nodes$Label == 3)
   dendrites.post = sum(subset(dendrites$post,dendrites$post>0))
   dendrites.pre = sum(subset(dendrites$pre,dendrites$pre>0))
   dendrites.both = dendrites.post + dendrites.pre
   dendrites.pi = dendrites.post/dendrites.both
   dendrites.si = -(dendrites.pi*log(dendrites.pi)+(1-dendrites.pi)*log(1-dendrites.pi))
   if(is.nan(dendrites.si)){dendrites.si = 0}
-  axon = subset(nodes, nodes$compartment == "axon")
+  axon = subset(nodes, nodes$Label == 2)
   axon.post = sum(subset(axon$post,axon$post>0))
   axon.pre = sum(subset(axon$pre,axon$pre>0))
   axon.both = axon.post + axon.pre
@@ -201,11 +201,11 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
       warning("No flow centrality calculated, dropping neuron")
       break
     }
-    dendrites.v = subset(rownames(neuron$d), neuron$d$compartment == "dendrite")
-    axon.v = subset(rownames(neuron$d), neuron$d$compartment == "axon")
-    nulls.v = subset(rownames(neuron$d), neuron$d$compartment == "null")
-    p.d.v = subset(rownames(neuron$d), neuron$d$compartment == "primary dendrite")
-    p.n.v = subset(rownames(neuron$d), neuron$d$compartment == "primary neurite")
+    dendrites.v = subset(rownames(neuron$d), neuron$d$Label == 3)
+    axon.v = subset(rownames(neuron$d), neuron$d$Label == 2)
+    nulls.v = subset(rownames(neuron$d), neuron$d$Label == 0)
+    p.d.v = subset(rownames(neuron$d), neuron$d$Label == 4)
+    p.n.v = subset(rownames(neuron$d), neuron$d$Label == 7)
     dendrites = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, nulls.v, p.d.v, p.n.v)))
     axon = nat::prune_vertices(neuron, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v, p.n.v)))
     nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
