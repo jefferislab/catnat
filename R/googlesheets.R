@@ -32,7 +32,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     count = c()
     c = 0
     for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
+      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
       count = c(count,c)
     }
     df$unique.neurons = count
@@ -77,7 +77,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     count = c()
     c = 0
     for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
+      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
       count = c(count,c)
     }
     df$unique.neurons = count
@@ -103,7 +103,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
     }
   }else{
     for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
+      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
       count = c(count,c)
     }
   }
@@ -165,11 +165,13 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
       df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
       df.other = subset(df.post,!treenode_id%in%c(dend,axon))
       if(nrow(df.other)>0){
-        df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
-        googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other), col_names = TRUE)
+        if(nrow(df.other)>0){
+          df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
+          googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other), col_names = TRUE)
+        }
       }
-      googlesheets::gs_edit_cells(gs, ws = "dendritic input", input = unique.neurons.trace(df.axon), col_names = TRUE)
-      googlesheets::gs_edit_cells(gs, ws = "axonal input", input = unique.neurons.trace(df.dend), col_names = TRUE)
+      googlesheets::gs_edit_cells(gs, ws = "dendritic input", input = unique.neurons.trace(df.dend), col_names = TRUE)
+      googlesheets::gs_edit_cells(gs, ws = "axonal input", input = unique.neurons.trace(df.axon), col_names = TRUE)
     }
     df.post$running.completion = (1:nrow(df.post))/nrow(df.post)
     googlesheets::gs_edit_cells(gs, ws = "whole neuron input", input = unique.neurons.trace(df.post), col_names = TRUE)
@@ -189,11 +191,13 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
       df.other = subset(df.pre,!treenode_id%in%c(dend,axon))
       if(nrow(df.other)>0){
         df.other = subset(df.post,!treenode_id%in%c(dend,axon))
-        df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
-        googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost=0), col_names = TRUE)
+        if(nrow(df.other)>0){
+          df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
+          googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost=0), col_names = TRUE)
+        }
       }
-      googlesheets::gs_edit_cells(gs, ws = "dendritic output connectors", input = unique.neurons.trace(df.axon,prepost=0), col_names = TRUE)
-      googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.dend,prepost=0), col_names = TRUE)
+      googlesheets::gs_edit_cells(gs, ws = "dendritic output connectors", input = unique.neurons.trace(df.dend,prepost=0), col_names = TRUE)
+      googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.axon,prepost=0), col_names = TRUE)
     }
     df.pre$running.completion = (1:nrow(df.pre))/nrow(df.pre)
     gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
@@ -211,11 +215,13 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
         df.other = subset(df.polypre,!treenode_id%in%c(dend,axon))
         if(nrow(df.other)>0){
           df.other = subset(df.post,!treenode_id%in%c(dend,axon))
-          df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
-          googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost = 0, polypre = TRUE), col_names = TRUE)
+          if(nrow(df.other)>0){
+            df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
+            googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost = 0, polypre = TRUE), col_names = TRUE)
+          }
         }
-        googlesheets::gs_edit_cells(gs, ws = "dendritic output connections", input = unique.neurons.trace(df.axon, prepost = 0, polypre = TRUE), col_names = TRUE)
-        googlesheets::gs_edit_cells(gs, ws = "axonal output connections", input = unique.neurons.trace(df.dend, prepost = 0, polypre = TRUE), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "dendritic output connections", input = unique.neurons.trace(df.dend, prepost = 0, polypre = TRUE), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "axonal output connections", input = unique.neurons.trace(df.axon, prepost = 0, polypre = TRUE), col_names = TRUE)
       }
       df.polypre$running.completion = (1:nrow(df.polypre))/nrow(df.polypre)
       googlesheets::gs_edit_cells(gs, ws = "whole neuron output connections", input = unique.neurons.trace(df.polypre, prepost = 0, polypre = TRUE), col_names = TRUE)
