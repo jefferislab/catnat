@@ -303,6 +303,7 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
   gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_ws_new(gs, verbose = TRUE, ws_title = ws)
   gs = googlesheets::gs_title(sheet_title)
+  message("Writing googlesheet...")
   googlesheets::gs_edit_cells(gs, ws = ws, input = gss.final, col_names = TRUE)
   googlesheets::gs_ws_delete(gs, ws = paste0("old ",ws), verbose = TRUE)
   message(paste0("Neuron tracing worksheet ",ws," fully updated in ",sheet_title))
