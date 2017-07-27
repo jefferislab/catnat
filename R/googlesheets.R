@@ -230,11 +230,11 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
   if(!is.character(ws)){
     error("Worksheet must be named")
   }
-  if(grepl("dendrite",ws)){
+  if(grepl("dendrite",ws)&!is.null(neuron)){
     dend = rownames(subset(neuron$d, Label==3))
     neuron = nat::prune_vertices(neuron, dend, invert = TRUE)
   }
-  if(grepl("axon",ws)){
+  if(grepl("axon",ws)&!is.null(neuron)){
     axon = rownames(subset(neuron$d, Label==2))
     neuron = nat::prune_vertices(neuron, axon, invert = TRUE)
   }
@@ -299,12 +299,13 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
       gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
     }
   }
-  googlesheets::gs_ws_delete(gs, ws = ws, verbose = TRUE)
+  googlesheets::gs_ws_rename(gs, from = ws, to = paste0("old ",ws), verbose = TRUE)
   gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_ws_new(gs, verbose = TRUE, ws_title = ws)
   gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_edit_cells(gs, ws = ws, input = gss.final, col_names = TRUE)
-  message(paste0("Neuron tracing worksheet ",ws," updated in ",sheet_title))
+  googlesheets::gs_ws_delete(gs, ws = paste0("old ",ws), verbose = TRUE)
+  message(paste0("Neuron tracing worksheet ",ws," fully updated in ",sheet_title))
 }
 
 #' @export
