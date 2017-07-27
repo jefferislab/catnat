@@ -290,15 +290,18 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
           gss.updated = gss.updated[-1,]
         }
       }
+      gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
+      gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
     }else{
       gss.updated = gss.final
+      gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
+      gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
     }
   }
   googlesheets::gs_ws_delete(gs, ws = ws, verbose = TRUE)
   googlesheets::gs_ws_new(gs, verbose = TRUE, ws_title = ws)
-  gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
   gs = googlesheets::gs_title(sheet_title)
-  googlesheets::gs_edit_cells(gs, ws = ws, input = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre), col_names = TRUE)
+  googlesheets::gs_edit_cells(gs, ws = ws, input = gss.final, col_names = TRUE)
   message(paste0("Neuron tracing worksheet ",ws," updated in ",sheet_title))
 }
 
