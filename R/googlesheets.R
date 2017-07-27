@@ -26,6 +26,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
       newskids = df[which(is.na(df$pre_name)),]$partner_skid
       df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      df$URL = apply(df,1,connector_URL)
     }
     df$pre_nodes = 1
     pre = catmaid::read.neurons.catmaid(unique(unlist(df$partner_skid)),OmitFailures= T)
@@ -299,6 +300,7 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
     }
   }
   googlesheets::gs_ws_delete(gs, ws = ws, verbose = TRUE)
+  gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_ws_new(gs, verbose = TRUE, ws_title = ws)
   gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_edit_cells(gs, ws = ws, input = gss.final, col_names = TRUE)
