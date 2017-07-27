@@ -2,14 +2,14 @@
 connector_URL <- function(df){
   base = "https://neuropil.janelia.org/tracing/fafb/v13"
   catmaid_url = paste0(base, "?pid=1")
-  catmaid_url = paste0(catmaid_url, "&zp=", df[,"z"])
-  catmaid_url = paste0(catmaid_url, "&yp=", d[,"y"])
-  catmaid_url = paste0(catmaid_url, "&xp=", df[,"x"])
+  catmaid_url = paste0(catmaid_url, "&zp=", df["z"])
+  catmaid_url = paste0(catmaid_url, "&yp=", df["y"])
+  catmaid_url = paste0(catmaid_url, "&xp=", df["x"])
   catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-  if(is.null(df$partner_skid)){
-    id = df$connector_id
+  if(is.null(df["partner_skid"])){
+    id = df["connector_id"]
   }else{
-    id = df$partner_skid
+    id = df["partner_skid"]
   }
   catmaid_url = paste0(catmaid_url, "&active_skeleton_id=",id)
   catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
@@ -18,24 +18,22 @@ connector_URL <- function(df){
 
 # Hidden
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
-  df$URL = connector_URL(df)
+  df$URL = apply(df,1,connector_URL)
   if(prepost==1){
-    #df$partner_skid = sapply(df$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
     message("Reading information on presynaptic partners...")
-    pre = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
-    df$pre_name = sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
+    df$pre_name = catmaid::catmaid_get_neuronnames(df$partner_skid)
+    if(sum(is.na(df$pre_name))>0){
+      df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
+      newskids = df[which(is.na(df$pre_name)),]$partner_skid
+      df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+    }
     df$pre_nodes = 1
+    pre = catmaid::read.neurons.catmaid(unique(unlist(df$partner_skid)),OmitFailures= T)
     result = summary(pre)
     df$pre_nodes[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nodes
     df$pre_soma = FALSE
     df$pre_soma[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nsoma
-    count = c()
-    c = 0
-    for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
-      count = c(count,c)
-    }
-    df$unique.neurons = count
+    df = unique.neurons.trace(df,prepost=prepost,polypre = polypre)
   }else if (!polypre){
     message("Reading information on postsynaptic partners...")
     df.c = lapply(df$connector_id, catmaid::catmaid_get_connectors)
@@ -66,21 +64,15 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     df$unique.neurons = count
   }else if (polypre&prepost==0){
     message("Reading information on postsynaptic partners...")
-    post = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
     df$post_name = sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     df$post_nodes = 1
+    post = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
     result = summary(post)
     df$post_nodes[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nodes
     df$post_soma = FALSE
     df$post_soma[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nsoma
-    count = c()
-    c = 0
-    for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
-      count = c(count,c)
-    }
-    df$unique.neurons = count
+    df = unique.neurons.trace(df,prepost=prepost,polypre = polypre)
   }
   df
 }
@@ -103,7 +95,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
     }
   }else{
     for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,0,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
+      c = c + ifelse(n==1,1,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
       count = c(count,c)
     }
   }
@@ -286,7 +278,7 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
     gss.updated = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)
     if(nrow(add.df)>0){
       add.updated =  update_tracing_sheet(add.df,polypre = polypre, prepost = prepost)
-      random.rows = base::sample(x = 1:(nrow(add.updated)+nrow(gss.updated)))
+      random.rows = base::sample(x = 1:(nrow(add.updated)+nrow(gss.updated)),size = nrow(add.updated))
       gss.final = as.data.frame(matrix(0,ncol = ncol(gss.updated), nrow = (nrow(add.updated)+nrow(gss.updated))))
       colnames(gss.final) = colnames(gss.updated)
       for(r in 1:(nrow(add.updated)+nrow(gss.updated))){
@@ -303,10 +295,11 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
     }
   }
   googlesheets::gs_ws_delete(gs, ws = ws, verbose = TRUE)
-  gs = googlesheets::gs_title(sheet_title)
-  googlesheets::gs_ws_new(gs, verbose = TRUE)
+  googlesheets::gs_ws_new(gs, verbose = TRUE, ws_title = ws)
   gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
+  gs = googlesheets::gs_title(sheet_title)
   googlesheets::gs_edit_cells(gs, ws = ws, input = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre), col_names = TRUE)
+  message(paste0("Neuron tracing worksheet ",ws," updated in ",sheet_title))
 }
 
 #' @export
