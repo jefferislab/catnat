@@ -230,9 +230,7 @@ dendritic.cable.neuron <- function(x,mixed = FALSE){
     chosen = c(-3,3)
   }
   xyz = xyzmatrix(points[points$Label%in%chosen,])
-  d = nat::prune(x,target=xyz,keep="near",maxdist=0)
-  d$d$Label=3
-  d
+  nat::prune(x,target=xyz,keep="near",maxdist=0)
 }
 #' @export
 #' @rdname extract.cable
@@ -426,6 +424,7 @@ cable.inside.neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method =
 cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
+  method = method[1]
   targets = c(0,2,3,8)
   if (method=="axons"){targets = c(-2,2)}
   if (method=="dendrites"){targets = c(-3,3)}
@@ -465,7 +464,6 @@ points.in.neuropil <- function(x, brain, alpha = 30, ...){
   }
   df
 }
-
 
 #' Write ordered swc
 #'

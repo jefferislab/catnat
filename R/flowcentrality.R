@@ -59,7 +59,7 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   nodes[,"up.syns.in"] <- 0 # Here, we are going to culmulatively count synapses
   nodes[,"up.syns.out"] <- 0 # Same but for outputs
   nodes[,"flow.cent"] <- 0 # We'll addd the score for each node here
-  nodes[,"Label"] <- 'dendrite'
+  nodes[,"Label"] <- 3
   nodes = nodes[unlist(c(root, lapply(segs, function (x) x[-1]))),]
   syns.in = x$connectors[x$connectors[,3]==1,][,1]
   if (polypre == T){
@@ -212,10 +212,11 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.n.v)))
     p.n = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.d.v)))
     rgl::plot3d(dendrites, col = col[1], WithNodes = WithNodes)
-    rgl::plot3d(axon, col = col[2], WithNodes = WithNodes)
-    rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = soma)
-    rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes)
-    rgl::plot3d(nulls, col = col[5], WithNodes = WithNodes)
+    rgl::plot3d(axon, col = col[2], WithNodes = WithNodes, soma = FALSE)
+    rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = FALSE)
+    rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes, soma = FALSE)
+    #rgl::plot3d(nulls, col = col[5], WithNodes = WithNodes, soma = FALSE)
+    rgl::plot3d(neuron, col = col[3], WithNodes = WithNodes, soma = soma)
     if (WithConnectors == T){
       rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')
       rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')

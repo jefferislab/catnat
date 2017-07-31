@@ -134,17 +134,25 @@ manually_assign_axon_dendrite <-function(x, ...) UseMethod("manually_assign_axon
 #' @rdname manually_assign_axon_dendrite
 manually_assign_axon_dendrite.neuron <- function(x){
   happy = "no"
-  rgl::open3d()
   skid = x$skid
+  x$d$Label = 0
   while(!happy%in%c("y","yes")){
     rgl::clear3d()
     message("Please choose dendrites for your neuron")
-    dend = prune_online(x)
-    x$d$Label[x$d$PointNo%in%dend$d$PointNo] = 3
+    dend = prune_online.neuron(x)
+    if(!"catmaidneuron"%in%class(x)){
+      x$d$Label[x$d$X%in%dend$d$X&x$d$Y%in%dend$d$Y] = 3
+    }else{
+      x$d$Label[x$d$PointNo%in%dend$d$PointNo] = 3
+    }
     rgl::clear3d()
     message("Please choose axon for your neuron")
-    axon = prune_online(x)
-    x$d$Label[x$d$PointNo%in%dend$d$PointNo] = 2
+    axon = prune_online.neuron(x)
+    if(!"catmaidneuron"%in%class(x)){
+      x$d$Label[x$d$X%in%axon$d$X&x$d$Y%in%axon$d$Y] = 2
+    }else{
+      x$d$Label[x$d$PointNo%in%axon$d$PointNo] = 2
+    }
     x$d$Label[nat::rootpoints(x)] = 1
     rgl::clear3d()
     rgl::plot3d(dend,col="blue")

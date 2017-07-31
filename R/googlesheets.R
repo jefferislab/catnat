@@ -66,7 +66,13 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   }else if (polypre&prepost==0){
     message("Reading information on postsynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
-    df$post_name = sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
+    df$post_name = catmaid::catmaid_get_neuronnames(df$partner_skid) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
+    if(sum(is.na(df$post_name))>0){
+      df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
+      newskids = df[which(is.na(df$post_name)),]$partner_skid
+      df[which(is.na(df$post_name))[!sapply(newskids, is.null)],]$post_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      df$URL = apply(df,1,connector_URL)
+    }
     df$post_nodes = 1
     post = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
     result = summary(post)
@@ -230,7 +236,7 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
   if(!is.character(ws)){
     error("Worksheet must be named")
   }
-  if(grepl("dendrite",ws)&!is.null(neuron)){
+  if(grepl("dend",ws)&!is.null(neuron)){
     dend = rownames(subset(neuron$d, Label==3))
     neuron = nat::prune_vertices(neuron, dend, invert = TRUE)
   }
@@ -327,10 +333,3 @@ update_tracing_googlesheet <-function(sheet_title, neuron = NULL, polypre = FALS
     update_tracing_worksheet(sheet_title = sheet_title, neuron = neuron, ws = ws)
   }
 }
-
-
-
-
-
-
-
