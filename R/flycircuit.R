@@ -208,6 +208,8 @@ axonic.cable<-function(x, ...) UseMethod("axonic.cable")
 #' @export
 #' @rdname extract.cable
 dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
+#' @rdname extract.cable
+arbour.cable<-function(x, ...) UseMethod("dendritic.cable")
 #' @export
 #' @rdname extract.cable
 axonic.cable.neuron <- function(x,mixed=FALSE){
@@ -234,6 +236,18 @@ dendritic.cable.neuron <- function(x,mixed = FALSE){
 }
 #' @export
 #' @rdname extract.cable
+arbour.cable.neuron <- function(x,mixed = FALSE){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-3,3,2,-2,8)
+  }else{
+    chosen = c(-3,3,2,-2)
+  }
+  xyz = xyzmatrix(points[points$Label%in%chosen,])
+  nat::prune(x,target=xyz,keep="near",maxdist=0)
+}
+#' @export
+#' @rdname extract.cable
 axonic.cable.neuronlist <- function(x,mixed=FALSE){
   nlapply(x,axonic.cable.neuron,mixed=mixed,OmitFailures = T)
 }
@@ -241,6 +255,11 @@ axonic.cable.neuronlist <- function(x,mixed=FALSE){
 #' @rdname extract.cable
 dendritic.cable.neuronlist <- function(x,mixed=FALSE){
   nlapply(x,dendritic.cable.neuron,mixed=mixed,OmitFailures = T)
+}
+#' @export
+#' @rdname extract.cable
+arbour.cable.neuronlist <- function(x,mixed=FALSE){
+  nlapply(x,arbour.cable.neuron,mixed=mixed,OmitFailures = T)
 }
 
 

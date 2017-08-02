@@ -189,7 +189,7 @@ mark.microtubules <- function(x){
     root = nat::rootpoints(x)
     microtubule.endings.pointno = x$tags$`microtubules end`
     microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
-    p = unique(unlist(shortest_paths(as.directed(as.ngraph(x)), from = root, to = microtubule.endings)))
+    p = unique(unlist(igraph::shortest_paths(igraph::as.directed(as.ngraph(x)), from = root, to = microtubule.endings)))
     x$d$microtubules = FALSE
     x$d[p,]$microtubules = TRUE
   }
@@ -208,11 +208,11 @@ prune_microtubules <- function(x, microtubules = TRUE){
 
 #' @export
 #' @rdname microtubules
-visualise.microtubules <-function(x, ...){
+visualise.microtubules <-function(x, soma = TRUE, WithConnectors = FALSE,...){
   mt = prune_microtubules(x,microtubules = TRUE)
   twigs = prune_microtubules(x,microtubules = FALSE)
-  rgl::plot3d(mt, col = "darkred")
-  rgl::plot3d(twigs, col = "chartreuse4")
+  rgl::plot3d(mt, col = "darkred", WithNodes = FALSE, soma = soma, WithConnectors = WithConnectors)
+  rgl::plot3d(twigs, col = "chartreuse4", WithNodes = FALSE, WithConnectors = WithConnectors)
 }
 
 
