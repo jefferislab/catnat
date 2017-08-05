@@ -199,7 +199,7 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
       googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.axon,prepost=0), col_names = TRUE)
     }
     df.pre$running.completion = (1:nrow(df.pre))/nrow(df.pre)
-    gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
+    googlesheets::gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
     if(polypre){
       message("Adding randomised output connections list...")
       df.polypre =  df[df$direction == "outgoing",]
