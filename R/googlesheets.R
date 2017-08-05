@@ -21,7 +21,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   df$URL = apply(df,1,connector_URL)
   if(prepost==1){
     message("Reading information on presynaptic partners...")
-    df$pre_name = catmaid::catmaid_get_neuronnames(df$partner_skid)
+    df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
     if(sum(is.na(df$pre_name))>0){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
       newskids = df[which(is.na(df$pre_name)),]$partner_skid
@@ -53,7 +53,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
         count = c(count,c)
       }else{
         p = read.neurons.catmaid(unique(x),OmitFailures= TRUE,.progress="none")
-        xn = catmaid::catmaid_get_neuronnames(x)
+        xn = catmaid::catmaid_get_neuronnames(as.integer(x))
         max.post = max(unlist(lapply(df.c, nrow)))
         length(xn) <- max.post
         df[n,9:(ncol(df)-1)] = xn
@@ -66,7 +66,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   }else if (polypre&prepost==0){
     message("Reading information on postsynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
-    df$post_name = catmaid::catmaid_get_neuronnames(df$partner_skid) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
+    df$post_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid)) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     if(sum(is.na(df$post_name))>0){
       df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
       newskids = df[which(is.na(df$post_name)),]$partner_skid
