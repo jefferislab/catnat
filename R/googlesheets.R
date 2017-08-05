@@ -1,24 +1,26 @@
 # Hidden
 connector_URL <- function(df){
+  if(!is.data.frame(df))
+    stop("Please give me a data frame!")
   base = "https://neuropil.janelia.org/tracing/fafb/v13"
   catmaid_url = paste0(base, "?pid=1")
-  catmaid_url = paste0(catmaid_url, "&zp=", df["z"])
-  catmaid_url = paste0(catmaid_url, "&yp=", df["y"])
-  catmaid_url = paste0(catmaid_url, "&xp=", df["x"])
+  catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
+  catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
+  catmaid_url = paste0(catmaid_url, "&xp=", df[["x"]])
   catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-  if(is.null(df["partner_skid"])){
-    id = df["connector_id"]
-  }else{
-    id = df["partner_skid"]
+  id = if(is.null(df["partner_skid"])) {
+    df[["connector_id"]]
+  } else {
+    df[["partner_skid"]]
   }
-  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=",id)
+  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", id)
   catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
   invisible(catmaid_url)
 }
 
 # Hidden
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
-  df$URL = apply(df,1,connector_URL)
+  df$URL = connector_URL(df)
   if(prepost==1){
     message("Reading information on presynaptic partners...")
     df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
@@ -26,7 +28,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
       newskids = df[which(is.na(df$pre_name)),]$partner_skid
       df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
-      df$URL = apply(df,1,connector_URL)
+      df$URL = connector_URL(df)
     }
     df$pre_nodes = 1
     pre = catmaid::read.neurons.catmaid(unique(unlist(df$partner_skid)),OmitFailures= T)
@@ -71,7 +73,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
       df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
       newskids = df[which(is.na(df$post_name)),]$partner_skid
       df[which(is.na(df$post_name))[!sapply(newskids, is.null)],]$post_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
-      df$URL = apply(df,1,connector_URL)
+      df$URL = connector_URL(df)
     }
     df$post_nodes = 1
     post = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
