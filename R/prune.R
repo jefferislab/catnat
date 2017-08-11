@@ -188,7 +188,7 @@ mark.microtubules <- function(x){
     }
     root = nat::rootpoints(x)
     microtubule.endings.pointno = x$tags$`microtubules end`
-    microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
+    microtubule.endings = match(microtubule.endings.pointno, x$d$PointNo)
     p = unique(unlist(igraph::shortest_paths(igraph::as.directed(as.ngraph(x)), from = root, to = microtubule.endings)))
     x$d$microtubules = FALSE
     x$d[p,]$microtubules = TRUE
@@ -202,7 +202,7 @@ prune_microtubules <- function(x, microtubules = TRUE){
   if(is.null(x$d$microtubules)){
     x = mark.microtubules(x)
   }
-  mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
+  mt = which(x$d$microtubules)
   nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
 }
 
