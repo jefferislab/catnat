@@ -209,7 +209,7 @@ axonic.cable<-function(x, ...) UseMethod("axonic.cable")
 #' @rdname extract.cable
 dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
 #' @rdname extract.cable
-arbour.cable<-function(x, ...) UseMethod("dendritic.cable")
+arbour.cable<-function(x, ...) UseMethod("arbour.cable")
 #' @export
 #' @rdname extract.cable
 axonic.cable.neuron <- function(x,mixed=FALSE){

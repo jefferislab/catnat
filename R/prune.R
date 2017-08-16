@@ -106,7 +106,6 @@ prune_online.neuron <- function(x, ...){
     rgl::plot3d(neuron, col ="black")
     continue = readline("Finished with this neuron? yes/no ")
   }
-  neuron$skid = x$skid
   neuron
 }
 
@@ -178,7 +177,11 @@ manually_assign_axon_dendrite.neuronlist<-function(x){
 #' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
 #' @export
 #' @rdname microtubules
-mark.microtubules <- function(x){
+mark.microtubules <-function(x, ...) UseMethod("mark.microtubules")
+
+#' @export
+#' @rdname microtubules
+mark.microtubules.neuron <- function(x){
   if(is.null(x$d$microtubules)){
     if(is.null(x$tags$`microtubules end`)){
       message("No microtubular endings marked in CATMAID neuron")
@@ -191,17 +194,36 @@ mark.microtubules <- function(x){
     x$d$microtubules = FALSE
     x$d[p,]$microtubules = TRUE
   }
+  class(x) = c("catmaidneuron","list")
   x
 }
 
 #' @export
 #' @rdname microtubules
-prune_microtubules <- function(x, microtubules = TRUE){
+mark.microtubules.neuronlist <- function(x){
+  nat::nlapply(x, mark.microtubules.neuron)
+}
+
+#' @export
+#' @rdname microtubules
+prune_microtubules <-function(x, ...) UseMethod("prune_microtubules")
+
+#' @export
+#' @rdname microtubules
+prune_microtubules.neuron <- function(x, microtubules = TRUE){
   if(is.null(x$d$microtubules)){
-    x = mark.microtubules(x)
+    x = mark.microtubules.neuron(x)
   }
   mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
-  nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
+  x = nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
+  class(x) = c("catmaidneuron","list")
+  x
+}
+
+#' @export
+#' @rdname microtubules
+prune_microtubules.neuronlist <- function(x, microtubules = TRUE){
+  nat::nlapply(x,prune_microtubules.neuron, microtubules = microtubules)
 }
 
 #' @export
@@ -214,5 +236,10 @@ visualise.microtubules <-function(x, soma = TRUE, WithConnectors = FALSE,...){
 }
 
 
-
+# function needed to find presynapses marked on non microtubular fragments and so correct
+microtubules.errors<-function(x){
+  x = mark.microtubules.neuron(x)
+  df = x$connectors
+  c = connector_URL(df)
+}
 
