@@ -189,7 +189,7 @@ mark.microtubules.neuron <- function(x){
     }
     root = nat::rootpoints(x)
     microtubule.endings.pointno = x$tags$`microtubules end`
-    microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
+    microtubule.endings = match(microtubule.endings.pointno, x$d$PointNo)
     p = unique(unlist(igraph::shortest_paths(igraph::as.directed(as.ngraph(x)), from = root, to = microtubule.endings)))
     x$d$microtubules = FALSE
     x$d[p,]$microtubules = TRUE
@@ -214,6 +214,7 @@ prune_microtubules.neuron <- function(x, microtubules = TRUE){
   if(is.null(x$d$microtubules)){
     x = mark.microtubules.neuron(x)
   }
+<<<<<<< HEAD
   mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
   x = nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
   class(x) = c("catmaidneuron","list")
@@ -224,6 +225,10 @@ prune_microtubules.neuron <- function(x, microtubules = TRUE){
 #' @rdname microtubules
 prune_microtubules.neuronlist <- function(x, microtubules = TRUE){
   nat::nlapply(x,prune_microtubules.neuron, microtubules = microtubules)
+=======
+  mt = which(x$d$microtubules)
+  nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
+>>>>>>> 8711d3a19470276caedef18d46753044ad2f46cc
 }
 
 #' @export

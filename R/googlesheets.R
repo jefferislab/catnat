@@ -1,32 +1,34 @@
 # Hidden
 connector_URL <- function(df){
+  if(!is.data.frame(df))
+    stop("Please give me a data frame!")
   base = "https://neuropil.janelia.org/tracing/fafb/v13"
   catmaid_url = paste0(base, "?pid=1")
-  catmaid_url = paste0(catmaid_url, "&zp=", df["z"])
-  catmaid_url = paste0(catmaid_url, "&yp=", df["y"])
-  catmaid_url = paste0(catmaid_url, "&xp=", df["x"])
+  catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
+  catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
+  catmaid_url = paste0(catmaid_url, "&xp=", df[["x"]])
   catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-  if(is.null(df["partner_skid"])){
-    id = df["connector_id"]
-  }else{
-    id = df["partner_skid"]
+  id = if(is.null(df["partner_skid"])) {
+    df[["connector_id"]]
+  } else {
+    df[["partner_skid"]]
   }
-  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=",id)
+  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", id)
   catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
   invisible(catmaid_url)
 }
 
 # Hidden
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
-  df$URL = apply(df,1,connector_URL)
+  df$URL = connector_URL(df)
   if(prepost==1){
     message("Reading information on presynaptic partners...")
-    df$pre_name = catmaid::catmaid_get_neuronnames(df$partner_skid)
+    df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
     if(sum(is.na(df$pre_name))>0){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
       newskids = df[which(is.na(df$pre_name)),]$partner_skid
       df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
-      df$URL = apply(df,1,connector_URL)
+      df$URL = connector_URL(df)
     }
     df$pre_nodes = 1
     pre = catmaid::read.neurons.catmaid(unique(unlist(df$partner_skid)),OmitFailures= T)
@@ -53,7 +55,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
         count = c(count,c)
       }else{
         p = read.neurons.catmaid(unique(x),OmitFailures= TRUE,.progress="none")
-        xn = catmaid::catmaid_get_neuronnames(x)
+        xn = catmaid::catmaid_get_neuronnames(as.integer(x))
         max.post = max(unlist(lapply(df.c, nrow)))
         length(xn) <- max.post
         df[n,9:(ncol(df)-1)] = xn
@@ -66,12 +68,12 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   }else if (polypre&prepost==0){
     message("Reading information on postsynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
-    df$post_name = catmaid::catmaid_get_neuronnames(df$partner_skid) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
+    df$post_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid)) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     if(sum(is.na(df$post_name))>0){
       df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
       newskids = df[which(is.na(df$post_name)),]$partner_skid
       df[which(is.na(df$post_name))[!sapply(newskids, is.null)],]$post_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
-      df$URL = apply(df,1,connector_URL)
+      df$URL = connector_URL(df)
     }
     df$post_nodes = 1
     post = catmaid::read.neurons.catmaid(unique(df$partner_skid),OmitFailures= T)
@@ -199,7 +201,7 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
       googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.axon,prepost=0), col_names = TRUE)
     }
     df.pre$running.completion = (1:nrow(df.pre))/nrow(df.pre)
-    gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
+    googlesheets::gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
     if(polypre){
       message("Adding randomised output connections list...")
       df.polypre =  df[df$direction == "outgoing",]
