@@ -192,4 +192,20 @@ assign.connector.info.neuronlist<-function(x){
   nlapply(x,assign.connector.info.neuron)
 }
 
+#' Prune neuron within a mesh3d volume
+#'
+#' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+#'
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
+#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @export
+#' @rdname assign.connector.info
+prune.in.volume<- function(x,brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
+  if(invert){
+    keep = "far"
+  }else{
+    keep = "near"
+  }
+  nat::prune(x, nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(pns),surf=nat::as.mesh3d(subset(brain,"LH_R"))),],maxdist=maxdist,keep = keep)
+}
 
