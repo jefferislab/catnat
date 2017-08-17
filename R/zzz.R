@@ -5,15 +5,15 @@
   fcwb_chiangm <-
     reglist(
       solve(readRDS(system.file(
-        "extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds",
+        "extdata/InitialAffine/initialiseCMTKreg_ChiangMaleTowardsFCWB.rds",
         package = 'catnat'
       ))),
       cmtkreg(system.file(
-        "extdata/CMTKreg/Registration/warp/FCWB_typicalbrainmale_01_warp_m0g80c8e1e-1x26r4.list/",
+        "extdata/warp/FCWB_typicalbrainmale_01_warp_m0g80c8e1e-1x26r4.list/",
         package = 'catnat'
       )),
       solve(readRDS(system.file(
-        "extdata/CMTKreg/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds",
+        "extdata/InitialAffine/finalaffine_ChiangMaleTowardsFCWB.rds",
         package = 'catnat'
       )))
     )
@@ -21,15 +21,15 @@
   fcwb_chiangf <-
     reglist(
       solve(readRDS(system.file(
-        "extdata/CMTKreg/InitialAffine/initialiseCMTKreg_ChiangFemaleTowardsFCWB.rds",
+        "extdata/InitialAffine/initialiseCMTKreg_ChiangFemaleTowardsFCWB.rds",
         package = 'catnat'
       ))),
       cmtkreg(system.file(
-        "extdata/CMTKreg/Registration/warp/FCWB_typicalbrainfemale_01_warp_m0g80c8e1e-1x26r4.list/",
+        "extdata/warp/FCWB_typicalbrainfemale_01_warp_m0g80c8e1e-1x26r4.list/",
         package = 'catnat'
       )),
       solve(readRDS(system.file(
-        "extdata/CMTKreg/InitialAffine/finalaffine_ChiangFemaleTowardsFCWB.rds",
+        "extdata/InitialAffine/finalaffine_ChiangFemaleTowardsFCWB.rds",
         package = 'catnat'
       )))
     )
