@@ -6,4 +6,7 @@
 #' @keywords package
 #' @import nat
 #' @import catmaid
+#' @import alphashape3d
+#' @import nat.nblast
+#' @import rgl
 NULL
