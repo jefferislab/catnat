@@ -6,6 +6,7 @@
 #'
 #' @param x a neuron/neuronlist object
 #' @param microtubules whether to return the microtubule containing arbour (TRUE) or twigs (FALSE)
+#' @param skid skeleton ID of CATMAID neuron for checking whether there are presynapses marked as being on a microtubule-lacking twig
 #' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
 #' @export
 #' @rdname microtubules
@@ -83,9 +84,85 @@ visualise.microtubules <-function(x, soma = TRUE, WithConnectors = FALSE,...){
   rgl::plot3d(twigs, col = "chartreuse4", WithNodes = FALSE, WithConnectors = WithConnectors)
 }
 
-# function needed to find presynapses marked on non microtubular fragments and so correct
+#' @export
+#' @rdname microtubules
 microtubules.errors<-function(x){
   message("Neuron must be in FAFB13 space!")
   df = subset(x$connectors,prepost==0&microtubules==FALSE)
   catmaid_urls(df)
+}
+
+
+#' Assign Strahler stream order to neurites
+#'
+#' @description Assign Strahler stream order to to neurons / a neuron
+#'
+#' @param x a neuron/neuronlist object
+#' @export
+#' @rdname assign_strahler
+assign_strahler <-function(x, ...) UseMethod("assign_strahler")
+
+#' @export
+#' @rdname assign_strahler
+assign_strahler.neuron<-function(x){
+  s = strahler_order(x)
+  x$d$strahler_order = s$points
+  if("catmaidneuron"%in%class(x)){
+    relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
+    x$connectors$strahler_order = relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),]$strahler_order
+  }
+  x
+}
+
+#' @export
+#' @rdname assign_strahler
+assign_strahler.neuronlist<-function(x){
+  nlapply(x, assign_strahler.neuron)
+}
+
+
+#' Calculate geodesic distance from nodes to a neuron's axon-dendrite branchpoint
+#'
+#' @description alculate geodesic distance from nodes to a neuron's primary, axon-dendrite branchpoint
+#'
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
+#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @export
+#' @rdname distance.from.first.branchpoint
+distance.from.first.branchpoint <-function(x, ...) UseMethod("distance.from.first.branchpoint")
+
+#' @export
+#' @rdname distance.from.first.branchpoint
+distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE){
+  # Find axon-dendrite branch point
+  pn = subset(x$d,Label==7)
+  bp = endpoints(pn)[!endpoints(pn)%in%rootpoints(pn)]
+  bp = as.numeric(rownames(subset(x$d,PointNo==bp)))
+  n=as.ngraph(x)
+  path = suppressWarnings(igraph::shortest_paths(n,from=bp, mode= "out")$vpath)
+  x$d$geodesic.distance = sapply(path,length)
+  if(!graph.distance){
+    conns = as.numeric(rownames((subset(x$d,PointNo%in%x$connectors$treenode_id))))
+    paths = suppressWarnings(igraph::shortest_paths(n,from=bp, to = conns, mode= "out")$vpath)
+    real.lengths = c()
+    for(p in paths){
+      if(length(p)>2){
+        rl = summary(nat::prune_vertices(x,verticestoprune = p,invert=TRUE))$cable.length
+        real.lengths = c(real.lengths,rl)
+      }else{
+        real.lengths = c(real.lengths,0)
+      }
+    }
+    x$d$geodesic.distance = NA
+    x$d$geodesic.distance[conns] = real.lengths
+  }
+  relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
+  x$connectors$geodesic.distance = relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),]$geodesic.distance
+  x
+  #real.distance = summary(nat::prune_vertices(x,verticestoprune = unlist(path),invert=TRUE))
+}
+#' @export
+#' @rdname distance.from.first.branchpoint
+distance.from.first.branchpoint.neuronlist<-function(x, graph.distance = TRUE){
+  nlapply(x,distance.from.first.branchpoint.neuron, graph.distance = graph.distance)
 }

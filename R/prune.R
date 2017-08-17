@@ -72,9 +72,12 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   pruned = nat::prune(x,target,maxdist=maxdist, keep = keep,
                  return.indices = return.indices)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
-  pruned
+  relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
+  y = pruned
+  y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
+  y$d$Parent = pruned$d$Parent
+  y
 }
-
 
 #' @aliases prune_vertices
 #' @importFrom nat prune_vertices
@@ -82,6 +85,10 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
+  relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
+  y = pruned
+  y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
+  y$d$Parent = pruned$d$Parent
   pruned
 }
 
@@ -114,7 +121,6 @@ prune_online.neuron <- function(x, ...){
 prune_online.neuronlist <- function(x, ...){
   nat::nlapply(x,prune_online.neuron)
 }
-
 
 #' Manually assign the dendrite and axon to a neuron
 #'
@@ -166,4 +172,24 @@ manually_assign_axon_dendrite.neuron <- function(x){
 manually_assign_axon_dendrite.neuronlist<-function(x){
   nat::nlapply(x, manually_assign_axon_dendrite.neuron)
 }
+
+#' Give connector data in a CATMAID neuron the same attributes as node data
+#'
+#' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+#'
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
+#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @export
+#' @rdname assign.connector.info
+assign.connector.info <-function(x, ...) UseMethod("assign.connector.info")
+
+assign.connector.info.neuron<-function(x){
+  relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
+  x$connectors = cbind(x$connectors,relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),colnames(relevant.points)[!colnames(relevant.points)%in%c("PointNo", "Label", "X", "Y", "Z", "W", "Parent")]])
+  x
+}
+assign.connector.info.neuronlist<-function(x){
+  nlapply(x,assign.connector.info.neuron)
+}
+
 

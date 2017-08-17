@@ -46,7 +46,7 @@ flow.centrality <-function(x, mode = c("average","centrifugal","centripetal"), p
 flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
-  x$d$Label = 10 # Axo-dendritic branch point
+  x$d$Label = 0
   el = x$d[x$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
   n = nat::ngraph(data.matrix(el[,2:1]), x$d$PointNo, directed = TRUE, xyz = nat::xyzmatrix(x$d),
                   diam = x$d$W) # Make ngraph object, but for centripetal, invert the el list
