@@ -86,10 +86,16 @@ visualise.microtubules <-function(x, soma = TRUE, WithConnectors = FALSE,...){
 
 #' @export
 #' @rdname microtubules
-microtubules.errors<-function(x){
-  message("Neuron must be in FAFB13 space!")
+microtubules.errors<-function(skid){
+  x = read.neuron.catmaid(skid)
+  x = mark.microtubules(x)
   df = subset(x$connectors,prepost==0&microtubules==FALSE)
-  catmaid_urls(df)
+  if(nrow(df)>0){
+    message("Presynapses have been marked on microtubule-lacking twigs")
+    catmaid_urls(df)
+  }else{
+    message("There are no presynapses marked without microtubule")
+  }
 }
 
 
