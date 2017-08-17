@@ -114,7 +114,7 @@ neurons.inside <- function(shape, db, min_nodes = 1) {
     selection = db[unlist(nat::nlapply(db, function(x)
       sum(
         pointsinsidemesh(
-          sur = shape,
+          surf = shape,
           indexAlpha = 1,
           x = nat::xyzmatrix(x)
         )

@@ -612,7 +612,7 @@ synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T
   colours = data.frame(post =unique(outputs$post),col =rainbow(length(unique(outputs$post))))
   outputs = merge(outputs,colours, all.x=T,all.y=F)
   if (nrow(outputs)>0){
-    text3d(nat::xyzmatrix(outputs),text = "*",col = outputs$col,cex=2)
+    text3d(nat::xyzmatrix(outputs), texts = "*", col = outputs$col, cex=2)
     if(printout)
       legend("right",legend=catmaid_get_neuronnames(colours$post),col=colours$col,cex=2/nrow(colours))
   }
