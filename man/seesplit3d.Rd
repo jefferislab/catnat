@@ -7,7 +7,7 @@
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
   "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100,
-  highflow = F)
+  highflow = F, lwd = 1, radius = 1)
 
 splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
   "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F,
@@ -26,6 +26,10 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
 \item{soma}{whether to plot a soma, and what the radius should be}
 
 \item{highflow}{wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)}
+
+\item{lwd}{Line width (default 1)}
+
+\item{radius}{For connectors (default 1)}
 
 \item{Verbose}{logical indicating that info about each selected neuron should be printed (default TRUE)}
 

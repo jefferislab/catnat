@@ -33,8 +33,6 @@ cable.inside.neuropils(x, brain = nat.flybrains::FCWBNP.surf,
 \item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion}
 
 \item{...}{additional arguments passed to methods}
-
-\item{stepsize}{the unit to which neurons should be resampled for counting}
 }
 \value{
 a matrix of 3D points

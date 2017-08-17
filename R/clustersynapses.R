@@ -145,7 +145,7 @@ cluster_synapses_within_skeleton.neuron <- function(x, polyadic = T, lambda = 30
 #' @export
 #' @rdname cluster_synapses_within_skeleton
 cluster_synapses_within_skeleton.neuronlist <- function(x, polyadic = T, lambda = 30, order = 150, e = c(0.3,0.7),...) {
-  neurons = nat::nlapply(x, cluster_synapses_within_skeleton, polyadic = polyadic, lambda = lambda, order = order, e = e, OmitFailures = T)
+  neurons = nat::nlapply(x, cluster_synapses_within_skeleton, polyadic = polyadic, lambda = lambda, order = order, e = e, OmitFailures = T, ...)
   neurons
 }
 

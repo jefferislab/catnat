@@ -179,16 +179,16 @@ mixed.points.neuron <- function(x){ # Mised also means that I do not know
   xyzmatrix(points[points$Label%in%c(8),])
 }
 #' @rdname extract.cable
-dendritic.points.neuronlist <- function(x){
-  do.call(rbind,nlapply(x,dendritic.points.neuron))
+dendritic.points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x,dendritic.points.neuron, ...))
 }
 #' @rdname extract.cable
-axonic.points.neuronlist <- function(x){
-  do.call(rbind,nlapply(x,axonic.points.neuron))
+axonic.points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x,axonic.points.neuron, ...))
 }
 #' @rdname extract.cable
-mixed.points.neuronlist <- function(x){
-  do.call(rbind,nlapply(x,mixed.points.neuron))
+mixed.points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x, mixed.points.neuron, ...))
 }
 #' @export
 #' @rdname extract.cable
@@ -248,18 +248,18 @@ arbour.cable.neuron <- function(x,mixed = FALSE){
 }
 #' @export
 #' @rdname extract.cable
-axonic.cable.neuronlist <- function(x,mixed=FALSE){
-  nlapply(x,axonic.cable.neuron,mixed=mixed,OmitFailures = T)
+axonic.cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,axonic.cable.neuron,mixed=mixed,OmitFailures = T, ...)
 }
 #' @export
 #' @rdname extract.cable
-dendritic.cable.neuronlist <- function(x,mixed=FALSE){
-  nlapply(x,dendritic.cable.neuron,mixed=mixed,OmitFailures = T)
+dendritic.cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,dendritic.cable.neuron,mixed=mixed,OmitFailures = T, ...)
 }
 #' @export
 #' @rdname extract.cable
-arbour.cable.neuronlist <- function(x,mixed=FALSE){
-  nlapply(x,arbour.cable.neuron,mixed=mixed,OmitFailures = T)
+arbour.cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,arbour.cable.neuron,mixed=mixed,OmitFailures = T, ...)
 }
 
 
@@ -430,7 +430,6 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #' @param x a set of neurons or, for points.in.neuropil a mxn matrix of 3D points
 #' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
 #' @param method whether to use the neurons' axons or dendrites, or both
-#' @param stepsize the unit to which neurons should be resampled for counting
 #' @param min.endpoints the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it
 #' @param alpha the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion
 #' @param ... additional arguments passed to methods

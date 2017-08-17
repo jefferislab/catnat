@@ -1,13 +1,18 @@
 # Functions for working with microtubules
 
-#' Functions to assign and visualise microtubule rich and twig portions of a neuron
+#' Functions to assign and visualise microtubule rich and twig portions of a
+#' neuron
 #'
 #' @description Manually assign the dendrite and axon to neurons / a neuron
 #'
 #' @param x a neuron/neuronlist object
-#' @param microtubules whether to return the microtubule containing arbour (TRUE) or twigs (FALSE)
-#' @param skid skeleton ID of CATMAID neuron for checking whether there are presynapses marked as being on a microtubule-lacking twig
-#' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
+#' @param microtubules whether to return the microtubule containing arbour
+#'   (TRUE) or twigs (FALSE)
+#' @param skid skeleton ID of CATMAID neuron for checking whether there are
+#'   presynapses marked as being on a microtubule-lacking twig
+#' @param ... Additional arguments passed to nlapply
+#' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC
+#'   format to neuron$d
 #' @export
 #' @rdname microtubules
 mark.microtubules <-function(x, ...) UseMethod("mark.microtubules")
@@ -49,8 +54,8 @@ mark.microtubules.neuron <- function(x){
 
 #' @export
 #' @rdname microtubules
-mark.microtubules.neuronlist <- function(x){
-  nat::nlapply(x, mark.microtubules.neuron)
+mark.microtubules.neuronlist <- function(x, ...){
+  nat::nlapply(x, mark.microtubules.neuron, ...)
 }
 
 #' @export
@@ -77,6 +82,9 @@ prune_microtubules.neuronlist <- function(x, microtubules = TRUE){
 
 #' @export
 #' @rdname microtubules
+#' @param soma for \code{visualise.microtubules} whether to show the soma
+#' @param WithConnectors for \code{visualise.microtubules} whether to show
+#'   connectors
 visualise.microtubules <-function(x, soma = TRUE, WithConnectors = FALSE,...){
   mt = prune_microtubules(x,microtubules = TRUE)
   twigs = prune_microtubules(x,microtubules = FALSE)
@@ -104,6 +112,7 @@ microtubules.errors<-function(skid){
 #' @description Assign Strahler stream order to to neurons / a neuron
 #'
 #' @param x a neuron/neuronlist object
+#' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname assign_strahler
 assign_strahler <-function(x, ...) UseMethod("assign_strahler")
@@ -122,17 +131,22 @@ assign_strahler.neuron<-function(x){
 
 #' @export
 #' @rdname assign_strahler
-assign_strahler.neuronlist<-function(x){
-  nlapply(x, assign_strahler.neuron)
+assign_strahler.neuronlist<-function(x, ...){
+  nlapply(x, assign_strahler.neuron, ...)
 }
 
 
-#' Calculate geodesic distance from nodes to a neuron's axon-dendrite branchpoint
+#' Calculate geodesic distance from nodes to a neuron's axon-dendrite
+#' branchpoint
 #'
-#' @description alculate geodesic distance from nodes to a neuron's primary, axon-dendrite branchpoint
+#' @description alculate geodesic distance from nodes to a neuron's primary,
+#'   axon-dendrite branchpoint
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
-#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
+#'   7) and soma as the root
+#' @param graph.distance whether to calculate the graph distance (defualt)
+#'   between nodes and the primary branchpoint, or the cable length
+#' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname distance.from.first.branchpoint
 distance.from.first.branchpoint <-function(x, ...) UseMethod("distance.from.first.branchpoint")
@@ -169,8 +183,8 @@ distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE){
 }
 #' @export
 #' @rdname distance.from.first.branchpoint
-distance.from.first.branchpoint.neuronlist<-function(x, graph.distance = TRUE){
-  nlapply(x,distance.from.first.branchpoint.neuron, graph.distance = graph.distance)
+distance.from.first.branchpoint.neuronlist<-function(x, graph.distance = TRUE, ...){
+  nlapply(x,distance.from.first.branchpoint.neuron, graph.distance = graph.distance, ...)
 }
 
 # Hidden

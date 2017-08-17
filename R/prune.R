@@ -58,10 +58,13 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @param target Nodes ids for removal
 #' @param maxdist The threshold distance for keeping points
 #' @param keep Whether to keep points in x that are near or far from the target
-#' @param return.indices Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)
+#' @param return.indices Whether to return the indices that pass the test rather
+#'   than the 3D object/points (default FALSE)
 #' @param verticestoprune	an integer vector describing which vertices to remove
-#' @param invert	whether to keep vertices rather than dropping them (default FALSE)
-#' @param ... additional arguments passed to methods
+#' @param invert	whether to keep vertices rather than dropping them (default
+#'   FALSE)
+#' @param ... additional arguments passed to methods (i.e.
+#'   \code{\link[nat]{prune}}).
 #' @return A pruned neuron object
 #' @export
 #' @aliases prune
@@ -69,8 +72,8 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
   class(x) = c("neuron")
-  pruned = nat::prune(x,target,maxdist=maxdist, keep = keep,
-                 return.indices = return.indices)
+  pruned = nat::prune(x,target=target, maxdist=maxdist, keep = keep,
+                 return.indices = return.indices, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
   y = pruned
@@ -81,7 +84,7 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
 
 #' @aliases prune_vertices
 #' @importFrom nat prune_vertices
-prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
+prune_vertices.catmaidneuron<- function (x, verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
@@ -178,7 +181,7 @@ manually_assign_axon_dendrite.neuronlist<-function(x){
 #' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
 #'
 #' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
-#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname assign.connector.info
 assign.connector.info <-function(x, ...) UseMethod("assign.connector.info")
@@ -188,8 +191,8 @@ assign.connector.info.neuron<-function(x){
   x$connectors = cbind(x$connectors,relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),colnames(relevant.points)[!colnames(relevant.points)%in%c("PointNo", "Label", "X", "Y", "Z", "W", "Parent")]])
   x
 }
-assign.connector.info.neuronlist<-function(x){
-  nlapply(x,assign.connector.info.neuron)
+assign.connector.info.neuronlist<-function(x, ...){
+  nlapply(x,assign.connector.info.neuron, ...)
 }
 
 

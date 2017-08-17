@@ -10,6 +10,8 @@ make.mirror.transform(x, icpiter = 50, subsample = NULL, pcAlign = FALSE,
 \arguments{
 \item{x}{k x 3 matrix or mesh3d}
 
+\item{icpiter}{Number of iterations to run}
+
 \item{subsample}{integer: use only a subset for icp matching}
 
 \item{pcAlign}{if TRUE, the icp will be preceeded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data}

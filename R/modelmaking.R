@@ -249,6 +249,7 @@ applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
 #' Get the transformation matrix from the Morpho::mirror function
 #'
 #' @param x k x 3 matrix or mesh3d
+#' @param icpiter Number of iterations to run
 #' @param subsample integer: use only a subset for icp matching
 #' @param pcAlign if TRUE, the icp will be preceeded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data
 #' @param mirroraxis integer: which axis to mirror at

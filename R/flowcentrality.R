@@ -168,7 +168,7 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
 #' @export
 #' @rdname flow.centrality
 flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
-  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T)
+  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, ...)
   neurons
 }
 
@@ -180,6 +180,8 @@ flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","cent
 #' @param WithConnectors whether ot plot the anatomical location of pre (red) and post (cyan) synapses.
 #' @param soma whether to plot a soma, and what the radius should be
 #' @param WithNodes whether to plot branch points
+#' @param lwd Line width (default 1)
+#' @param radius For connectors (default 1)
 #' @param highflow wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)
 #' @param Verbose logical indicating that info about each selected neuron should be printed (default TRUE)
 #' @param Wait logical indicating that there should be a pause between each displayed neuron

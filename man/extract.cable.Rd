@@ -14,10 +14,13 @@
 \alias{dendritic.endings}
 \alias{axonic.cable}
 \alias{dendritic.cable}
+\alias{arbour.cable}
 \alias{axonic.cable.neuron}
 \alias{dendritic.cable.neuron}
+\alias{arbour.cable.neuron}
 \alias{axonic.cable.neuronlist}
 \alias{dendritic.cable.neuronlist}
+\alias{arbour.cable.neuronlist}
 \title{Extract axonic/dendritic points from a neuron/neuronlist}
 \usage{
 axonic.points(x, ...)
@@ -32,11 +35,11 @@ mixed.points(x, ...)
 
 \method{mixed.points}{neuron}(x)
 
-\method{dendritic.points}{neuronlist}(x)
+\method{dendritic.points}{neuronlist}(x, ...)
 
-\method{axonic.points}{neuronlist}(x)
+\method{axonic.points}{neuronlist}(x, ...)
 
-\method{mixed.points}{neuronlist}(x)
+\method{mixed.points}{neuronlist}(x, ...)
 
 axonal.endings(x)
 
@@ -46,13 +49,19 @@ axonic.cable(x, ...)
 
 dendritic.cable(x, ...)
 
+arbour.cable(x, ...)
+
 \method{axonic.cable}{neuron}(x, mixed = FALSE)
 
 \method{dendritic.cable}{neuron}(x, mixed = FALSE)
 
-\method{axonic.cable}{neuronlist}(x, mixed = FALSE)
+\method{arbour.cable}{neuron}(x, mixed = FALSE)
 
-\method{dendritic.cable}{neuronlist}(x, mixed = FALSE)
+\method{axonic.cable}{neuronlist}(x, mixed = FALSE, ...)
+
+\method{dendritic.cable}{neuronlist}(x, mixed = FALSE, ...)
+
+\method{arbour.cable}{neuronlist}(x, mixed = FALSE, ...)
 }
 \arguments{
 \item{x}{a neuron/neuronlist object that has its axons/dendrites labelled in swc format in its neuron$d dataframes}

@@ -17,13 +17,16 @@
 
 \item{keep}{Whether to keep points in x that are near or far from the target}
 
-\item{return.indices}{Whether to return the indices that pass the test rather than the 3D object/points (default FALSE)}
+\item{return.indices}{Whether to return the indices that pass the test rather
+than the 3D object/points (default FALSE)}
 
-\item{...}{additional arguments passed to methods}
+\item{...}{additional arguments passed to methods (i.e.
+\code{\link[nat]{prune}}).}
 
 \item{verticestoprune}{an integer vector describing which vertices to remove}
 
-\item{invert}{whether to keep vertices rather than dropping them (default FALSE)}
+\item{invert}{whether to keep vertices rather than dropping them (default
+FALSE)}
 }
 \value{
 A pruned neuron object
