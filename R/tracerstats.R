@@ -130,11 +130,11 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 #' @description Get data tracers' contributions to ndoes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
 #'
 #' @param x a neuronlist where the name of each neuron is its skeleton ID
-#' @param exclude.authors a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meat the threshold specified by arguments to suggest_authorship
-#'
+#' @param exclude.authors a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meet the threshold specified by arguments to suggest_authorship
+#' @param ... argument supplied to suggest_authorship
 #' @export
 #' @rdname contribution.to.skeletons
-node.contribution.to.skeletons <-function(x, exclude.authors = NULL){
+node.contribution.to.skeletons <-function(x, exclude.authors = NULL, ...){
   skids = names(x)
   treenodes=nat::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
   treenodes = do.call(rbind,treenodes)
@@ -150,7 +150,7 @@ node.contribution.to.skeletons <-function(x, exclude.authors = NULL){
   attr(df,"type") = "nodes"
   if(!is.null(exclude.authors)){
     s = df[!df$full_name%in%exclude.authors,]
-    s = elmr::suggest_authorship(s)
+    s = elmr::suggest_authorship(s, ...)
     s$action = "ack"
     write_ack(s)
   }
