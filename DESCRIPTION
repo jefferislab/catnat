@@ -5,13 +5,15 @@ Version: 0.1
 Author: Alex Bates, Greg Jefferis
 Date: 01/01/2017
 Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
-Description: A selection of functions that created for use alongside the nat and rcatmaid packages.
+Description: A selection of functions that created for use alongside the nat and
+    rcatmaid packages.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Suggests: testthat, gplots, ggplot2, easyGgplot2, nat.flybrains, doMC
 Depends:  R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast
-Imports: Rvcg, nabor, lubridate, Morpho, dplyr, nat.templatebrains, rgl, plyr, igraph, googlesheets
+Imports: Rvcg, nabor, lubridate, Morpho, dplyr, nat.templatebrains, rgl, plyr,
+    igraph, googlesheets
 Remotes: kassambara/easyGgplot2,
     jefferis/nat,
     jefferis/rcatmaid,
