@@ -19,8 +19,30 @@ connector_URL <- function(df){
 }
 
 # Hidden
+catmaid_urls <- function (df) {
+  if (!is.data.frame(df)){
+    stop("Please give me a data frame!")
+  }
+  base = "https://neuropil.janelia.org/tracing/fafb/v13"
+  catmaid_url = paste0(base, "?pid=1")
+  catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
+  catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
+  catmaid_url = paste0(catmaid_url, "&xp=", df[["x"]])
+  catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
+  id = if (is.null(df$partner_skid)) {
+    df$connector_id
+  }else {
+    df$partner_skid
+  }
+  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=",
+                       id)
+  catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
+  catmaid_url
+}
+
+# Hidden
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
-  df$URL = connector_URL(df)
+  df$URL = catmaid_urls(df)
   if(prepost==1){
     message("Reading information on presynaptic partners...")
     df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
@@ -66,7 +88,7 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     }
     df$unique.neurons = count
   }else if (polypre&prepost==0){
-    message("Reading information on postsynaptic partners...")
+    message("Reading information on presynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
     df$post_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid)) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     if(sum(is.na(df$post_name))>0){
@@ -149,6 +171,7 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
   gs = googlesheets::gs_title(sheet_title)
   # Get neuron synaptic data
   df = catmaid_get_connector_table(skid)
+  df = subset(df,partner_treenode_id%in%neuron$d$PointNo) # remove points not in neuron skeleton
   df$treenode_id = lapply(df$connector_id, function(y) ifelse(y%in%neuron$connectors$connector_id,neuron$connectors$treenode_id[neuron$connectors$connector_id==y][1],0) )
   df = subset(df, treenode_id%in%neuron$d$PointNo)
   df.post =  df[df$direction == "incoming",]

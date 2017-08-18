@@ -82,9 +82,18 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   y
 }
 
-#' @aliases prune_vertices
-#' @importFrom nat prune_vertices
-prune_vertices.catmaidneuron<- function (x, verticestoprune, invert = FALSE,...){
+#' Prune vertices from a CATMAID neuron, keeping the synapses
+#'
+#' @description Prune nodes from a catmaid neuron, keeping the synapses
+#'
+#' @param x a CATMAID neuron object
+#' @param verticestoprune	an integer vector describing which vertices to remove
+#' @param invert	whether to keep vertices rather than dropping them (default FALSE)
+#' @param ... additional arguments passed to methods
+#' @return A pruned neuron object
+#' @export
+#' @rdname prune_vertices.catmaidneuron
+prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
@@ -195,4 +204,20 @@ assign.connector.info.neuronlist<-function(x, ...){
   nlapply(x,assign.connector.info.neuron, ...)
 }
 
+#' Prune neuron within a mesh3d volume
+#'
+#' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+#'
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
+#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @export
+#' @rdname assign.connector.info
+prune.in.volume<- function(x,brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
+  if(invert){
+    keep = "far"
+  }else{
+    keep = "near"
+  }
+  nat::prune(x, nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(pns),surf=nat::as.mesh3d(subset(brain,"LH_R"))),],maxdist=maxdist,keep = keep)
+}
 

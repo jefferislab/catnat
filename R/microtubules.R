@@ -69,7 +69,7 @@ prune_microtubules.neuron <- function(x, microtubules = TRUE){
     x = mark.microtubules.neuron(x)
   }
   mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
-  x = nat::prune_vertices(x, verticestoprune = mt, invert = microtubules)
+  x = catnat:::prune_vertices.catmaidneuron(x, verticestoprune = mt, invert = microtubules)
   #class(x) = c("catmaidneuron","list")
   x
 }
@@ -185,26 +185,4 @@ distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE){
 #' @rdname distance.from.first.branchpoint
 distance.from.first.branchpoint.neuronlist<-function(x, graph.distance = TRUE, ...){
   nlapply(x,distance.from.first.branchpoint.neuron, graph.distance = graph.distance, ...)
-}
-
-# Hidden
-catmaid_urls <- function (df) {
-  if (!is.data.frame(df)){
-    stop("Please give me a data frame!")
-  }
-  base = "https://neuropil.janelia.org/tracing/fafb/v13"
-  catmaid_url = paste0(base, "?pid=1")
-  catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
-  catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
-  catmaid_url = paste0(catmaid_url, "&xp=", df[["x"]])
-  catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-  id = if (is.null(df$partner_skid)) {
-    df$connector_id
-  }else {
-    df$partner_skid
-  }
-  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=",
-                       id)
-  catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
-  catmaid_url
 }

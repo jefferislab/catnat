@@ -125,6 +125,41 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 #}
 
 
+#' Get data tracers' contributions to skeletons
+#'
+#' @description Get data tracers' contributions to ndoes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
+#'
+#' @param x a neuronlist where the name of each neuron is its skeleton ID
+#' @param exclude.authors a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meet the threshold specified by arguments to suggest_authorship
+#' @param ... argument supplied to suggest_authorship
+#' @export
+#' @rdname contribution.to.skeletons
+node.contribution.to.skeletons <-function(x, exclude.authors = NULL, ...){
+  skids = names(x)
+  treenodes=nat::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
+  treenodes = do.call(rbind,treenodes)
+  ul=catmaid::catmaid_get_user_list()
+  uls = ul[, c("full_name", "id")]
+  nodes = unlist(sapply(x,function(x) x$d$PointNo))
+  trimmed.treenodes = subset(treenodes, id%in%nodes)
+  t = sort(table(trimmed.treenodes$user_id),decreasing = TRUE)
+  fns = uls[match(as.numeric(names(t)),uls$id),]$full_name
+  df = data.frame(id = names(t), n = c(t), full_name = fns)
+  df <- df %>% arrange_(~desc(n)) %>%
+    mutate_(pct = ~n/sum(n) * 100, cpct = ~cumsum(pct))
+  attr(df,"type") = "nodes"
+  if(!is.null(exclude.authors)){
+    s = df[!df$full_name%in%exclude.authors,]
+    s = elmr::suggest_authorship(s, ...)
+    s$action = "ack"
+    write_ack(s)
+  }
+  df
+}
+
+
+
+
 
 
 
