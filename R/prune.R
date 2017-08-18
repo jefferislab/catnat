@@ -60,15 +60,13 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @param keep Whether to keep points in x that are near or far from the target
 #' @param return.indices Whether to return the indices that pass the test rather
 #'   than the 3D object/points (default FALSE)
-#' @param verticestoprune	an integer vector describing which vertices to remove
-#' @param invert	whether to keep vertices rather than dropping them (default
-#'   FALSE)
 #' @param ... additional arguments passed to methods (i.e.
 #'   \code{\link[nat]{prune}}).
 #' @return A pruned neuron object
 #' @export
 #' @aliases prune
 #' @importFrom nat prune
+#' @seealso \code{\link[nat]{prune}}
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
   class(x) = c("neuron")
@@ -87,8 +85,7 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
 #' @description Prune nodes from a catmaid neuron, keeping the synapses
 #'
 #' @param x a CATMAID neuron object
-#' @param verticestoprune	an integer vector describing which vertices to remove
-#' @param invert	whether to keep vertices rather than dropping them (default FALSE)
+#' @inheritParams nat::prune_vertices
 #' @param ... additional arguments passed to methods
 #' @return A pruned neuron object
 #' @export
@@ -187,9 +184,12 @@ manually_assign_axon_dendrite.neuronlist<-function(x){
 
 #' Give connector data in a CATMAID neuron the same attributes as node data
 #'
-#' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+#' @description Give connector data in a CATMAID neuron the same attributes as
+#'   node data. I.e. adding Label information to indicate compartments such as
+#'   axon and dendrite
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
+#'   7) and soma as the root
 #' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname assign.connector.info
@@ -206,13 +206,20 @@ assign.connector.info.neuronlist<-function(x, ...){
 
 #' Prune neuron within a mesh3d volume
 #'
-#' @description Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+#' @description Give connector data in a CATMAID neuron the same attributes as
+#'   node data. I.e. adding Label information to indicate compartments such as
+#'   axon and dendrite
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
-#' @param graph.distance whether to calculate the graph distance (defualt) between nodes and the primary branchpoint, or the cable length
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
+#'   7) and soma as the root
+#' @param brain The \code{\link[nat]{hxsurf}} object containing the neuropil of
+#'   interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}
+#' @param neuropil Character vector specifying the neuropil
+#' @param invert Logical when \code{TRUE} indicating that points outside the
+#'   surface should be pruned.
+#' @inheritParams nat::prune
 #' @export
-#' @rdname assign.connector.info
-prune.in.volume<- function(x,brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
+prune.in.volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
   if(invert){
     keep = "far"
   }else{

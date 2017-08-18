@@ -7,10 +7,13 @@
 assign.connector.info(x, ...)
 }
 \arguments{
-\item{x}{a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root}
+\item{x}{a neuron/neuronlist object that has primary neurites marked (Label =
+7) and soma as the root}
 
 \item{...}{Additional arguments passed to nlapply}
 }
 \description{
-Give connector data in a CATMAID neuron the same attributes as node data. I.e. adding Label information to indicate compartments such as axon and dendrite
+Give connector data in a CATMAID neuron the same attributes as
+  node data. I.e. adding Label information to indicate compartments such as
+  axon and dendrite
 }

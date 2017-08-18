@@ -22,15 +22,13 @@ than the 3D object/points (default FALSE)}
 
 \item{...}{additional arguments passed to methods (i.e.
 \code{\link[nat]{prune}}).}
-
-\item{verticestoprune}{an integer vector describing which vertices to remove}
-
-\item{invert}{whether to keep vertices rather than dropping them (default
-FALSE)}
 }
 \value{
 A pruned neuron object
 }
 \description{
 Prune nodes from a catmaid neuron, keeping the synapses
+}
+\seealso{
+\code{\link[nat]{prune}}
 }
