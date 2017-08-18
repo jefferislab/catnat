@@ -79,8 +79,17 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   y
 }
 
-#' @aliases prune_vertices
-#' @importFrom nat prune_vertices
+#' Prune vertices from a CATMAID neuron, keeping the synapses
+#'
+#' @description Prune nodes from a catmaid neuron, keeping the synapses
+#'
+#' @param x a CATMAID neuron object
+#' @param verticestoprune	an integer vector describing which vertices to remove
+#' @param invert	whether to keep vertices rather than dropping them (default FALSE)
+#' @param ... additional arguments passed to methods
+#' @return A pruned neuron object
+#' @export
+#' @rdname prune_vertices.catmaidneuron
 prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
