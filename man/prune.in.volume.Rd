@@ -2,14 +2,13 @@
 % Please edit documentation in R/prune.R
 \name{prune.in.volume}
 \alias{prune.in.volume}
-\title{Prune neuron within a mesh3d volume}
+\title{Prune neuron within neuropil volume}
 \usage{
 \method{prune}{in.volume}(x, brain, neuropil = "LH_R", maxdist = 0,
   invert = FALSE)
 }
 \arguments{
-\item{x}{a neuron/neuronlist object that has primary neurites marked (Label =
-7) and soma as the root}
+\item{x}{a \code{neuron} object}
 
 \item{brain}{The \code{\link[nat]{hxsurf}} object containing the neuropil of
 interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}}
@@ -22,7 +21,11 @@ interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}}
 surface should be pruned.}
 }
 \description{
-Give connector data in a CATMAID neuron the same attributes as
-  node data. I.e. adding Label information to indicate compartments such as
-  axon and dendrite
+Prune neuron within neuropil volume
+}
+\details{
+This a slightly odd way of pruning a neuron, \code{x}, first we ask
+  which points in x are inside the surface then we keep those parts of x that
+  are within \code{maxdist} of those points. \code{maxdist} is therefore
+  defined with respect to points in the object, \code{x}, not the surface.
 }

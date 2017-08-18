@@ -204,14 +204,14 @@ assign.connector.info.neuronlist<-function(x, ...){
   nlapply(x,assign.connector.info.neuron, ...)
 }
 
-#' Prune neuron within a mesh3d volume
+#' Prune neuron within neuropil volume
 #'
-#' @description Give connector data in a CATMAID neuron the same attributes as
-#'   node data. I.e. adding Label information to indicate compartments such as
-#'   axon and dendrite
+#' @details This a slightly odd way of pruning a neuron, \code{x}, first we ask
+#'   which points in x are inside the surface then we keep those parts of x that
+#'   are within \code{maxdist} of those points. \code{maxdist} is therefore
+#'   defined with respect to points in the object, \code{x}, not the surface.
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
-#'   7) and soma as the root
+#' @param x a \code{neuron} object
 #' @param brain The \code{\link[nat]{hxsurf}} object containing the neuropil of
 #'   interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}
 #' @param neuropil Character vector specifying the neuropil
@@ -220,11 +220,11 @@ assign.connector.info.neuronlist<-function(x, ...){
 #' @inheritParams nat::prune
 #' @export
 prune.in.volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
-  if(invert){
-    keep = "far"
-  }else{
-    keep = "near"
-  }
-  nat::prune(x, nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(pns),surf=nat::as.mesh3d(subset(brain,"LH_R"))),],maxdist=maxdist,keep = keep)
+  keep=ifelse(invert, "far", "near")
+  mesh=as.mesh3d(subset(brain, neuropil))
+  nat::prune(x,
+             target = nat::xyzmatrix(x)[pointsinside(xyzmatrix(x), surf = mesh), ],
+             maxdist = maxdist,
+             keep = keep)
 }
 
