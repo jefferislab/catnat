@@ -343,9 +343,9 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
 #' @export
 #' @rdname create_tracing_googlesheet
 update_tracing_googlesheet <-function(sheet_title, neuron = NULL, polypre = FALSE){
-  googlesheets::gs_copy(from= gs, to = paste0(sheet_title,"_copy"), verbose = TRUE)
-  message("A copy of the old spreadsheet has been made and left in your home directory on google drive, just in case...")
   gs = googlesheets::gs_title(sheet_title)
+  googlesheets::gs_copy(from=gs, to = paste0(sheet_title,"_copy"), verbose = TRUE)
+  message("A copy of the old spreadsheet has been made and left in your home directory on google drive, just in case...")
   worksheets = googlesheets::gs_ws_ls(gs)
   possible = c("whole neuron input","dendritic input","axonal input", "other input", "whole neuron output connectors","dendritic output connectors",
                "axonal output connectors", "other output connectors",  "whole neuron output connections",  "dendritic output connections",
