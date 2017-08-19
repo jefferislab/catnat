@@ -2,9 +2,10 @@ Package: catnat
 Type: Package
 Title: Extra functions for use with rcatmaid and nat
 Version: 0.1
-Author: Alex Bates, Greg Jefferis
-Date: 01/01/2017
-Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
+Authors@R: c(
+    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre")),
+    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"))
+    )
 Description: A selection of functions that created for use alongside the nat and
     rcatmaid packages.
 License: GPL-3
