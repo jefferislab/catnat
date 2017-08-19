@@ -51,11 +51,11 @@ dendritic.cable(x, ...)
 
 arbour.cable(x, ...)
 
-\method{axonic.cable}{neuron}(x, mixed = FALSE)
+\method{axonic.cable}{neuron}(x, mixed = FALSE, ...)
 
-\method{dendritic.cable}{neuron}(x, mixed = FALSE)
+\method{dendritic.cable}{neuron}(x, mixed = FALSE, ...)
 
-\method{arbour.cable}{neuron}(x, mixed = FALSE)
+\method{arbour.cable}{neuron}(x, mixed = FALSE, ...)
 
 \method{axonic.cable}{neuronlist}(x, mixed = FALSE, ...)
 

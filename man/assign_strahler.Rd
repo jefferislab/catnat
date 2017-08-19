@@ -8,7 +8,7 @@
 \usage{
 assign_strahler(x, ...)
 
-\method{assign_strahler}{neuron}(x)
+\method{assign_strahler}{neuron}(x, ...)
 
 \method{assign_strahler}{neuronlist}(x, ...)
 }

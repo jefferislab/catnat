@@ -9,7 +9,8 @@ branchpoint}
 \usage{
 distance.from.first.branchpoint(x, ...)
 
-\method{distance.from.first.branchpoint}{neuron}(x, graph.distance = TRUE)
+\method{distance.from.first.branchpoint}{neuron}(x, graph.distance = TRUE,
+  ...)
 
 \method{distance.from.first.branchpoint}{neuronlist}(x, graph.distance = TRUE,
   ...)

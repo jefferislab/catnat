@@ -144,7 +144,7 @@ manually_assign_axon_dendrite <-function(x, ...) UseMethod("manually_assign_axon
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
-manually_assign_axon_dendrite.neuron <- function(x){
+manually_assign_axon_dendrite.neuron <- function(x, ...){
   happy = "no"
   skid = x$skid
   x$d$Label = 0
@@ -178,8 +178,8 @@ manually_assign_axon_dendrite.neuron <- function(x){
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
-manually_assign_axon_dendrite.neuronlist<-function(x){
-  nat::nlapply(x, manually_assign_axon_dendrite.neuron)
+manually_assign_axon_dendrite.neuronlist<-function(x, ...){
+  nat::nlapply(x, manually_assign_axon_dendrite.neuron, ...)
 }
 
 #' Give connector data in a CATMAID neuron the same attributes as node data

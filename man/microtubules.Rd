@@ -14,15 +14,15 @@ neuron}
 \usage{
 mark.microtubules(x, ...)
 
-\method{mark.microtubules}{neuron}(x)
+\method{mark.microtubules}{neuron}(x, ...)
 
 \method{mark.microtubules}{neuronlist}(x, ...)
 
 prune_microtubules(x, ...)
 
-\method{prune_microtubules}{neuron}(x, microtubules = TRUE)
+\method{prune_microtubules}{neuron}(x, microtubules = TRUE, ...)
 
-\method{prune_microtubules}{neuronlist}(x, microtubules = TRUE)
+\method{prune_microtubules}{neuronlist}(x, microtubules = TRUE, ...)
 
 visualise.microtubules(x, soma = TRUE, WithConnectors = FALSE, ...)
 
