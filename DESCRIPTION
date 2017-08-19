@@ -20,5 +20,6 @@ Remotes: kassambara/easyGgplot2,
     jefferis/nat,
     jefferis/rcatmaid,
     jefferislab/nat.templatebrains,
-    jefferislab/nat.flybrains
+    jefferislab/nat.flybrains,
+    jefferis/elmr
 Encoding: UTF-8
