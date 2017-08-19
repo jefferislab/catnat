@@ -27,6 +27,7 @@ prune_distal <- function(neuron, bad_vertex_labels, invert=FALSE, ...) {
 #' @param ... additional arguments passed to methods.
 #' @return The percentage of downstream singlet nodes named tracers have contributed to neuron in
 #' @export
+#' @importFrom dplyr bind_rows filter
 downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Ruairi Roberts"), ...){
   neurons.treenodes=nlapply(names(someneuronlist), catmaid_get_treenode_table)
   user_ids = subset(ul, full_name%in%names)$id

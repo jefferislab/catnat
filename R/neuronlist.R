@@ -128,20 +128,20 @@ longestpathfromsoma = function (x, UseStartPoint = TRUE, SpatialWeights = TRUE, 
   if (invert && rval == "length")
     stop("invert=TRUE is not implemented for rval='length'")
   if (UseStartPoint) {
-    lps = shortest.paths(graph = ng, n$StartPoint, to = n$EndPoints,
+    lps = igraph::shortest.paths(graph = ng, n$StartPoint, to = n$EndPoints,
                          mode = "all")
     if (rval == "length")
       return(max(lps))
     to = n$EndPoints[which.max(lps)]
-    longestpath = get.shortest.paths(ng, from = n$StartPoint,
+    longestpath = igraph::get.shortest.paths(ng, from = n$StartPoint,
                                      to = to, mode = "all")$vpath[[1]]
   }
   else {
     if (rval == "length") {
-      return(diameter(ng, directed = FALSE))
+      return(igraph::diameter(ng, directed = FALSE))
     }
     else {
-      longestpath = get.diameter(ng, directed = FALSE)
+      longestpath = igraph::get.diameter(ng, directed = FALSE)
     }
   }
   if (rval == "ids") {
