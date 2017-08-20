@@ -1,13 +1,17 @@
 Package: catnat
 Type: Package
-Title: Extra functions for use with rcatmaid and nat
+Title: Analyse neuronal morphology and connectivity (extends catmaid and nat)
 Version: 0.1
 Authors@R: c(
     person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre")),
     person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"))
     )
-Description: A selection of functions that created for use alongside the nat and
-    rcatmaid packages.
+Description: A selection of functions for analysis of neuronal morphology and
+    connectivity created for use alongside the nat and catmaid packages. Many
+    of the functions are driven by the need to analyse the results of annotation
+    of 3D electron microscopy data from the `CATMAID` web application. This 
+    package is largely an incubator for work by Alex Bates and is subject to 
+    frequent udpates.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
@@ -15,6 +19,8 @@ Suggests: testthat, gplots, ggplot2, easyGgplot2, doMC, elmr, yaml
 Depends:  R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
 Imports: Rvcg, nabor, Morpho, dplyr, nat.templatebrains, rgl, plyr,
     igraph, googlesheets
+URL: https://github.com/alexanderbates/catnat
+BugReports: https://github.com/alexanderbates/catnat/issues
 Remotes: kassambara/easyGgplot2,
     jefferis/nat,
     jefferis/rcatmaid,
