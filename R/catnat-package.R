@@ -9,4 +9,5 @@
 #' @import alphashape3d
 #' @import nat.nblast
 #' @import rgl
+#' @import nat.flybrains
 NULL
