@@ -208,9 +208,9 @@ axonic.cable<-function(x, ...) UseMethod("axonic.cable")
 #' @export
 #' @rdname extract.cable
 dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
+#' @export
 #' @rdname extract.cable
 arbour.cable<-function(x, ...) UseMethod("arbour.cable")
-#' @export
 #' @rdname extract.cable
 axonic.cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
