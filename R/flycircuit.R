@@ -212,7 +212,7 @@ dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
 arbour.cable<-function(x, ...) UseMethod("arbour.cable")
 #' @export
 #' @rdname extract.cable
-axonic.cable.neuron <- function(x,mixed=FALSE){
+axonic.cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
   if (mixed==T){
     chosen = c(-2,2,8)
@@ -224,11 +224,11 @@ axonic.cable.neuron <- function(x,mixed=FALSE){
 }
 #' @export
 #' @rdname extract.cable
-dendritic.cable.neuron <- function(x,mixed = FALSE){
+dendritic.cable.neuron <- function(x, mixed = FALSE, ...){
   points=x$d
   if (mixed==T){
     chosen = c(-3,3,8)
-  }else{
+  } else{
     chosen = c(-3,3)
   }
   xyz = xyzmatrix(points[points$Label%in%chosen,])
@@ -236,7 +236,7 @@ dendritic.cable.neuron <- function(x,mixed = FALSE){
 }
 #' @export
 #' @rdname extract.cable
-arbour.cable.neuron <- function(x,mixed = FALSE){
+arbour.cable.neuron <- function(x, mixed = FALSE, ...){
   points=x$d
   if (mixed==T){
     chosen = c(-3,3,2,-2,8)

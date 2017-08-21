@@ -27,6 +27,7 @@ prune_distal <- function(neuron, bad_vertex_labels, invert=FALSE, ...) {
 #' @param ... additional arguments passed to methods.
 #' @return The percentage of downstream singlet nodes named tracers have contributed to neuron in
 #' @export
+#' @importFrom dplyr bind_rows filter
 downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Ruairi Roberts"), ...){
   neurons.treenodes=nlapply(names(someneuronlist), catmaid_get_treenode_table)
   user_ids = subset(ul, full_name%in%names)$id
@@ -144,7 +145,7 @@ manually_assign_axon_dendrite <-function(x, ...) UseMethod("manually_assign_axon
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
-manually_assign_axon_dendrite.neuron <- function(x){
+manually_assign_axon_dendrite.neuron <- function(x, ...){
   happy = "no"
   skid = x$skid
   x$d$Label = 0
@@ -178,8 +179,8 @@ manually_assign_axon_dendrite.neuron <- function(x){
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
-manually_assign_axon_dendrite.neuronlist<-function(x){
-  nat::nlapply(x, manually_assign_axon_dendrite.neuron)
+manually_assign_axon_dendrite.neuronlist<-function(x, ...){
+  nat::nlapply(x, manually_assign_axon_dendrite.neuron, ...)
 }
 
 #' Give connector data in a CATMAID neuron the same attributes as node data

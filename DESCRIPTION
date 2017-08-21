@@ -2,21 +2,24 @@ Package: catnat
 Type: Package
 Title: Extra functions for use with rcatmaid and nat
 Version: 0.1
-Author: Alex Bates, Greg Jefferis
-Date: 01/01/2017
-Maintainer: Alex Bates <abates@mrc-lmb.cam.ac.uk>
+Authors@R: c(
+    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre")),
+    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"))
+    )
 Description: A selection of functions that created for use alongside the nat and
     rcatmaid packages.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Suggests: testthat, gplots, ggplot2, easyGgplot2, nat.flybrains, doMC
-Depends:  R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast
+Suggests: testthat, gplots, ggplot2, easyGgplot2, nat.flybrains, doMC, elmr, 
+    yaml
+Depends:  R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
 Imports: Rvcg, nabor, lubridate, Morpho, dplyr, nat.templatebrains, rgl, plyr,
     igraph, googlesheets
 Remotes: kassambara/easyGgplot2,
     jefferis/nat,
     jefferis/rcatmaid,
     jefferislab/nat.templatebrains,
-    jefferislab/nat.flybrains
+    jefferislab/nat.flybrains,
+    jefferis/elmr
 Encoding: UTF-8

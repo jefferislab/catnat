@@ -134,7 +134,11 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 #' @param ... argument supplied to suggest_authorship
 #' @export
 #' @rdname contribution.to.skeletons
+#' @importFrom dplyr mutate_ arrange_
 node.contribution.to.skeletons <-function(x, exclude.authors = NULL, ...){
+  if(!requireNamespace('elmr', quietly = TRUE))
+    stop("Please install suggested package elmr to use this function!")
+
   skids = names(x)
   treenodes=nat::nlapply(skids, catmaid_get_treenode_table, OmitFailures = T)
   treenodes = do.call(rbind,treenodes)
@@ -152,7 +156,7 @@ node.contribution.to.skeletons <-function(x, exclude.authors = NULL, ...){
     s = df[!df$full_name%in%exclude.authors,]
     s = elmr::suggest_authorship(s, ...)
     s$action = "ack"
-    write_ack(s)
+    elmr::write_ack(s)
   }
   df
 }

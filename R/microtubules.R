@@ -19,7 +19,7 @@ mark.microtubules <-function(x, ...) UseMethod("mark.microtubules")
 
 #' @export
 #' @rdname microtubules
-mark.microtubules.neuron <- function(x){
+mark.microtubules.neuron <- function(x, ...){
   if(is.null(x$d$microtubules)){
     if(is.null(x$tags$`microtubules end`)){
       message("No microtubular endings marked in CATMAID neuron")
@@ -64,20 +64,20 @@ prune_microtubules <-function(x, ...) UseMethod("prune_microtubules")
 
 #' @export
 #' @rdname microtubules
-prune_microtubules.neuron <- function(x, microtubules = TRUE){
+prune_microtubules.neuron <- function(x, microtubules = TRUE, ...){
   if(is.null(x$d$microtubules)){
     x = mark.microtubules.neuron(x)
   }
   mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
-  x = catnat:::prune_vertices.catmaidneuron(x, verticestoprune = mt, invert = microtubules)
+  x = prune_vertices.catmaidneuron(x, verticestoprune = mt, invert = microtubules)
   #class(x) = c("catmaidneuron","list")
   x
 }
 
 #' @export
 #' @rdname microtubules
-prune_microtubules.neuronlist <- function(x, microtubules = TRUE){
-  nat::nlapply(x,prune_microtubules.neuron, microtubules = microtubules)
+prune_microtubules.neuronlist <- function(x, microtubules = TRUE, ...){
+  nat::nlapply(x,prune_microtubules.neuron, microtubules = microtubules, ...)
 }
 
 #' @export
@@ -119,7 +119,7 @@ assign_strahler <-function(x, ...) UseMethod("assign_strahler")
 
 #' @export
 #' @rdname assign_strahler
-assign_strahler.neuron<-function(x){
+assign_strahler.neuron<-function(x, ...){
   s = strahler_order(x)
   x$d$strahler_order = s$points
   if("catmaidneuron"%in%class(x)){
@@ -153,7 +153,7 @@ distance.from.first.branchpoint <-function(x, ...) UseMethod("distance.from.firs
 
 #' @export
 #' @rdname distance.from.first.branchpoint
-distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE){
+distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE, ...){
   # Find axon-dendrite branch point
   pn = subset(x$d,Label==7)
   bp = endpoints(pn)[!endpoints(pn)%in%rootpoints(pn)]

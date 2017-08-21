@@ -240,6 +240,8 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
           sleep = 0.1, extrafun = NULL, selected_file = NULL, selected_col = "black",
           yaml = TRUE, ...)
 {
+  if(!requireNamespace('yaml', quietly = TRUE))
+  stop("Suggested package yaml is required to use this function!")
   if (is.neuronlist(someneuronlist)) {
     db = someneuronlist
     neurons = as.data.frame(db)$name
@@ -248,7 +250,7 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
   selected <- character()
   i <- 1
   if (!is.null(selected_file) && file.exists(selected_file)) {
-    selected <- yaml.load_file(selected_file)
+    selected <- yaml::yaml.load_file(selected_file)
     if (!all(names(selected) %in% neurons))
       stop("Mismatch between selection file and neurons.")
   }
@@ -261,7 +263,7 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
                                ".yaml")
       message("Saving selection to disk as ", selected_file,
               ".")
-      writeLines(as.yaml(selected), con = selected_file)
+      writeLines(yaml::as.yaml(selected), con = selected_file)
     }
     else {
       if (!grepl("\\.rda$", selected_file))

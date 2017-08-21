@@ -4,6 +4,11 @@ language: R
 sudo: false
 dist: trusty
 cache: packages
+r_build_args: "--no-manual"
+r_check_args: "--no-manual"
 env:
   global:
     - RGL_USE_NULL=TRUE
+    - MAKEFLAGS="-j 2"
+    - CRAN: https://cran.rstudio.com
+    - _R_CHECK_FORCE_SUGGESTS_=FALSE

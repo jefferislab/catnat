@@ -150,7 +150,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' @rdname create_tracing_googlesheet
 create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, polypre = FALSE, axon.dendrite.split = FALSE){
   if(is.null(skid)){
-    error("Please provide a CATMAID skeleton ID")
+    stop("Please provide a CATMAID skeleton ID")
   }
   message("Reminder: Ideally, a CATMAID neuron should be as complete as possible before one starts to sample its partners")
   googlesheets::gs_auth(verbose=TRUE)
@@ -259,7 +259,7 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
 update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$skid, ws = "whole neuron input"){
   googlesheets::gs_auth(verbose=TRUE)
   if(!is.character(ws)){
-    error("Worksheet must be named")
+    stop("Worksheet must be named")
   }
   if(grepl("dend",ws)&!is.null(neuron)){
     dend = rownames(subset(neuron$d, Label==3))
@@ -286,7 +286,7 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
   }else{
     if(polypre==T|prepost==1){
       if(is.null(skid)){
-        error("Please provide a CATMAID skeleton ID")
+        stop("Please provide a CATMAID skeleton ID")
       }
       new.df = catmaid::catmaid_get_connector_table(skid)
       new.df$treenode_id = lapply(new.df$connector_id, function(y) ifelse(y%in%neuron$connectors$connector_id,neuron$connectors$treenode_id[neuron$connectors$connector_id==y][1],0) )
@@ -343,9 +343,9 @@ update_tracing_worksheet <- function(sheet_title, neuron = NULL, skid = neuron$s
 #' @export
 #' @rdname create_tracing_googlesheet
 update_tracing_googlesheet <-function(sheet_title, neuron = NULL, polypre = FALSE){
-  googlesheets::gs_copy(from= gs, to = paste0(sheet_title,"_copy"), verbose = TRUE)
-  message("A copy of the old spreadsheet has been made and left in your home directory on google drive, just in case...")
   gs = googlesheets::gs_title(sheet_title)
+  googlesheets::gs_copy(from=gs, to = paste0(sheet_title,"_copy"), verbose = TRUE)
+  message("A copy of the old spreadsheet has been made and left in your home directory on google drive, just in case...")
   worksheets = googlesheets::gs_ws_ls(gs)
   possible = c("whole neuron input","dendritic input","axonal input", "other input", "whole neuron output connectors","dendritic output connectors",
                "axonal output connectors", "other output connectors",  "whole neuron output connections",  "dendritic output connections",

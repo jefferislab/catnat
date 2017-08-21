@@ -117,7 +117,11 @@ make.3d.tract=function (someneuronlist, savefile, maxdistance = 10, groupsize = 
     progress = readline(prompt="Remove (r), add (a) or save (s) points?  ")
   }
   if (is.null(originalneurons) == F){
-    synapse.points = find.neuropil.points(originalneurons, savefile, maxdistance, groupsize, alpha, selection = TRUE, scale = scale, tract = selected.points)
+    synapse.points = find.neuropil.points(originalneurons, savefile,
+                                          maxdistance=maxdistance,
+                                          groupsize = groupsize,
+                                          selection = TRUE, scale = scale,
+                                          tract = selected.points)
     selected.points = rbind(selected.points, synapse.points)
   }
   saveRDS(selected.points, file = savefile)

@@ -8,9 +8,9 @@
 \usage{
 manually_assign_axon_dendrite(x, ...)
 
-\method{manually_assign_axon_dendrite}{neuron}(x)
+\method{manually_assign_axon_dendrite}{neuron}(x, ...)
 
-\method{manually_assign_axon_dendrite}{neuronlist}(x)
+\method{manually_assign_axon_dendrite}{neuronlist}(x, ...)
 }
 \arguments{
 \item{x}{a neuron/neuronlist object}
