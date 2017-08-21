@@ -179,12 +179,17 @@ manually_assign_axon_dendrite.neuron <- function(x, ...){
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
-plot3d.split.neuron <- function(x, soma = TRUE, ...){
-  rgl::plot3d(dendritic.cable(x),col="blue", soma = FALSE, ...)
-  rgl::plot3d(axonic.cable(x), col = "orange", soma = FALSE, ...)
-  rgl::plot3d(primary.neurite(x), col = "purple", soma = FALSE, ...)
-  rgl::plot3d(mixed.cable(x), col = "green", soma = FALSE, ...)
-  rgl::plot3d(x, col = "grey", soma = soma, ....)
+plot3d.split <- function(x, soma = TRUE, ...){
+  d = dendritic.cable(x)
+  a = axonic.cable(x)
+  u = unsure.cable(x)
+  p = primary.neurite(x)
+  g = unsure.cable(x)
+  if(length(d)>0) {rgl::plot3d(d,col="blue", soma = FALSE, ...)}
+  if(length(a)>0) {rgl::plot3d(a, col = "orange", soma = FALSE, ...)}
+  if(length(p)>0) {rgl::plot3d(p, col = "purple", soma = FALSE, ...)}
+  if(length(u)>0) {rgl::plot3d(u, col = "green", soma = FALSE, ...)}
+  rgl::plot3d(x, col = "grey", soma = soma, ...)
 }
 
 

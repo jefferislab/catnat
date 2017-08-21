@@ -249,6 +249,7 @@ arbour.cable.neuron <- function(x, mixed = FALSE, ...){
   xyz = xyzmatrix(points[points$Label%in%chosen,])
   nat::prune(x,target=xyz,keep="near",maxdist=0)
 }
+#' @export
 #' @rdname extract.cable
 unsure.cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
@@ -273,7 +274,7 @@ arbour.cable.neuronlist <- function(x,mixed=FALSE, ...){
 }
 #' @export
 #' @rdname extract.cable
-unsure.cable.neuronlist <- function(x,mixed=FALSE, ...){
+unsure.cable.neuronlist <- function(x, ...){
   nlapply(x,unsure.cable.neuron,OmitFailures = T, ...)
 }
 
