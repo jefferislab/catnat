@@ -211,6 +211,9 @@ dendritic.cable<-function(x, ...) UseMethod("dendritic.cable")
 #' @export
 #' @rdname extract.cable
 arbour.cable<-function(x, ...) UseMethod("arbour.cable")
+#' @export
+#' @rdname extract.cable
+unsure.cable<-function(x, ...) UseMethod("unsure.cable")
 #' @rdname extract.cable
 axonic.cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
@@ -246,6 +249,13 @@ arbour.cable.neuron <- function(x, mixed = FALSE, ...){
   xyz = xyzmatrix(points[points$Label%in%chosen,])
   nat::prune(x,target=xyz,keep="near",maxdist=0)
 }
+#' @rdname extract.cable
+unsure.cable.neuron <- function(x, mixed=FALSE, ...){
+  points=x$d
+  chosen = c(-8,8:100)
+  xyz = xyzmatrix(points[points$Label%in%chosen,])
+  nat::prune(x,target=xyz,keep="near",maxdist=0)
+}
 #' @export
 #' @rdname extract.cable
 axonic.cable.neuronlist <- function(x,mixed=FALSE, ...){
@@ -261,7 +271,11 @@ dendritic.cable.neuronlist <- function(x,mixed=FALSE, ...){
 arbour.cable.neuronlist <- function(x,mixed=FALSE, ...){
   nlapply(x,arbour.cable.neuron,mixed=mixed,OmitFailures = T, ...)
 }
-
+#' @export
+#' @rdname extract.cable
+unsure.cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,unsure.cable.neuron,OmitFailures = T, ...)
+}
 
 
 #' Re-root neurons to their soma

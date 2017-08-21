@@ -179,6 +179,17 @@ manually_assign_axon_dendrite.neuron <- function(x, ...){
 
 #' @export
 #' @rdname manually_assign_axon_dendrite
+plot3d.split.neuron(x){
+  rgl::plot3d(dendritic.cable(x),col="blue")
+  rgl::plot3d(axonic.cable(x), col = "orange")
+  rgl::plot3d(primary.neurite(x), col = "purple")
+  rgl::plot3d(mixed.cable(x), col = "green")
+  rgl::plot3d(x, col = "grey")
+}
+
+
+#' @export
+#' @rdname manually_assign_axon_dendrite
 manually_assign_axon_dendrite.neuronlist<-function(x, ...){
   nat::nlapply(x, manually_assign_axon_dendrite.neuron, ...)
 }
