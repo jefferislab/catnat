@@ -844,11 +844,11 @@ label.neuron.class <- function(x, plotting.brain = nat.flybrains::FCWB, regional
 
 
 
-for(l in 1:length(dye.fills)){
-  plot3d(FCWB)
-  plot3d.split(dye.fills[l])
-  progress = readline()
-  clear3d()
-}
+#for(l in 1:length(dye.fills)){
+#  plot3d(FCWB)
+#  plot3d.split(dye.fills[l])
+#  progress = readline()
+#  clear3d()
+#}
 
 
