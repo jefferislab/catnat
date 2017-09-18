@@ -342,10 +342,10 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
 overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1){
   if(length(neuropil)>0){
     points = rbind(axonic.points.neuronlist(neurons),mixed.points.neuronlist(neurons))
-    points = points[inashape3d(points=points,as3d=neuropil),]
+    points = points[inashape3d(points=points,as3d=neuropil,indexAlpha = "ALL"),]
     neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
     points = rbind(dendritic.points.neuronlist(targets),mixed.points.neuronlist(targets))
-    points = points[inashape3d(points=points,as3d=neuropil),]
+    points = points[inashape3d(points=points,as3d=neuropil,indexAlpha = "ALL"),]
     targets = nlapply(targets, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
     correct.d <- function(neuron){
       neuron$d$Label=3
@@ -377,9 +377,9 @@ overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,
     targets = neurites(targets.f,fragment="dendrites")
   }
   if(length(neuropil)>0){
-    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil),]
+    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
     neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
-    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil),]
+    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
     targets = nlapply(targets, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
   }
   score.matrix = matrix(0,nrow = length(neurons),ncol = length(targets))
@@ -467,10 +467,10 @@ cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
   }
   in.neuropil <- function(x,neuropil,min.endpoints =1,alpha=30){
     neuropil = alphashape3d::ashape3d(xyzmatrix(neuropil),alpha=alpha)
-    if(sum(alphashape3d::inashape3d(points=endings(x),as3d=neuropil))>min.endpoints){
+    if(sum(alphashape3d::inashape3d(points=endings(x),as3d=neuropil, indexAlpha = "ALL"))>min.endpoints){
       points = x$d[x$d$Label%in%targets,]
-      #sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil))
-      points.in = points[alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil),]
+      #sum(alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil,indexAlpha = "ALL"))
+      points.in = points[alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil, indexAlpha = "ALL"),]
       pruned = tryCatch(prune(x,keep="near",maxdist=0,target=points.in),error = function(e)NULL)
       if(!is.null(pruned)){summary(pruned)$cable.length
         }else{0}
@@ -492,7 +492,7 @@ points.in.neuropil <- function(x, brain, alpha = 30, ...){
   for (n in nps){
     neuropil = subset(brain, n)
     neuropil = alphashape3d::ashape3d(xyzmatrix(neuropil),alpha=alpha)
-    a = alphashape3d::inashape3d(points=nat::xyzmatrix(x),as3d=neuropil)
+    a = alphashape3d::inashape3d(points=nat::xyzmatrix(x),as3d=neuropil,indexAlpha = "ALL")
     df$neuropil[which(a==T)] = n
   }
   df
@@ -820,9 +820,35 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   (nblast.forward+t(nblast.backward))/2
 }
 
+#' @return a label.neuron.class
+#' @export
+label.neuron.class <- function(x, plotting.brain = nat.flybrains::FCWB, regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH", ...){
+  choices = c("LN","ON","PN","INPUT","UNKNOWN")
+  types =c()
+  for(y in 1:length(x)){
+    print(paste0(y," of ", length(x)))
+    rgl::plot3d(plotting.brain)
+    rgl::plot3d(subset(regionalised.brain,neuropils), alpha = 0.3)
+    plot3d.split(x[y],soma=TRUE)
+    type = ""
+    while(type==""){
+      type = readline("Is this neuron a LN, ON, PN, INPUT, UNKNOWN? ")
+    }
+    type = choices[grep(type,choices,ignore.case = TRUE)[1]]
+    types = c(types,type)
+    rgl::clear3d()
+  }
+  attr(x,"df") = cbind(attr(x,"df"), type = types)
+  x
+}
 
 
 
-
+for(l in 1:length(dye.fills)){
+  plot3d(FCWB)
+  plot3d.split(dye.fills[l])
+  progress = readline()
+  clear3d()
+}
 
 
