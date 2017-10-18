@@ -149,14 +149,44 @@ node.contribution.to.skeletons <-function(x, exclude.authors = NULL, ...){
   t = sort(table(trimmed.treenodes$user_id),decreasing = TRUE)
   fns = uls[match(as.numeric(names(t)),uls$id),]$full_name
   df = data.frame(id = names(t), n = c(t), full_name = fns)
-  df <- df %>% arrange_(~desc(n)) %>%
-    mutate_(pct = ~n/sum(n) * 100, cpct = ~cumsum(pct))
+  df <- df %>% dplyr::arrange_(~desc(n)) %>%
+    dplyr::mutate_(pct = ~n/sum(n) * 100, cpct = ~cumsum(pct))
   attr(df,"type") = "nodes"
   if(!is.null(exclude.authors)){
     s = df[!df$full_name%in%exclude.authors,]
     s = elmr::suggest_authorship(s, ...)
     s$action = "ack"
     elmr::write_ack(s)
+  }
+  df
+}
+
+#' @export
+#' @rdname contribution.to.skeletons
+synapse.contribution.to.skeletons <-function(x, exclude.authors = NULL, direction = NULL){
+  skids = names(x)
+  c = do.call(rbind,lapply(x,function(x) x$connectors))
+  connectors = do.call(rbind,lapply(skids,catmaid_get_connector_table))
+  if(!is.null(direction)){
+    connectors = subset(connectors,direction==direction)
+  }
+  ul=catmaid::catmaid_get_user_list()
+  uls = ul[, c("full_name", "id")]
+  cids = unlist(sapply(x,function(x) x$connectors$connector_id))
+  trimmed.connectors = subset(connectors, connector_id%in%cids)
+  # Remove duplicated connectors
+  trimmed.connectors = trimmed.connectors[!duplicated(trimmed.connectors$connector_id),]
+  t = sort(table(trimmed.connectors$user_id),decreasing = TRUE)
+  fns = uls[match(as.numeric(names(t)),uls$id),]$full_name
+  df = data.frame(id = names(t), n = c(t), full_name = fns)
+  df <- df %>% dplyr::arrange_(~desc(n)) %>%
+    dplyr::mutate_(pct = ~n/sum(n) * 100, cpct = ~cumsum(pct))
+  attr(df,"type") = "synapses"
+  if(!is.null(exclude.authors)){
+    s = df[!df$full_name%in%exclude.authors,]
+    s = elmr::suggest_authorship(s,..)
+    s$action = "ack"
+    write_ack(s)
   }
   df
 }
