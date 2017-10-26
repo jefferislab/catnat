@@ -120,8 +120,27 @@ assign_strahler <-function(x, ...) UseMethod("assign_strahler")
 #' @export
 #' @rdname assign_strahler
 assign_strahler.neuron<-function(x, ...){
-  s = strahler_order(x)
-  x$d$strahler_order = s$points
+  if(ifelse(!is.null(x$nTrees),x$nTrees!=1,FALSE)){
+    warning("Neuron has multiple trees, calculating Strahler order for each subtree separately")
+    x$d$strahler_order = 1
+    for(tree in 1:x$nTrees){
+      v = unique(unlist(x$SubTrees[tree]))
+      if(length(v)<2){
+        x$d[x$d$PointNo%in%v,]$strahler_order = 1
+      }else{
+        neuron = tryCatch(nat::prune_vertices(x,verticestoprune = v, invert = TRUE), error=function(e) NULL)
+        if(sum(branchpoints(x)%in%v)==0){
+          x$d[x$d$PointNo%in%v,]$strahler_order = 1
+        }else if (!is.null(neuron)){
+          s = nat::strahler_order(neuron)
+          x$d[x$d$PointNo%in%v,]$strahler_order = s$points
+        }
+      }
+    }
+  }else{
+    s = nat::strahler_order(x)
+    x$d$strahler_order = s$points
+  }
   if("catmaidneuron"%in%class(x)){
     relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
     x$connectors$strahler_order = relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),]$strahler_order
@@ -186,3 +205,30 @@ distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE, ...){
 distance.from.first.branchpoint.neuronlist<-function(x, graph.distance = TRUE, ...){
   nlapply(x,distance.from.first.branchpoint.neuron, graph.distance = graph.distance, ...)
 }
+
+
+
+#' Get a subtree in a neuron object as a separate neuron object
+#'
+#' @description Get a subtree in a neuron object as a separate neuron object
+#'
+#' @param neuron a neuron object from which to extract a subtree
+#' @param subtree the number of the subtree to extract
+#' @export
+#' @rdname subtree
+subtree<-function(neuron, subtree = 1){
+  if(neuron$nTrees<1){
+    warning("Neuron has no subtree")
+  }else{
+    v = unique(unlist(neuron$SubTrees[subtree]))
+    if(length(v)>1){
+      neuron = nat::prune_vertices(neuron, verticestoprune = v, invert = TRUE)
+    }else{
+      neuron = NULL
+    }
+  }
+  neuron
+}
+
+
+

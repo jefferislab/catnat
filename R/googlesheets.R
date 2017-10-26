@@ -2,7 +2,7 @@
 connector_URL <- function(df){
   if(!is.data.frame(df))
     stop("Please give me a data frame!")
-  base = "https://neuropil.janelia.org/tracing/fafb/v13"
+  base = "https://neuropil.janelia.org/tracing/fafb/v14"
   catmaid_url = paste0(base, "?pid=1")
   catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
   catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
@@ -23,7 +23,7 @@ catmaid_urls <- function (df) {
   if (!is.data.frame(df)){
     stop("Please give me a data frame!")
   }
-  base = "https://neuropil.janelia.org/tracing/fafb/v13"
+  base = "https://neuropil.janelia.org/tracing/fafb/v14"
   catmaid_url = paste0(base, "?pid=1")
   catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
   catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
@@ -48,8 +48,10 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
     if(sum(is.na(df$pre_name))>0){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
-      newskids = df[which(is.na(df$pre_name)),]$partner_skid
-      df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      #if(sum(is.na(df$pre_name))>0){
+      #  newskids = df[which(is.na(df$pre_name)),]$partner_skid
+      #  df[which(is.na(df$pre_name))[!sapply(newskids, is.null)],]$pre_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      #}
       df$URL = connector_URL(df)
     }
     df$pre_nodes = 1
@@ -93,8 +95,10 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     df$post_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid)) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     if(sum(is.na(df$post_name))>0){
       df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
-      newskids = df[which(is.na(df$post_name)),]$partner_skid
-      df[which(is.na(df$post_name))[!sapply(newskids, is.null)],]$post_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      #if(sum(is.na(df$post_name))>0){
+      #  newskids = df[which(is.na(df$post_name)),]$partner_skid
+      #  df[which(is.na(df$post_name))[!sapply(newskids, is.null)],]$post_name = catmaid::catmaid_get_neuronnames(unlist(newskids))
+      #}
       df$URL = connector_URL(df)
     }
     df$post_nodes = 1
@@ -157,17 +161,19 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
   message("This might take a small while, get a coffee or look at Facebook or something")
   # Create the googlesheet object
   gs = googlesheets::gs_new(title = sheet_title, ws_title = "whole neuron input")
-  googlesheets::gs_ws_new(gs, ws_title = "dendritic input", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "axonal input", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "other input", verbose = TRUE)
+  if(axon.dendrite.split){
+    googlesheets::gs_ws_new(gs, ws_title = "dendritic input", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "axonal input", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "other input", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "dendritic output connectors", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "axonal output connectors", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "other output connectors", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "dendritic output connections", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "axonal output connections", verbose = TRUE)
+    googlesheets::gs_ws_new(gs, ws_title = "other output connections", verbose = TRUE)
+  }
   googlesheets::gs_ws_new(gs, ws_title = "whole neuron output connectors", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "dendritic output connectors", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "axonal output connectors", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "other output connectors", verbose = TRUE)
   googlesheets::gs_ws_new(gs, ws_title = "whole neuron output connections", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "dendritic output connections", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "axonal output connections", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "other output connections", verbose = TRUE)
   gs = googlesheets::gs_title(sheet_title)
   # Get neuron synaptic data
   df = catmaid_get_connector_table(skid)
@@ -358,3 +364,21 @@ update_tracing_googlesheet <-function(sheet_title, neuron = NULL, polypre = FALS
     update_tracing_worksheet(sheet_title = sheet_title, neuron = neuron, ws = ws)
   }
 }
+
+
+d = read.neurons.catmaid("name:PN glomerulus Dp1m")
+d.lh = prune.in.volume(x = d, brain = FAFB14NP.surf, neuropil = "LH_R", maxdist = 0, invert = FALSE)
+create_tracing_googlesheet(sheet_title = "Dp1m Axon LH", neuron = d.lh[[1]], skid = names(d), polypre = FALSE,axon.dendrite.split = FALSE)
+
+dm = read.neurons.catmaid("name:PN glomerulus DM1")
+dm.lh = prune.in.volume(x = dm, brain = FAFB14NP.surf, neuropil = "LH_R", maxdist = 0, invert = FALSE)
+create_tracing_googlesheet(sheet_title = "DM1 Axon LH", neuron = dm.lh[[1]], skid = names(dm), polypre = FALSE,axon.dendrite.split = FALSE)
+
+h = read.neurons.catmaid("name:Haddock")
+h = flow.centrality(h)
+create_tracing_googlesheet(sheet_title = "Haddock", neuron = h[[1]], skid = names(h), polypre = FALSE,axon.dendrite.split = TRUE)
+
+
+
+
+

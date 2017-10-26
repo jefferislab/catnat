@@ -358,8 +358,10 @@ overlap.connectivity.matrix <- function(neurons,targets,neuropil = NULL,delta =1
   colnames(score.matrix) = names(targets)
   for (n in 1:length(neurons)){
     message("Working on neuron ", n,"/",length(neurons))
-    a = axonic.points(neurons[[n]])
-    targets.d = nlapply(targets, dendritic.points)
+    a = nat::xyzmatrix(neurons[[n]])
+    targets.d = nat::nlapply(targets, nat::xyzmatrix)
+    #a = axonic.points(neurons[[n]])
+    #targets.d = nlapply(targets, dendritic.points)
     s = sapply(targets.d, function(x)sum(exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2)))) # Score similar to that in Schlegel et al. 2015
     score.matrix[n,] = s
   }
@@ -377,18 +379,18 @@ overlap.connectivity.matrix.catmaid <- function(neurons,targets,neuropil = NULL,
     targets = neurites(targets.f,fragment="dendrites")
   }
   if(length(neuropil)>0){
-    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
-    neurons = nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
-    points = xyzmatrix(neurons)[inashape3d(points=xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
-    targets = nlapply(targets, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
+    points = nat::xyzmatrix(neurons)[inashape3d(points=nat::xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
+    neurons = nat::nlapply(neurons, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
+    points = nat::xyzmatrix(neurons)[inashape3d(points=nat::xyzmatrix(neurons),as3d=neuropil,indexAlpha = "ALL"),]
+    targets = nat::nlapply(targets, nat::prune, target = points, keep = 'near', maxdist = 1,OmitFailures=T)
   }
   score.matrix = matrix(0,nrow = length(neurons),ncol = length(targets))
   rownames(score.matrix) = names(neurons)
   colnames(score.matrix) = names(targets)
   for (n in 1:length(neurons)){
     message("Working on neuron ", n,"/",length(neurons))
-    a = xyzmatrix(neurons[[n]])
-    targets.d = nlapply(targets, xyzmatrix)
+    a = nat::xyzmatrix(neurons[[n]])
+    targets.d = nat::nlapply(targets, nat::xyzmatrix)
     if(rval=="neuronlist"){
       s = sapply(targets.d, function(x)exp(-nabor::knn(query = a, data = x,k=nrow(x))$nn.dists^2/(2*delta^2))) # Score similar to that in Schlegel et al. 2015
       rms = do.call(cbind,lapply(s, rowSums))

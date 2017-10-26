@@ -238,9 +238,9 @@ assign.connector.info.neuronlist<-function(x, ...){
 #' @export
 prune.in.volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
   keep=ifelse(invert, "far", "near")
-  mesh=as.mesh3d(subset(brain, neuropil))
+  mesh= rgl::as.mesh3d(subset(brain, neuropil))
   nat::prune(x,
-             target = nat::xyzmatrix(x)[pointsinside(xyzmatrix(x), surf = mesh), ],
+             target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), surf = mesh), ],
              maxdist = maxdist,
              keep = keep)
 }
