@@ -39,11 +39,11 @@
 #'   = PN).
 #' @export
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
-flow.centrality <-function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...) UseMethod("flow.centrality")
+flow.centrality <-function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
+flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE, ...){
   # prune Strahler first...and use segmentgraph?
   # Generate ngraph object
   x$d$Label = 0
@@ -65,12 +65,13 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   syns.in = x$connectors[x$connectors[,3]==1,][,1]
   if (polypre == T){
     pres = x$connectors[x$connectors[,3]==0,][,2]
-    pre.cons = catmaid_get_connectors(pres)$connector_id
+    pre.cons = catmaid::catmaid_get_connectors(pres)$connector_id
+    pre.cons = c(pre.cons,pres[!pres%in%pre.cons])
     syns.out = x$connectors[,1][match(pre.cons, x$connectors[,2])]
   }else{
     syns.out = x$connectors[x$connectors[,3]==0,][,1]
   }
-  # Rearrange so nodes are the indices and we can count no. of synapses to which nodes connect
+  # Rearrange so nodes are the indices and we can count no. of synapses to which nodes connect  -(count things multiples???)
   point.no.in = rownames(nodes)[match(syns.in,nodes[,"PointNo"])]
   nodes.in = rep(1,length(point.no.in))
   names(nodes.in) = point.no.in
@@ -91,16 +92,23 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   in.bps = unlist(lapply(ins, function(x) x[1]))[-1]
   out.bps = unlist(lapply(outs, function(x) x[1]))[-1]
   names(in.bps) = names(out.bps) = bps = c(root,unlist(lapply(segs, function(x) x[1]))[-1])
-  in.bps[names(in.bps)%in%names(nodes.in)] = in.bps[names(in.bps)%in%names(nodes.in)] - nodes[names(in.bps)[names(in.bps)%in%names(nodes.in)],"post"]
-  out.bps[names(out.bps)%in%names(nodes.out)] = out.bps[names(out.bps)%in%names(nodes.out)] - nodes[names(out.bps)[names(out.bps)%in%names(nodes.out)],"pre"]
+  in.bps.child = tapply(in.bps,names(in.bps),function(x) ifelse(names(x)[1]%in%names(nodes.in),sum(x)-(nodes.in[names(x)[1]]*length(x)),sum(x))) # Add all the branch point values together for the immediate child fragments, and only coutn synapses on the BP itself ONCE
+  out.bps.child = tapply(out.bps,names(out.bps),function(x) ifelse(names(x)[1]%in%names(nodes.out),sum(x)-(nodes.out[names(x)[1]]*length(x)),sum(x)))
+  nodes[names(in.bps.child),"up.syns.in"] = in.bps.child
+  nodes[names(out.bps.child),"up.syns.out"] = out.bps.child # However! If there is a synapse on the BP itself, it is counted twice...
+  #Old way of preventing over counting synapses from branchpoints
+  #in.bps[names(in.bps)%in%names(nodes.in)] = in.bps[names(in.bps)%in%names(nodes.in)] - nodes[names(in.bps)[names(in.bps)%in%names(nodes.in)],"post"]
+  #out.bps[names(out.bps)%in%names(nodes.out)] = out.bps[names(out.bps)%in%names(nodes.out)] - nodes[names(out.bps)[names(out.bps)%in%names(nodes.out)],"pre"]
   # Propagate scores from branch nodes
+  #plot to check: points3d(xyzmatrix(nodes),col=rbPal(max(nodes$up.syns.in+1))[nodes$up.syns.in+1])
+  bps = as.numeric(names(in.bps.child))
   for (i in 1:length(bps)){
     bp = bps[i]
     new.in = new.out = c(rep(0,nrow(nodes)))
     names(new.in) = names(new.out) = rownames(nodes)
     vertices = unlist(igraph::shortest_paths(n, bp, to = root)$vpath)[-1]
-    new.in[as.character(vertices)] = new.in[as.character(vertices)] + in.bps[i]
-    new.out[as.character(vertices)] = new.out[as.character(vertices)] + out.bps[i]
+    new.in[as.character(vertices)] = new.in[as.character(vertices)] + in.bps.child[i]
+    new.out[as.character(vertices)] = new.out[as.character(vertices)] + out.bps.child[i]
     nodes[,"up.syns.in"] = nodes[,"up.syns.in"]+ new.in
     nodes[,"up.syns.out"] = nodes[,"up.syns.out"] + new.out
   }
@@ -109,8 +117,22 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   out.total = nodes[1,"up.syns.out"] = length(point.no.out)
   if(mode[1] == "centrifugal"){nodes[,"flow.cent"] = (in.total - nodes[,"up.syns.in"])*nodes[,"up.syns.out"]}
   if(mode[1] == "centripetal"){nodes[,"flow.cent"] = (out.total - nodes[,"up.syns.out"])*nodes[,"up.syns.in"]}
-  if(mode[1] == "average"){nodes[,"flow.cent"] = (in.total - nodes[,"up.syns.in"])*nodes[,"up.syns.out"] + (out.total - nodes[,"up.syns.out"])*nodes[,"up.syns.in"]}
+  if(mode[1] == "sum"){nodes[,"flow.cent"] = ((in.total - nodes[,"up.syns.in"])*nodes[,"up.syns.out"]) + ((out.total - nodes[,"up.syns.out"])*nodes[,"up.syns.in"])}
   nodes = nodes[order(as.numeric(rownames(nodes))),]
+  # Calculate flow centrality at branch points
+  if(bending.flow){
+    for(bp in bps){
+      # We need to add the 'bending flow' to all the branchpoints if looking at centripetal flow centrality
+      down = unlist(igraph::ego(n, 1, nodes = bp, mode = "in",mindist=0))[-1]
+      bending.flow = centrifugal.bending.flow = c()
+      for(u in down){
+        this.seg.posts = nodes[u,]$down.syns.in
+        other.segs.pre = nodes[down[!down==u],]$down.syns.out
+        bending.flow = c(bending.flow,sum(this.seg.posts*other.segs.pre))
+      }
+      nodes[bp,"flow.cent"] = nodes[bp,"flow.cent"] + bending.flow
+    }
+  }
   ais = which(apply(nodes, 1, function(x) x["flow.cent"] == max(nodes[,"flow.cent"])))
   if (length(ais)>0){
     runstosoma = unlist(lapply(ais, function(x) length(unlist(igraph::shortest_paths(n, x, to = root)$vpath))))
@@ -118,7 +140,16 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   }
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, ais, to = leaves, mode = "in")$vpath)))
   upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
-  if (sum(nodes[as.character(downstream),"pre"]) > sum(nodes[as.character(upstream),"pre"])){
+  if(bending.flow){
+    # If the split point is the primary branch point then both axon and dendrite are upstream!
+    if(nodes[ais,]$up.syns.in==0&nodes[ais,]$up.syns.out==0){
+      down = unlist(igraph::ego(n, 1, nodes = bp, mode = "in",mindist=0))[-1]
+      ais = down[1]
+      downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, ais, to = leaves, mode = "in")$vpath)))
+      upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
+    }
+  }
+  if (sum(nodes[as.character(downstream),"post"]) < sum(nodes[as.character(upstream),"post"])){
     nodes[as.character(downstream),"Label"] = 2
   }else {
     nodes[as.character(upstream),"Label"] = 2
@@ -132,7 +163,6 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
   soma.group = clust$membership[names(clust$membership)==root]
   p.n = names(clust$membership)[clust$membership==soma.group]
   nodes[p.n,"Label"] = 7
-  nodes[zeros[!zeros%in%p.n],"Label"] = 0
   if(!is.null(primary.dendrite)){
     highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
     nodes[as.character(highs),"Label"] = 4
@@ -167,7 +197,7 @@ flow.centrality.neuron <- function(x, mode = c("average","centrifugal","centripe
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, ...){
+flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,...){
   neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, ...)
   neurons
 }
@@ -181,7 +211,7 @@ flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","cent
 #' @param soma whether to plot a soma, and what the radius should be
 #' @param WithNodes whether to plot branch points
 #' @param lwd Line width (default 1)
-#' @param radius For connectors (default 1)
+#' @param radius For connectors and axon-dendrite split node (default 1)
 #' @param highflow wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)
 #' @param Verbose logical indicating that info about each selected neuron should be printed (default TRUE)
 #' @param Wait logical indicating that there should be a pause between each displayed neuron
@@ -196,7 +226,7 @@ flow.centrality.neuronlist <- function(x, mode = c("average","centrifugal","cent
 #' @export
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
 #' @importFrom stats sd
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), splitnode = FALSE,WithConnectors = T, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1){
   someneuronlist = as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
@@ -206,14 +236,14 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     }
     dendrites.v = subset(rownames(neuron$d), neuron$d$Label == 3)
     axon.v = subset(rownames(neuron$d), neuron$d$Label == 2)
-    nulls.v = subset(rownames(neuron$d), neuron$d$Label == 0)
+    #nulls.v = subset(rownames(neuron$d), neuron$d$Label == 0)
     p.d.v = subset(rownames(neuron$d), neuron$d$Label == 4)
     p.n.v = subset(rownames(neuron$d), neuron$d$Label == 7)
-    dendrites = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, nulls.v, p.d.v, p.n.v)))
-    axon = nat::prune_vertices(neuron, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v, p.n.v)))
-    nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
-    p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.n.v)))
-    p.n = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.d.v)))
+    dendrites = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, p.d.v, p.n.v)))
+    axon = nat::prune_vertices(neuron, verticestoprune = as.integer(c(dendrites.v, p.d.v, p.n.v)))
+    #nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
+    p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v)))
+    p.n = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v)))
     rgl::plot3d(dendrites, col = col[1], WithNodes = WithNodes, lwd = lwd)
     rgl::plot3d(axon, col = col[2], WithNodes = WithNodes, soma = FALSE, lwd = lwd)
     rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = soma, lwd = lwd)
@@ -229,6 +259,10 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
       s.d = sd(neuron$d[,"flow.cent"], na.rm = T)
       high = subset(neuron$d, neuron$d[,"flow.cent"] > (highest - s.d))
       rgl::points3d(nat::xyzmatrix(high), col = col[6])
+    }
+    if(splitnode==T){
+      ais = which(apply(neuron$d, 1, function(x) x["flow.cent"] == max(neuron$d[,"flow.cent"])))
+      rgl::spheres3d(nat::xyzmatrix(neuron$d[ais,]),radius=radius,col="magenta")
     }
   }
 }
