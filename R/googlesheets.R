@@ -366,17 +366,6 @@ update_tracing_googlesheet <-function(sheet_title, neuron = NULL, polypre = FALS
 }
 
 
-d = read.neurons.catmaid("name:PN glomerulus DC4")
-d.lh = prune.in.volume(x = d, brain = FAFB14NP.surf, neuropil = "LH_R", maxdist = 0, invert = FALSE)
-create_tracing_googlesheet(sheet_title = "DC4 Axon LH", neuron = d.lh[[1]], skid = names(d), polypre = FALSE,axon.dendrite.split = FALSE)
-
-dm = read.neurons.catmaid("name:PN glomerulus DM1")
-dm.lh = prune.in.volume(x = dm, brain = FAFB14NP.surf, neuropil = "LH_R", maxdist = 0, invert = FALSE)
-create_tracing_googlesheet(sheet_title = "DM1 Axon LH", neuron = dm.lh[[1]], skid = names(dm), polypre = FALSE,axon.dendrite.split = FALSE)
-
-h = read.neurons.catmaid("name:Centric 2")
-h = flow.centrality(h)
-create_tracing_googlesheet(sheet_title = "Centric LHLN", neuron = h[[1]], skid = names(h), polypre = FALSE,axon.dendrite.split = TRUE)
 
 
 
