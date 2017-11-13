@@ -6,14 +6,16 @@
 \alias{flow.centrality.neuronlist}
 \title{Determine dendritic/axonal by calculating flow centrality}
 \usage{
-flow.centrality(x, mode = c("average", "centrifugal", "centripetal"),
-  polypre = T, primary.dendrite = 0.9, ...)
+flow.centrality(x, mode = c("sum", "centrifugal", "centripetal"),
+  polypre = T, primary.dendrite = 0.9, bending.flow = FALSE, ...)
 
-\method{flow.centrality}{neuron}(x, mode = c("average", "centrifugal",
-  "centripetal"), polypre = T, primary.dendrite = 0.9, ...)
+\method{flow.centrality}{neuron}(x, mode = c("sum", "centrifugal",
+  "centripetal"), polypre = T, primary.dendrite = 0.9,
+  bending.flow = FALSE, ...)
 
-\method{flow.centrality}{neuronlist}(x, mode = c("average", "centrifugal",
-  "centripetal"), polypre = T, primary.dendrite = 0.9, ...)
+\method{flow.centrality}{neuronlist}(x, mode = c("sum", "centrifugal",
+  "centripetal"), polypre = T, primary.dendrite = 0.9,
+  bending.flow = FALSE, ...)
 }
 \arguments{
 \item{x}{a neuronlist or neuron object}

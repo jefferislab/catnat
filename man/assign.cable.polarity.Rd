@@ -4,14 +4,14 @@
 \alias{assign.cable.polarity}
 \title{Assign axon/dendrite split to skeletons}
 \usage{
-assign.cable.polarity(someneuronlist, resample = 1, ...)
+assign.cable.polarity(someneuronlist, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuron/neuronlist object}
 
-\item{resample}{the unit lengths to which neurons should be resampled}
-
 \item{...}{additional arguments passed to methods}
+
+\item{resample}{the unit lengths to which neurons should be resampled}
 }
 \value{
 Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist

@@ -2,9 +2,13 @@
 % Please edit documentation in R/tracerstats.R
 \name{node.contribution.to.skeletons}
 \alias{node.contribution.to.skeletons}
+\alias{synapse.contribution.to.skeletons}
 \title{Get data tracers' contributions to skeletons}
 \usage{
 node.contribution.to.skeletons(x, exclude.authors = NULL, ...)
+
+synapse.contribution.to.skeletons(x, exclude.authors = NULL,
+  direction = NULL)
 }
 \arguments{
 \item{x}{a neuronlist where the name of each neuron is its skeleton ID}

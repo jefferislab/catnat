@@ -3,12 +3,15 @@
 \name{manually_assign_axon_dendrite}
 \alias{manually_assign_axon_dendrite}
 \alias{manually_assign_axon_dendrite.neuron}
+\alias{plot3d.split}
 \alias{manually_assign_axon_dendrite.neuronlist}
 \title{Manually assign the dendrite and axon to a neuron}
 \usage{
 manually_assign_axon_dendrite(x, ...)
 
 \method{manually_assign_axon_dendrite}{neuron}(x, ...)
+
+\method{plot3d}{split}(x, soma = TRUE, ...)
 
 \method{manually_assign_axon_dendrite}{neuronlist}(x, ...)
 }

@@ -6,8 +6,8 @@
 \title{Plot neurons split up by flow centrality}
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
-  "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100,
-  highflow = F, lwd = 1, radius = 1)
+  "grey", "pink"), splitnode = FALSE, WithConnectors = T, WithNodes = F,
+  soma = 100, highflow = F, lwd = 1, radius = 1)
 
 splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
   "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F,
@@ -29,7 +29,7 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
 
 \item{lwd}{Line width (default 1)}
 
-\item{radius}{For connectors (default 1)}
+\item{radius}{For connectors and axon-dendrite split node (default 1)}
 
 \item{Verbose}{logical indicating that info about each selected neuron should be printed (default TRUE)}
 
