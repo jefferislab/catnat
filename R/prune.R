@@ -236,7 +236,7 @@ assign.connector.info.neuronlist<-function(x, ...){
 #'   surface should be pruned.
 #' @inheritParams nat::prune
 #' @export
-prune.in.volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
+prune_in_volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
   keep=ifelse(invert, "far", "near")
   mesh= rgl::as.mesh3d(subset(brain, neuropil))
   nat::prune(x,

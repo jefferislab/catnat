@@ -85,7 +85,7 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
 #' @export
 #' @importFrom grDevices colorRampPalette
-assign.cable.polarity <- function(someneuronlist,resample=1,...){
+assign.cable.polarity <- function(someneuronlist,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
   for (neuron in 1:length(someneuronlist)){
     rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB)
@@ -135,12 +135,12 @@ assign.cable.polarity <- function(someneuronlist,resample=1,...){
     }
     rgl::clear3d()
   }
-  someneuronlist = nlapply(someneuronlist,nat::resample,stepsize=resample)
-  correct.labels.neuron<-function(neuron){
-    neuron$d$Label[!neuron$d$Label%in%c(0:10)] = 0
-    neuron
-  }
-  someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
+  # #someneuronlist = nlapply(someneuronlist,nat::resample,stepsize=resample)
+  # #correct.labels.neuron<-function(neuron){
+  #   neuron$d$Label[!neuron$d$Label%in%c(0:10)] = 0
+  #   neuron
+  # }
+  # someneuronlist = nlapply(someneuronlist,correct.labels.neuron)
   someneuronlist
 }
 
