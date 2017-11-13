@@ -4,7 +4,8 @@
 \alias{prune_in_volume}
 \title{Prune neuron within neuropil volume}
 \usage{
-prune_in_volume(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE)
+prune_in_volume(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{a \code{neuron} object}
@@ -14,7 +15,9 @@ interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}}
 
 \item{neuropil}{Character vector specifying the neuropil}
 
-\item{invert}{Logical when \code{TRUE} indicating that points outside the
+\item{invert}{Logical when \code{TRUE} indicating that points outside the}
+
+\item{...}{Additional arguments for methods (eventually passed to prune.default)
 surface should be pruned.}
 }
 \description{

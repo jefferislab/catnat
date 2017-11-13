@@ -233,15 +233,16 @@ assign.connector.info.neuronlist<-function(x, ...){
 #'   interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}
 #' @param neuropil Character vector specifying the neuropil
 #' @param invert Logical when \code{TRUE} indicating that points outside the
+#' @param ... Additional arguments for methods (eventually passed to prune.default)
 #'   surface should be pruned.
 #' @inheritParams nat::prune
 #' @export
-prune_in_volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE){
+prune_in_volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE, ...){
   keep=ifelse(invert, "far", "near")
   mesh= rgl::as.mesh3d(subset(brain, neuropil))
   nat::prune(x,
              target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), surf = mesh), ],
              maxdist = maxdist,
-             keep = keep)
+             keep = keep, ...)
 }
 
