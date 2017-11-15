@@ -2,9 +2,15 @@
 % Please edit documentation in R/prune.R
 \name{assign.connector.info}
 \alias{assign.connector.info}
+\alias{assign.connector.info.neuron}
+\alias{assign.connector.info.neuronlist}
 \title{Give connector data in a CATMAID neuron the same attributes as node data}
 \usage{
 assign.connector.info(x, ...)
+
+\method{assign.connector.info}{neuron}(x)
+
+\method{assign.connector.info}{neuronlist}(x, ...)
 }
 \arguments{
 \item{x}{a neuron/neuronlist object that has primary neurites marked (Label =

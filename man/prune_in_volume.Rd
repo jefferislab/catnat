@@ -4,8 +4,7 @@
 \alias{prune_in_volume}
 \title{Prune neuron within neuropil volume}
 \usage{
-prune_in_volume(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE,
-  ...)
+prune_in_volume(x, brain, neuropil = "LH_R", invert = FALSE, ...)
 }
 \arguments{
 \item{x}{a \code{neuron} object}
@@ -24,8 +23,5 @@ surface should be pruned.}
 Prune neuron within neuropil volume
 }
 \details{
-This a slightly odd way of pruning a neuron, \code{x}, first we ask
-  which points in x are inside the surface then we keep those parts of x that
-  are within \code{maxdist} of those points. \code{maxdist} is therefore
-  defined with respect to points in the object, \code{x}, not the surface.
+Prune neuron inside subvolume of a segmented brain object.
 }

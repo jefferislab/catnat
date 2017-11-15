@@ -81,26 +81,6 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   y
 }
 
-#' Prune vertices from a CATMAID neuron, keeping the synapses
-#'
-#' @description Prune nodes from a catmaid neuron, keeping the synapses
-#'
-#' @param x a CATMAID neuron object
-#' @inheritParams nat::prune_vertices
-#' @param ... additional arguments passed to methods
-#' @return A pruned neuron object
-#' @export
-#' @rdname prune_vertices.catmaidneuron
-prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
-  class(x) = c("neuron")
-  pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
-  pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
-  relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
-  y = pruned
-  y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
-  y$d$Parent = pruned$d$Parent
-  pruned
-}
 
 #' Prune a neuron interactively
 #'
@@ -211,22 +191,22 @@ manually_assign_axon_dendrite.neuronlist<-function(x, ...){
 #' @export
 #' @rdname assign.connector.info
 assign.connector.info <-function(x, ...) UseMethod("assign.connector.info")
-
+#' @export
+#' @rdname assign.connector.info
 assign.connector.info.neuron<-function(x){
   relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
   x$connectors = cbind(x$connectors,relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),colnames(relevant.points)[!colnames(relevant.points)%in%c("PointNo", "Label", "X", "Y", "Z", "W", "Parent")]])
   x
 }
+#' @export
+#' @rdname assign.connector.info
 assign.connector.info.neuronlist<-function(x, ...){
   nlapply(x,assign.connector.info.neuron, ...)
 }
 
 #' Prune neuron within neuropil volume
 #'
-#' @details This a slightly odd way of pruning a neuron, \code{x}, first we ask
-#'   which points in x are inside the surface then we keep those parts of x that
-#'   are within \code{maxdist} of those points. \code{maxdist} is therefore
-#'   defined with respect to points in the object, \code{x}, not the surface.
+#' @details Prune neuron inside subvolume of a segmented brain object.
 #'
 #' @param x a \code{neuron} object
 #' @param brain The \code{\link[nat]{hxsurf}} object containing the neuropil of
@@ -237,12 +217,71 @@ assign.connector.info.neuronlist<-function(x, ...){
 #'   surface should be pruned.
 #' @inheritParams nat::prune
 #' @export
-prune_in_volume<- function(x, brain, neuropil = "LH_R", maxdist = 0, invert = FALSE, ...){
+prune_in_volume<- function(x, brain, neuropil = "LH_R", invert = FALSE, ...){
   keep=ifelse(invert, "far", "near")
   mesh= rgl::as.mesh3d(subset(brain, neuropil))
   nat::prune(x,
-             target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), surf = mesh), ],
+             target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), maxdist = 0,surf = mesh), ],
              maxdist = maxdist,
              keep = keep, ...)
 }
+
+
+#' Prune neuron by splitting it at CATMAID tags
+#'
+#' @details Split a neuron based on tags assigned in CATMAID. Remove points either downstream (from the root, must be soma to work properly) of the tagged points(s) or upstream.
+#'
+#' @param x a \code{neuron} or \code{neuronlist} object
+#' @param tag a tag that has been assigned in CATMAID
+#' @param remove.upstream Logical when \code{TRUE} points downstream of the tag(s) are removed, if true, points upstream are removed
+#' @rdname prune_by_tag
+#' @export
+prune_by_tag <-function(x, ...) UseMethod("prune_by_tag")
+#' @export
+#' @rdname prune_by_tag
+prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
+  p = unlist(x$tags[names(x$tags)%in%tag])
+  if(is.null(p)){
+    stop(paste0("Neuron does not have a tag in: ",tag))
+  }
+  split.point = as.numeric(rownames(x$d[x$d$PointNo==p,]))
+  n = nat::as.ngraph(x)
+  leaves = nat::endpoints(x)
+  downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, split.point, to = leaves, mode = "out")$vpath)))
+  nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream)
+}
+#' @export
+#' @rdname prune_by_tag
+prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.downstream = TRUE){
+  nlapply(x, tag = tag, remove.downstream = remove.downstream)
+}
+
+
+#' Prune vertices from a CATMAID neuron, keeping the synapses
+#'
+#' @description Prune nodes from a catmaid neuron, keeping the synapses
+#'
+#' @param x a CATMAID neuron object
+#' @inheritParams nat::prune_vertices
+#' @param ... additional arguments passed to methods
+#' @return A pruned neuron object
+#' @export
+#' @aliases prune
+#' @importFrom nat prune
+#' @seealso \code{\link[nat]{prune}}
+prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
+  class(x) = c("neuron")
+  pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
+  pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
+  relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
+  y = pruned
+  y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
+  y$d$Parent = pruned$d$Parent
+  pruned
+}
+
+
+
+
+
 
