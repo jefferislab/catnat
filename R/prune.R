@@ -237,8 +237,8 @@ prune_in_volume<- function(x, brain, neuropil = "LH_R", invert = FALSE, ...){
 #' @rdname prune_by_tag
 #' @export
 prune_by_tag <-function(x, ...) UseMethod("prune_by_tag")
-#' @export
 #' @rdname prune_by_tag
+#' @export
 prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
   p = unlist(x$tags[names(x$tags)%in%tag])
   if(is.null(p)){
@@ -250,10 +250,10 @@ prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, split.point, to = leaves, mode = "out")$vpath)))
   nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream)
 }
-#' @export
 #' @rdname prune_by_tag
-prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.downstream = TRUE){
-  nlapply(x, tag = tag, remove.downstream = remove.downstream)
+#' @export
+prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
+  nlapply(x, tag = tag, prune_by_tag.neuron, remove.upstream = remove.upstream)
 }
 
 
