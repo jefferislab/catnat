@@ -14,8 +14,6 @@ interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}}
 
 \item{neuropil}{Character vector specifying the neuropil}
 
-\item{maxdist}{The threshold distance for keeping points}
-
 \item{invert}{Logical when \code{TRUE} indicating that points outside the}
 
 \item{...}{Additional arguments for methods (eventually passed to prune.default)

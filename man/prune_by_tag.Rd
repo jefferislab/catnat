@@ -12,7 +12,7 @@ prune_by_tag(x, ...)
   remove.upstream = TRUE)
 
 \method{prune_by_tag}{neuronlist}(x, tag = "SCHLEGEL_LH",
-  remove.downstream = TRUE)
+  remove.upstream = TRUE)
 }
 \arguments{
 \item{x}{a \code{neuron} or \code{neuronlist} object}

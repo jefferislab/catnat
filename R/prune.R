@@ -281,7 +281,23 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
 }
 
 
-
+#' Prune a CATMAID neuron by removing segments with a given Strahler order
+#'
+#' @description Prune branches by Strahler order from a catmaid neuron, keeping the synapses
+#'
+#' @param x a CATMAID neuron object
+#' @inheritParams nat::prune_strahler
+#' @param ... additional arguments passed to methods
+#' @return A pruned neuron object
+#' @export
+#' @aliases prune_strahler
+#' @importFrom nat prune_strahler
+#' @seealso \code{\link[nat]{prune_strahler}}
+prune_strahler.catmaidneuron <- function(x, orderstoprune = 1:2, ...){
+  tryCatch(catnat:::prune_vertices.catmaidneuron(x, which(nat::strahler_order(x)$points %in%
+                                     orderstoprune), ...), error = function(c) stop(paste0("No points left after pruning. ",
+                                                                                           "Consider lowering orders to prune!")))
+}
 
 
 
