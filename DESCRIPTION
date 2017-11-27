@@ -15,7 +15,7 @@ Description: A selection of functions for analysis of neuronal morphology and
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Suggests: testthat, gplots, ggplot2, easyGgplot2, doMC, elmr, yaml
+Suggests: testthat, gplots, ggplot2, easyGgplot2, doMC, elmr, yaml, ks, misc3d
 Depends:  R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
 Imports: Rvcg, nabor, Morpho, dplyr, nat.templatebrains, rgl, plyr,
     igraph, googlesheets
