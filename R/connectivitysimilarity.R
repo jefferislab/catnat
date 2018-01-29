@@ -1,0 +1,38 @@
+#' Calculate a connectivity similarity score between two connectivity profiles
+#'
+#' @description Calculate a similarity score between connectivity matrices that penalises small differences between low and does not heavily penalise large differences between high weights. Algorithm from Jarrell et al. 2012.
+#' @param x a vector/matrix of connectivities, where each entry in the vector or each column in the matrix is a different target/input neuron/cell type
+#' @param y a different vector/matrix of connectivities
+#' @param c1 determines how negatively we want to punish a case such as the one above. Default C1 is chosen so that 1 and 5 are weakly dissimilar.
+#' @param c2 determines the point where the similarity of the two numbers switches from negative to positive. Default C2 is chosen so that 10 and 100 synapses are weakly similar.
+#' @param normalise perform a min-max normalisation on the similarity scores as in Schlegel et al. 2015
+#' @references Jarrell TA, Wang Y, Bloniarz AE, Brittin CA, Xu M, Thomson JN, Albertson DG, Hall DH, Emmons SW (2012) The connectome of a decision-making neural network. Science (80- ) 337: 437–444.
+#' @export
+#' @rdname connectivity_similarity
+connectivity_similarity <- function(x,y, c1 = 0.5, c2 = 0.17, normalise = TRUE) UseMethod("connectivity_distance")
+#' @rdname connectivity_similarity
+connectivity_similarity.numeric <- function(x, y, c1 = 0.5, c2 = 0.17, normalise = TRUE){
+  s = sapply(seq_along(x), function(i) min(x[i],y[i]) - c1*max(x[i],y[i])*exp(-c2*min(x[i],y[i])))
+  score = sum(s)
+  if(normalise){
+    max.score = sum(sapply(seq_along(x), function(i) max(x[i],y[i])))
+    min.score = sum(sapply(seq_along(x), function(i) - c1*max(x[i],y[i])))
+    score = (score-min.score)/(max.score - min.score)
+    if(is.infinite(score)){
+      score = 0
+    }
+  }
+  score
+}
+#' @rdname connectivity_similarity
+connectivity_similarity.matrix<- function(x,y, c1 = 0.5, c2 = 0.17, normalise = TRUE){
+  c = c()
+  for(i in 1:ncol(x)){
+    c = c(c,connectivity_similarity.numeric(x[,i],y[,i], normalise = normalise))
+  }
+  score = sum(c)
+  if(normalise){
+    score = score/ncol(x)
+  }
+  score
+}

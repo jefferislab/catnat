@@ -3,12 +3,16 @@
 \name{prune_by_tag}
 \alias{prune_by_tag}
 \alias{prune_by_tag.neuron}
+\alias{prune_by_tag.catmaidneuron}
 \alias{prune_by_tag.neuronlist}
 \title{Prune neuron by splitting it at CATMAID tags}
 \usage{
 prune_by_tag(x, ...)
 
 \method{prune_by_tag}{neuron}(x, tag = "SCHLEGEL_LH",
+  remove.upstream = TRUE)
+
+\method{prune_by_tag}{catmaidneuron}(x, tag = "SCHLEGEL_LH",
   remove.upstream = TRUE)
 
 \method{prune_by_tag}{neuronlist}(x, tag = "SCHLEGEL_LH",
