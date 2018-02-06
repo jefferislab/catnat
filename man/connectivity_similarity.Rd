@@ -4,15 +4,19 @@
 \alias{connectivity_similarity}
 \alias{connectivity_similarity.numeric}
 \alias{connectivity_similarity.matrix}
+\alias{connectivity_similarity_distance}
 \title{Calculate a connectivity similarity score between two connectivity profiles}
 \usage{
 connectivity_similarity(x, y, c1 = 0.5, c2 = 0.17, normalise = TRUE)
 
-\method{connectivity_similarity}{numeric}(x, y, c1 = 0.5, c2 = 0.17,
+\method{connectivity_similarity}{numeric}(x, y, c1 = 0.5, c2 = 0.18,
   normalise = TRUE)
 
 \method{connectivity_similarity}{matrix}(x, y, c1 = 0.5, c2 = 0.17,
   normalise = TRUE)
+
+connectivity_similarity_distance(m, c1 = 0.5, c2 = 0.18,
+  normalise = FALSE, diag = FALSE, upper = FALSE)
 }
 \arguments{
 \item{x}{a vector/matrix of connectivities, where each entry in the vector or each column in the matrix is a different target/input neuron/cell type}
@@ -24,6 +28,8 @@ connectivity_similarity(x, y, c1 = 0.5, c2 = 0.17, normalise = TRUE)
 \item{c2}{determines the point where the similarity of the two numbers switches from negative to positive. Default C2 is chosen so that 10 and 100 synapses are weakly similar.}
 
 \item{normalise}{perform a min-max normalisation on the similarity scores as in Schlegel et al. 2015}
+
+\item{m}{an n x m adjacency matrix}
 }
 \description{
 Calculate a similarity score between connectivity matrices that penalises small differences between low and does not heavily penalise large differences between high weights. Algorithm from Jarrell et al. 2012.
