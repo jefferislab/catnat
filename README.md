@@ -7,22 +7,25 @@ R Package for use with [rcatmaid](https://github.com/jefferis/rcatmaid) and [nat
 ```r
 # install
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("jefferis/nat")
-devtools::install_github("jefferis/rcatmaid")
 devtools::install_github("alexanderbates/catnat")
+
+# use
 library(catnat)
+
+# some useful functions
 ?seesplit3d
 ?flow.centrality
 ?get.synapses
 ?cluster.by.synapses
 ```
 
-Note: Windows users need [Rtools](http://www.murdoch-sutherland.com/Rtools/) and
-[devtools](http://CRAN.R-project.org/package=devtools) to install this way.
+Note: Installation depends on the [devtools](http://CRAN.R-project.org/package=devtools) package. 
+Windows users may need to install [Rtools](http://www.murdoch-sutherland.com/Rtools/).
 
 ## Acknowledgements
 
-**catnat** depends on rcatmaid and nat, which were developed principally by Greg Jefferis.
+**catnat** depends on [rcatmaid](https://github.com/jefferis/rcatmaid) and [nat](https://github.com/jefferis/nat),
+which were developed principally by Greg Jefferis.
 
 rcatmaid is based on python code presently visible at:
 
