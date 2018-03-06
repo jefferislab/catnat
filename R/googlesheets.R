@@ -44,7 +44,7 @@ catmaid_urls <- function (df) {
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   df$URL = catmaid_urls(df)
   if(prepost==1){
-    message("Reading information on presynaptic partners...")
+    message("Reading information on synaptic partners...")
     df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
     if(sum(is.na(df$pre_name))>0){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
@@ -152,7 +152,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' @param skid CATMAID skeleton ID for the neuron
 #' @export
 #' @rdname create_tracing_googlesheet
-create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, polypre = FALSE, axon.dendrite.split = FALSE){
+create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, polypre = TRUE, axon.dendrite.split = FALSE, random = FALSE){
   if(is.null(skid)){
     stop("Please provide a CATMAID skeleton ID")
   }
@@ -173,10 +173,10 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
     googlesheets::gs_ws_new(gs, ws_title = "other output connections", verbose = TRUE)
   }
   googlesheets::gs_ws_new(gs, ws_title = "whole neuron output connectors", verbose = TRUE)
-  googlesheets::gs_ws_new(gs, ws_title = "whole neuron output connections", verbose = TRUE)
+  if(polypre)googlesheets::gs_ws_new(gs, ws_title = "whole neuron output connections", verbose = TRUE)
   gs = googlesheets::gs_title(sheet_title)
   # Get neuron synaptic data
-  df = catmaid_get_connector_table(skid)
+  df = catmaid::catmaid_get_connector_table(skid)
   df = subset(df,partner_treenode_id%in%neuron$d$PointNo) # remove points not in neuron skeleton
   df$treenode_id = lapply(df$connector_id, function(y) ifelse(y%in%neuron$connectors$connector_id,neuron$connectors$treenode_id[neuron$connectors$connector_id==y][1],0) )
   df = subset(df, treenode_id%in%neuron$d$PointNo)
@@ -184,7 +184,11 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
   if(nrow(df.post)>2){
     message("Adding randomised input synapse list...")
     df.post = update_tracing_sheet(df=df.post, prepost = 1)
-    df.post = df.post[sample(nrow(df.post)),] # Randomise synapses
+    if(random){
+      df.post = df.post[sample(nrow(df.post)),] # Randomise synapses
+    }else{
+      df.post = df.post[order(df.post$pre_nodes,decreasing=TRUE),] # Randomise synapses
+    }
     if(axon.dendrite.split){
       message("Adding randomised input synapse list in separate dendrite and axon worksheets...")
       dend = subset(neuron$d, Label==3)$PointNo
@@ -212,6 +216,12 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
     df.pre = update_tracing_sheet(df=df.pre, prepost = 0, polypre = FALSE)
     df.pre= df.pre[sample(nrow(df.pre)),] # Randomise synapses
     df.pre$status = "TODO"
+    if(random){
+      df.pre = df.post[sample(nrow(df.pre)),] # Randomise synapses
+    }else{
+      df.pre[is.na(df.pre)] = 0
+      df.pre = df.pre[order(df.pre$nsoma,decreasing=TRUE),]
+    }
     if(axon.dendrite.split){
       message("Adding randomised output connector list in separate dendrite and axon worksheets...")
       df.dend = subset(df.pre,treenode_id%in%dend)
@@ -235,7 +245,11 @@ create_tracing_googlesheet <-function(sheet_title, neuron, skid = neuron$skid, p
       message("Adding randomised output connections list...")
       df.polypre =  df[df$direction == "outgoing",]
       df.polypre = update_tracing_sheet(df=df.polypre, prepost = 0, polypre = TRUE)
-      df.polypre = df.polypre[sample(nrow(df.polypre)),] # Shuffle
+      if(random){
+        df.polypre = df.polypre[sample(nrow(df.polypre)),] # Shuffle
+      }else{
+        df.polypre = df.polypre[order(df.polypre$post_nodes,decreasing=TRUE),] # Order by size of already-traced fragments
+      }
       if(axon.dendrite.split){
         message("Adding randomised output connections list in separate dendrite and axon worksheets...")
         df.dend = subset(df.polypre,treenode_id%in%dend)

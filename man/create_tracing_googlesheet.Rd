@@ -7,7 +7,7 @@
 \title{Create or update a googlesheet of randomised tracing targets for a given neuron}
 \usage{
 create_tracing_googlesheet(sheet_title, neuron, skid = neuron$skid,
-  polypre = FALSE, axon.dendrite.split = FALSE)
+  polypre = TRUE, axon.dendrite.split = FALSE, random = FALSE)
 
 update_tracing_worksheet(sheet_title, neuron = NULL, skid = neuron$skid,
   ws = "whole neuron input")
