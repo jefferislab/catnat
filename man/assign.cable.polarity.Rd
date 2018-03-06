@@ -4,10 +4,12 @@
 \alias{assign.cable.polarity}
 \title{Assign axon/dendrite split to skeletons}
 \usage{
-assign.cable.polarity(someneuronlist, ...)
+assign.cable.polarity(someneuronlist, brain = nat.flybrains::FCWB, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuron/neuronlist object}
+
+\item{brain}{brain template to plot alongside neuron?}
 
 \item{...}{additional arguments passed to methods}
 

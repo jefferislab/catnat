@@ -7,12 +7,12 @@
 \alias{connectivity_similarity_distance}
 \title{Calculate a connectivity similarity score between two connectivity profiles}
 \usage{
-connectivity_similarity(x, y, c1 = 0.5, c2 = 0.17, normalise = TRUE)
+connectivity_similarity(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
 
 \method{connectivity_similarity}{numeric}(x, y, c1 = 0.5, c2 = 0.18,
   normalise = TRUE)
 
-\method{connectivity_similarity}{matrix}(x, y, c1 = 0.5, c2 = 0.17,
+\method{connectivity_similarity}{matrix}(x, y, c1 = 0.5, c2 = 0.18,
   normalise = TRUE)
 
 connectivity_similarity_distance(m, c1 = 0.5, c2 = 0.18,

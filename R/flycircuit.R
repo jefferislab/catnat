@@ -80,15 +80,16 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 #'
 #' @param someneuronlist a neuron/neuronlist object
 #' @param resample the unit lengths to which neurons should be resampled
+#' @param brain brain template to plot alongside neuron?
 #' @param ... additional arguments passed to methods
 #'
 #' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
 #' @export
 #' @importFrom grDevices colorRampPalette
-assign.cable.polarity <- function(someneuronlist,...){
+assign.cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...){
   jet.colors <-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
   for (neuron in 1:length(someneuronlist)){
-    rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB)
+    rgl::clear3d();rgl::plot3d(brain)
     print(neuron)
     print(names(someneuronlist[neuron]))
     rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F)
@@ -96,7 +97,7 @@ assign.cable.polarity <- function(someneuronlist,...){
     points3d(xyzmatrix(someneuronlist[neuron][[1]]),col = jet.colors(7)[cols])
     progress = readline(prompt="Change? y/n   ")
     while (progress=="y"){
-      message("Select axonic nodes")
+      message("Select axonic nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
@@ -107,7 +108,7 @@ assign.cable.polarity <- function(someneuronlist,...){
         continue = readline(prompt="Select again? y/n   ")
         if (nrow(s)>0){if (continue=="y"){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 0}}
       }
-      message("Select dendritic nodes")
+      message("Select dendritic nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
@@ -118,7 +119,7 @@ assign.cable.polarity <- function(someneuronlist,...){
         continue = readline(prompt="Select again? y/n   ")
         if (nrow(s)>0){if (continue=="y"){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 0}}
       }
-      message("Select mixed/uncertain nodes")
+      message("Select mixed/uncertain nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
         s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d = someneuronlist[neuron][1])
@@ -853,4 +854,25 @@ label.neuron.class <- function(x, plotting.brain = nat.flybrains::FCWB, regional
 #  clear3d()
 #}
 
+
+
+
+#visualPNs = c("Cha-F-000138", "Cha-F-200257", "Gad1-F-300256", "Cha-F-000039",
+                   # "Gad1-F-400244", "Gad1-F-200326Cha-F-000028", "Gad1-F-700145",
+                   # "Gad1-F-200274", "Gad1-F-100080", "Cha-F-300390", "fru-F-800100",
+                   # "Cha-F-000153", "Cha-F-200132", "Gad1-F-300060", "Cha-F-000124",
+                   # "Cha-F-000015", "VGlut-F-000056", "Cha-F-000255", "Cha-F-100003",
+                   # "Gad1-F-100040", "Cha-F-400228", "Cha-F-400231", "Gad1-F-300016",
+                   # "Cha-F-000361", "Cha-F-100351", "Gad1-F-100202", "Cha-F-000316",
+                   # "fru-F-000032", "VGlut-F-000603", "Cha-F-100017", "Cha-F-000004",
+                   # "Gad1-F-000025", "5-HT1B-F-500016", "Cha-F-000333", "fru-F-200061",
+                   # "Gad1-F-300054", "VGlut-F-200564", "VGlut-F-700163", "Gad1-F-200101",
+                   # "Gad1-F-400102", "Cha-F-300208", "Gad1-F-900022", "Cha-F-600134",
+                   # "VGlut-F-500700", "Gad1-F-200058", "Cha-F-200302", "Cha-F-200028",
+                   # "Cha-F-000283", "Cha-F-200073", "Cha-F-400116", "Cha-F-200219",
+                   # "Cha-F-300035", "Gad1-F-400140", "Gad1-F-000300", "Cha-F-100287",
+                   # "Cha-F-300111", "Cha-F-100027", "Cha-F-300004", "Gad1-F-200099",
+                   # "fru-F-500009", "VGlut-F-700361", "Cha-F-000272", "fru-F-000101",
+                   # "Gad1-F-400023", "Cha-F-300285", "Cha-F-200026", "Cha-F-200103",
+                   # "TH-F-200107", "Trh-F-100019", "TH-F-100004", "Cha-F-300333")
 

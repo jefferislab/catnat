@@ -50,6 +50,6 @@ connectivity_similarity_distance <-function(m,c1 = 0.5, c2 = 0.18,normalise = FA
       M[e,i] = connectivity_similarity.numeric(x = m[,e], y= m[,i],c1=c1,c2=c2,normalise = normalise)
     }
   }
-  as.dist(M,diag = diag,upper = upper)
+  stats::as.dist(M,diag = diag,upper = upper)
 }
 

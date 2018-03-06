@@ -17,7 +17,16 @@ deselect.neurons =function (someneuronlist){
   select.neurons(someneuronlist)
 }
 
-select.neurons =function (someneuronlist){
+#' Select  neurons in space
+#'
+#' @description Select and deselect neurons in space interactively. Black = selected, red = deselected
+#'
+#' @param someneuronlist a neuronlist object
+#' @param ... additional arguments passed to methods, i.e. plot3d()
+#'
+#' @return Selected neurons
+#' @export
+select.neurons <- function (someneuronlist, ...){
   thechosen = someneuronlist
   progress = 'y'
   rgl::open3d(); rgl::plot3d(thechosen)
@@ -100,13 +109,22 @@ connectors.inside <- function(skids, alpha, direction = "BOTH", degree = NULL){
   return(db[selection])
 }
 
-# Select points
+#' Select 3D points in space
+#'
+#' @description Select and deselect 3D points in space interactively. Black = selected, red = deselected
+#'
+#' @param points a mxn matrix
+#' @param plot3d Object to pass to the rgl::plot3d function
+#' @param ... additional arguments passed to methods
+#'
+#' @return A mxn matrix
+#' @export
 select.points <- function (points, plot3d = NULL,...){
   plot3d(plot3d,col="grey")
   points = nat::xyzmatrix(points)
   selected.points = unique(points)
   points3d(selected.points)
-  progress = readline(prompt="Add (a) or remove (r) neurons, or exit (e)?  ")
+  progress = readline(prompt="Add (a) or remove (r) points, or exit (e)?  ")
   while (progress != "e"){
     if (progress == "a"){
       keeps = select3d()
