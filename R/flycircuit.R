@@ -100,7 +100,7 @@ assign.cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...
       message("Select axonic nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
+        s = select_points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 2}
         rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
@@ -111,7 +111,7 @@ assign.cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...
       message("Select dendritic nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
+        s = select_points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d=someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 3}
         rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1
@@ -122,7 +122,7 @@ assign.cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...
       message("Select mixed/uncertain nodes?")
       continue = readline(prompt="Select? y/n   ")
       while(continue=="y"){
-        s = select.points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d = someneuronlist[neuron][1])
+        s = select_points(xyzmatrix(someneuronlist[neuron][[1]]),plot3d = someneuronlist[neuron][1])
         if (nrow(s)>0){someneuronlist[neuron][[1]]$d[xyzmatrix(someneuronlist[neuron][[1]])%in%s[,1],]$Label = 8}
         rgl::clear3d();rgl::plot3d(nat.flybrains::FCWB);rgl::plot3d(someneuronlist[neuron][[1]],col="black",soma=T,WithNodes=F);
         cols = ifelse(someneuronlist[neuron][[1]]$d$Label<0,(someneuronlist[neuron][[1]]$d$Label*-1)+2,someneuronlist[neuron][[1]]$d$Label)+1

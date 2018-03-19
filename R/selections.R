@@ -13,9 +13,6 @@ get.connectors=function (someneuronlist, target = c("BOTH", "PRE", "POST")){
   return (dot.points)
 }
 
-deselect.neurons =function (someneuronlist){
-  select.neurons(someneuronlist)
-}
 
 #' Select  neurons in space
 #'
@@ -26,7 +23,7 @@ deselect.neurons =function (someneuronlist){
 #'
 #' @return Selected neurons
 #' @export
-select.neurons <- function (someneuronlist, ...){
+select_neurons <- function (someneuronlist, ...){
   thechosen = someneuronlist
   progress = 'y'
   rgl::open3d(); rgl::plot3d(thechosen)
@@ -61,6 +58,12 @@ select.neurons <- function (someneuronlist, ...){
     progress = readline(prompt="Add (a) or remove (r) neurons, or exit (e)?  ")
   }
   return (thechosen)
+}
+
+#' @export
+#' @rdname select_neurons
+deselect_neurons =function (someneuronlist,...){
+  select_neurons(someneuronlist,...)
 }
 
 neurons.inside.alphashape <- function(alpha, db, synapse = "BOTH", degree = NULL){
@@ -119,7 +122,7 @@ connectors.inside <- function(skids, alpha, direction = "BOTH", degree = NULL){
 #'
 #' @return A mxn matrix
 #' @export
-select.points <- function (points, plot3d = NULL,...){
+select_points <- function (points, plot3d = NULL,...){
   plot3d(plot3d,col="grey")
   points = nat::xyzmatrix(points)
   selected.points = unique(points)
