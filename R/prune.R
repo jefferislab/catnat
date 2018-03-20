@@ -312,9 +312,16 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
 #' @importFrom nat prune_strahler
 #' @seealso \code{\link[nat]{prune_strahler}}
 prune_strahler.catmaidneuron <- function(x, orderstoprune = 1:2, ...){
-  tryCatch(catnat:::prune_vertices.catmaidneuron(x, which(nat::strahler_order(x)$points %in%
-                                     orderstoprune), ...), error = function(c) stop(paste0("No points left after pruning. ",
-                                                                                           "Consider lowering orders to prune!")))
+  tryCatch(
+    prune_vertices.catmaidneuron(x, which(
+      nat::strahler_order(x)$points %in% orderstoprune),
+      ...),
+    error = function(c)
+      stop(paste0(
+        "No points left after pruning. ",
+        "Consider lowering orders to prune!")
+      )
+  )
 }
 
 
