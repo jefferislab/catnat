@@ -288,8 +288,7 @@ prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TR
 #' @importFrom nat prune_vertices
 #' @seealso \code{\link[nat]{prune_vertices}}
 prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
-  class(x) = c("neuron")
-  pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
+  pruned = nat:::prune_vertices(x,verticestoprune,invert = invert,...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
   y = pruned

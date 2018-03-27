@@ -7,7 +7,7 @@
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
   "grey", "pink"), splitnode = FALSE, WithConnectors = T, WithNodes = F,
-  soma = 100, highflow = F, lwd = 1, radius = 1)
+  soma = 100, highflow = F, lwd = 1, radius = 1, ...)
 
 splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
   "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F,
@@ -31,6 +31,8 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
 
 \item{radius}{For connectors and axon-dendrite split node (default 1)}
 
+\item{...}{additional arguments passed to methods.}
+
 \item{Verbose}{logical indicating that info about each selected neuron should be printed (default TRUE)}
 
 \item{Wait}{logical indicating that there should be a pause between each displayed neuron}
@@ -44,8 +46,6 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
 \item{selected_col}{the color in which selected neurons (such as those specified in selected_file) should be plotted}
 
 \item{yaml}{a logical indicating that selections should be saved to disk in (human-readable) yaml rather than (machine-readable) rda format}
-
-\item{...}{additional arguments passed to methods.}
 }
 \value{
 Plots coloured neuron(s)
