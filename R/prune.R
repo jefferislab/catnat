@@ -70,7 +70,7 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @seealso \code{\link[nat]{prune}}
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
-  pruned = nat::prune(x,target=target, maxdist=maxdist, keep = keep,
+  pruned = nat:::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
                  return.indices = return.indices, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
@@ -159,11 +159,11 @@ manually_assign_axon_dendrite.neuron <- function(x, ...){
 #' @export
 #' @rdname manually_assign_axon_dendrite
 plot3d.split <- function(x, soma = TRUE, ...){
-  d = dendritic.cable(x)
-  a = axonic.cable(x)
-  u = unsure.cable(x)
+  d = dendritic_cable(x)
+  a = axonic_cable(x)
+  u = unsure_cable(x)
   p = primary.neurite(x)
-  g = unsure.cable(x)
+  g = unsure_cable(x)
   if(length(d)>0) {rgl::plot3d(d,col="blue", soma = FALSE, ...)}
   if(length(a)>0) {rgl::plot3d(a, col = "orange", soma = FALSE, ...)}
   if(length(p)>0) {rgl::plot3d(p, col = "purple", soma = FALSE, ...)}
@@ -284,9 +284,9 @@ prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TR
 #' @param ... additional arguments passed to methods
 #' @return A pruned neuron object
 #' @export
-#' @aliases prune
-#' @importFrom nat prune
-#' @seealso \code{\link[nat]{prune}}
+#' @aliases prune_vertices
+#' @importFrom nat prune_vertices
+#' @seealso \code{\link[nat]{prune_vertices}}
 prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   class(x) = c("neuron")
   pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
