@@ -281,6 +281,7 @@ prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TR
 #' @param x a CATMAID neuron object
 #' @inheritParams nat::prune_vertices
 #' @param ... additional arguments passed to methods
+#'   \code{\link[nat]{prune_vertices}}).
 #' @return A pruned neuron object
 #' @export
 #' @aliases prune_vertices
@@ -295,6 +296,7 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
   y$d$Parent = pruned$d$Parent
   pruned
 }
+
 
 
 #' Prune a CATMAID neuron by removing segments with a given Strahler order

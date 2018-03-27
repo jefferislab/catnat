@@ -225,10 +225,10 @@ axonic_cable.neuron <- function(x, mixed=FALSE, ...){
   }else{
     chosen = c(-2,2)
   }
-  #v = subset(rownames(x$d), x$d$Label %in% chosen)
-  #nat::prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
-  xyz = xyzmatrix(points[points$Label%in%chosen,])
-  nat::prune(x,target=xyz,keep="near",maxdist=0)
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  #xyz = xyzmatrix(points[points$Label%in%chosen,])
+  #nat::prune(x,target=xyz,keep="near",maxdist=0)
 }
 #' @export
 #' @rdname extract_cable
