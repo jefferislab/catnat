@@ -15,7 +15,8 @@ prune_vertices.catmaidneuron(x, verticestoprune, invert = FALSE, ...)
 \item{invert}{Whether to keep vertices rather than dropping them (default 
 FALSE).}
 
-\item{...}{additional arguments passed to methods}
+\item{...}{additional arguments passed to methods
+\code{\link[nat]{prune_vertices}}).}
 }
 \value{
 A pruned neuron object
