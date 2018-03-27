@@ -688,9 +688,9 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   (nblast.forward+t(nblast.backward))/2
 }
 
-#' See neurons with chosen neuropils
+#' See neurons with chosen neuropils to determine their types
 #'
-#' @description  Cycle through neurons, plotting them and chosen neuropils
+#' @description  Cycle through neurons, plotting them and chosen neuropils, and choose a 'type'
 #'
 #' @param x a neuronlist object, with neurons split into axon and dendrite
 #' @param plotting.brain brain to plot

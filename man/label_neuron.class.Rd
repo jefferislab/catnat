@@ -2,7 +2,7 @@
 % Please edit documentation in R/flycircuit.R
 \name{label_neuron.class}
 \alias{label_neuron.class}
-\title{See neurons with chosen neuropils}
+\title{See neurons with chosen neuropils to determine their types}
 \usage{
 label_neuron.class(x, plotting.brain = nat.flybrains::FCWB,
   regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH", ...)
@@ -22,5 +22,5 @@ label_neuron.class(x, plotting.brain = nat.flybrains::FCWB,
 a label_neuron.class
 }
 \description{
-Cycle through neurons, plotting them and chosen neuropils
+Cycle through neurons, plotting them and chosen neuropils, and choose a 'type'
 }

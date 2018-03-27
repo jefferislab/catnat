@@ -19,7 +19,7 @@ cable.inside.neuropils(x, brain = nat.flybrains::FCWBNP.surf,
   brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
   "dendrites"), min.endpoints = 2, alpha = 30, ...)
 
-points.in.neuropil(x, brain, alpha = 30, ...)
+\method{points}{in.neuropil}(x, brain, alpha = 30, ...)
 }
 \arguments{
 \item{x}{a set of neurons or, for points.in.neuropil a mxn matrix of 3D points}

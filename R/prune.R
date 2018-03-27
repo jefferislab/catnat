@@ -184,8 +184,7 @@ manually_assign_axon_dendrite.neuronlist<-function(x, ...){
 #'   node data. I.e. adding Label information to indicate compartments such as
 #'   axon and dendrite
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
-#'   7) and soma as the root
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
 #' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname assign.connector.info
