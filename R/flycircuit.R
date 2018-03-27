@@ -688,16 +688,26 @@ nblast_bothways<-function(group1,group2=group1,smat = NULL,
   (nblast.forward+t(nblast.backward))/2
 }
 
-#' @return a label.neuron.class
+#' See neurons with chosen neuropils
+#'
+#' @description  Cycle through neurons, plotting them and chosen neuropils
+#'
+#' @param x a neuronlist object, with neurons split into axon and dendrite
+#' @param plotting.brain brain to plot
+#' @param regionalised.brain Standard deviation to use in distance dependence of nblast v1 algorithm. Ignored when version=2
+#' @param neuropils neuropils to plot
+#' @param ... additional arguments passed to methods
+#'
+#' @return a label_neuron.class
 #' @export
-label.neuron.class <- function(x, plotting.brain = nat.flybrains::FCWB, regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH", ...){
+label_neuron.class <- function(x, plotting.brain = nat.flybrains::FCWB, regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH", ...){
   choices = c("LN","ON","PN","INPUT","UNKNOWN")
   types =c()
   for(y in 1:length(x)){
     print(paste0(y," of ", length(x)))
     rgl::plot3d(plotting.brain)
-    rgl::plot3d(subset(regionalised.brain,neuropils), alpha = 0.3)
-    plot3d.split(x[y],soma=TRUE)
+    rgl::plot3d(subset(regionalised.brain,neuropils), alpha = 0.3,...)
+    plot3d.split(x[y],soma=TRUE,...)
     type = ""
     while(type==""){
       type = readline("Is this neuron a LN, ON, PN, INPUT, UNKNOWN? ")
