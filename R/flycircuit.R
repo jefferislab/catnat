@@ -310,7 +310,7 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @description Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 #'
-#' @param x a set of neurons or, for points.in.neuropil a mxn matrix of 3D points
+#' @param x a set of neurons or, for points_in_neuropil a mxn matrix of 3D points
 #' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
 #' @param method whether to use the neurons' axons or dendrites, or both
 #' @param min.endpoints the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it
@@ -319,10 +319,10 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
-cable.inside.neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable.inside.neuropils")
+cable_inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable.inside.neuropils")
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
+cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
   method = method[1]
@@ -348,13 +348,13 @@ cable.inside.neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
 }
 
 #' @rdname cable.inside.neuropils
-cable.inside.neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
+cable_inside_neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
   nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method)
 }
 
 #' @export
 #' @rdname cable.inside.neuropils
-points.in.neuropil <- function(x, brain, alpha = 30, ...){
+points_in_neuropil <- function(x, brain, alpha = 30, ...){
   nps = brain$RegionList
   df = cbind(as.data.frame(x),neuropil=0)
   for (n in nps){
