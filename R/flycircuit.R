@@ -319,9 +319,9 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
-cable_inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable.inside.neuropils")
+cable_inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable_inside_neuropils")
 
-#' @rdname cable.inside.neuropils
+#' @rdname cable_inside_neuropils
 cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")
@@ -347,13 +347,13 @@ cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
   sapply(brain$RegionList, function(n) in.neuropil(x=x,neuropil=subset(brain, n),min.endpoints=min.endpoints,alpha=alpha))
 }
 
-#' @rdname cable.inside.neuropils
+#' @rdname cable_inside_neuropils
 cable_inside_neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
-  nlapply(x, cable.inside.neuropils.neuron, brain=brain, method=method)
+  nlapply(x, cable_inside_neuropils.neuron, brain=brain, method=method)
 }
 
 #' @export
-#' @rdname cable.inside.neuropils
+#' @rdname cable_inside_neuropils
 points_in_neuropil <- function(x, brain, alpha = 30, ...){
   nps = brain$RegionList
   df = cbind(as.data.frame(x),neuropil=0)
