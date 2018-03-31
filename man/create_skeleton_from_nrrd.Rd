@@ -8,7 +8,7 @@ create_skeleton_from_nrrd(files, connection.distance = 25, k = "all",
   distance.steps = 0.5, ...)
 }
 \arguments{
-\item{files}{files paths to saved .Nrrd files}
+\item{files}{paths to saved .Nrrd files that have been skeletonsied in Fiji}
 
 \item{connection.distance}{maximal connection distance between points}
 
