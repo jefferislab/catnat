@@ -9,7 +9,7 @@
 #' @param ... additional arguments passed to methods.
 #'
 #' @return A neuronlist object
-#' @export create_skeleton
+#' @export create_skeleton_from_nrrd
 create_skeleton_from_nrrd <- function(files, connection.distance = 25, k = "all", distance.steps = 0.5, ...){
   nl = nat::neuronlist()
   message("Note: Argument 'files' should be the paths neurons skeletonised in Fiji and saved as a .Nrrd files")
