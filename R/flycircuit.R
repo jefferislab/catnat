@@ -319,8 +319,10 @@ polaritycluster <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T)
 #'
 #' @return a matrix of 3D points
 #' @export
+#' @rdname cable_inside_neuropils
 cable_inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...) UseMethod("cable_inside_neuropils")
 
+#' @export
 #' @rdname cable_inside_neuropils
 cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
@@ -347,6 +349,7 @@ cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
   sapply(brain$RegionList, function(n) in.neuropil(x=x,neuropil=subset(brain, n),min.endpoints=min.endpoints,alpha=alpha))
 }
 
+#' @export
 #' @rdname cable_inside_neuropils
 cable_inside_neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("neurites","axons","dendrites"), min.endpoints = 2,alpha=30, ...){
   nlapply(x, cable_inside_neuropils.neuron, brain=brain, method=method)

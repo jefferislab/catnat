@@ -2,7 +2,7 @@
 #'
 #' @description Skeletonise a neuron in Fiji and then use this function to retrieve it as a skeleton
 #'
-#' @param files files paths to saved .Nrrd files
+#' @param files paths to saved .Nrrd files that have been skeletonsied in Fiji
 #' @param connection.distance maximal connection distance between points
 #' @param k value used in nearest neighbours search to identify close points and draw lines between them
 #' @param distance.steps each round of the algorithm connects the cosest points to the start point / leaf node, that are within the search range, starting at distance.steps and increasing by this amount to the maximal connection.distance
