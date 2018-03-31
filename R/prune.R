@@ -98,14 +98,14 @@ prune_online.neuron <- function(x, ...){
   continue = "no"
   while(!continue%in%c("y","yes")){
     selected = select_points(nat::xyzmatrix(x), plot3d = x)
-    v = x$d[match(data.frame(t(selected)), data.frame(t(nat::xyzmatrix(x)))),"PointNo"]
+    v = match(data.frame(t(selected)), data.frame(t(nat::xyzmatrix(x))))
     if("catmaidneuron"%in%class(x)){
       neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
     }else{
       neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
     }
     #neuron = nat::prune(x, target = selected, keep = "near", maxdist = 0)
-    rgl::plot3d(neuron, col ="black")
+    rgl::clear3d();rgl::plot3d(neuron, col ="black",...)
     continue = readline("Finished with this neuron? yes/no ")
   }
   neuron
