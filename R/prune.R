@@ -221,15 +221,27 @@ assign.connector.info.neuronlist<-function(x, ...){
 #'   surface should be pruned.
 #' @inheritParams nat::prune
 #' @export
-prune_in_volume<- function(x, brain, neuropil = "LH_R", invert = FALSE, maxdist = 0,...){
-  keep=ifelse(invert, "far", "near")
-  mesh= rgl::as.mesh3d(subset(brain, neuropil))
-  nat::prune(x,
-             target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), maxdist = 0,surf = mesh), ],
-             maxdist = maxdist,
-             keep = keep, ...)
+#' @rdname prune_in_volume
+prune_in_volume <-function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...) UseMethod("prune_in_volume")
+
+#' @export
+#' @rdname prune_in_volume
+prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
+  mesh= rgl::as.mesh3d(subset(brain, neuropil), ...)
+  v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
+  }
+  neuron
 }
 
+#' @export
+#' @rdname prune_in_volume
+prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
+  nat::nlapply(x,prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
+}
 
 #' Prune neuron by splitting it at CATMAID tags
 #'

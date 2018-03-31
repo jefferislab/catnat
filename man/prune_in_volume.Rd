@@ -2,10 +2,18 @@
 % Please edit documentation in R/prune.R
 \name{prune_in_volume}
 \alias{prune_in_volume}
+\alias{prune_in_volume.neuron}
+\alias{prune_in_volume.neuronlist}
 \title{Prune neuron within neuropil volume}
 \usage{
-prune_in_volume(x, brain, neuropil = "LH_R", invert = FALSE, maxdist = 0,
-  ...)
+prune_in_volume(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  invert = FALSE, ...)
+
+\method{prune_in_volume}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
+  neuropil = "LH_R", invert = FALSE, ...)
+
+\method{prune_in_volume}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
+  neuropil = "LH_R", invert = FALSE, ...)
 }
 \arguments{
 \item{x}{a \code{neuron} object}
@@ -16,8 +24,6 @@ interest, e.g. \code{\link[nat.flybrains]{FCWBNP.surf}}}
 \item{neuropil}{Character vector specifying the neuropil}
 
 \item{invert}{Logical when \code{TRUE} indicating that points outside the}
-
-\item{maxdist}{The threshold distance for keeping points}
 
 \item{...}{Additional arguments for methods (eventually passed to prune.default)
 surface should be pruned.}
