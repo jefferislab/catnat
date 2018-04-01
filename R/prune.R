@@ -101,10 +101,10 @@ prune_online.neuron <- function(x, ...){
     v = match(data.frame(t(selected)), data.frame(t(nat::xyzmatrix(x))))
     if("catmaidneuron"%in%class(x)){
       neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+      class(neuron) = c("catmaidneuron","neuron")
     }else{
       neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
     }
-    #neuron = nat::prune(x, target = selected, keep = "near", maxdist = 0)
     rgl::clear3d();rgl::plot3d(neuron, col ="black",...)
     continue = readline("Finished with this neuron? yes/no ")
   }
@@ -231,6 +231,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
   v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
   if("catmaidneuron"%in%class(x)){
     neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
+    class(neuron) = c("catmaidneuron","neuron")
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
   }

@@ -225,14 +225,14 @@ axonic_cable.neuron <- function(x, mixed=FALSE, ...){
   }else{
     chosen = c(-2,2)
   }
-  #xyz = xyzmatrix(points[points$Label%in%chosen,])
-  #nat::prune(x,target=xyz,keep="near",maxdist=0)
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
-    prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
   }else{
-    nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron
 }
 #' @export
 #' @rdname extract_cable
@@ -245,10 +245,12 @@ dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
   }
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
-    prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
   }else{
-    nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron
 }
 #' @export
 #' @rdname extract_cable
@@ -261,10 +263,12 @@ arbour_cable.neuron <- function(x, mixed = FALSE, ...){
   }
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
-    prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
   }else{
-    nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron
 }
 #' @export
 #' @rdname extract_cable
@@ -273,10 +277,12 @@ unsure_cable.neuron <- function(x, mixed=FALSE, ...){
   chosen = c(-8,8:100)
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
-    prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
   }else{
-    nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron
 }
 #' @export
 #' @rdname extract_cable
