@@ -230,7 +230,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
   mesh= rgl::as.mesh3d(subset(brain, neuropil), ...)
   v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
   if("catmaidneuron"%in%class(x)){
-    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
+    neuron = catnat:::prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
     class(neuron) = c("catmaidneuron","neuron")
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
@@ -241,7 +241,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
 #' @export
 #' @rdname prune_in_volume
 prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
-  nat::nlapply(x,prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
+  nat::nlapply(x,catnat:::prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
 }
 
 #' Prune neuron by splitting it at CATMAID tags
