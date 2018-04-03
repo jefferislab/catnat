@@ -5,6 +5,9 @@
 \alias{cable_inside_neuropils.neuron}
 \alias{cable_inside_neuropils.neuronlist}
 \alias{points_in_neuropil}
+\alias{in_neuropil}
+\alias{in_neuropil.neuron}
+\alias{in_neuropil.neuronlist}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
 cable_inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf,
@@ -20,13 +23,25 @@ cable_inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf,
   "dendrites"), min.endpoints = 1, alpha = 30, ...)
 
 points_in_neuropil(x, brain, alpha = 30, ...)
+
+in_neuropil(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha, ...)
+
+\method{in_neuropil}{neuron}(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha)
+
+\method{in_neuropil}{neuronlist}(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha)
 }
 \arguments{
 \item{x}{a set of neurons or, for points_in_neuropil a mxn matrix of 3D points}
 
 \item{brain}{the .surf brainspace in which the neurons are registered, must be segmented into neuropils}
 
-\item{method}{whether to use the neurons' axons or dendrites, or both}
+\item{method}{fopr cable_inside_neuropils, whether to use the neurons' axons or dendrites, or both. For in_neuropil, whether to calculate cable inside a given, single neuropil volume, or synapse number (PRE or POST)}
 
 \item{min.endpoints}{the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it}
 
