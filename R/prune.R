@@ -230,7 +230,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
   mesh= rgl::as.mesh3d(subset(brain, neuropil), ...)
   v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
   if("catmaidneuron"%in%class(x)){
-    neuron = catnat:::prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
     class(neuron) = c("catmaidneuron","neuron")
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
@@ -241,7 +241,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
 #' @export
 #' @rdname prune_in_volume
 prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
-  nat::nlapply(x,catnat:::prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
+  nat::nlapply(x,prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
 }
 
 #' Prune neuron by splitting it at CATMAID tags
@@ -331,7 +331,7 @@ prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...)
 #' @importFrom nat prune_strahler
 #' @seealso \code{\link[nat]{prune_strahler}}
 prune_strahler.catmaidneuron <- function(x, orderstoprune = 1:2, ...){
-  tryCatch(catnat:::prune_vertices.catmaidneuron(x, which(nat::strahler_order(x)$points %in%
+  tryCatch(prune_vertices.catmaidneuron(x, which(nat::strahler_order(x)$points %in%
                                      orderstoprune), ...), error = function(c) stop(paste0("No points left after pruning. ",
                                                                                            "Consider lowering orders to prune!")))
 }
