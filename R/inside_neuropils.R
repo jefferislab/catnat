@@ -23,10 +23,6 @@ cable_inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf,
   targets = c(-100:100)
   if (method=="axons"){targets = c(-2,2)}
   if (method=="dendrites"){targets = c(-3,3)}
-  endings <- function(x){
-    points=x$d[nat::endpoints(x)[which(endpoints(x)!=nat::rootpoints(x))],]
-    nat::xyzmatrix(points[points$Label%in%targets,])
-  }
   sapply(brain$RegionList, function(n) in_neuropil(x=x,method = "Cable",brain = brain,neuropil=n,min.endpoints=min.endpoints,alpha=alpha))
 }
 
@@ -57,17 +53,23 @@ in_neuropil<-function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::
 #' @export
 #' @rdname cable_inside_neuropils
 in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha){
-  neuropil = subset(brain,n)
+  neuropil = subset(brain,neuropil)
   neuropil = alphashape3d::ashape3d(nat::xyzmatrix(neuropil),alpha=alpha)
+  endings <- function(x){
+    points=x$d[nat::endpoints(x$d)[which(nat::endpoints(x$d)!=nat::rootpoints(x))],]
+    EndNo = nat::endpoints(x$d)[which(nat::endpoints(x$d)!=nat::rootpoints(x))]
+    points = subset(x$d,PointNo%in%EndNo)
+    nat::xyzmatrix(points[points$Label%in%targets,])
+  }
   if(sum(alphashape3d::inashape3d(points=endings(x),as3d=neuropil, indexAlpha = "ALL"))>min.endpoints){
     points = x$d[x$d$Label%in%targets,]
     points.in = points[alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil, indexAlpha = "ALL"),]
     v = rownames(points.in)
     if("catmaidneuron"%in%class(x)){
-      neuron = tryCatch(prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...),error = function(e)NULL)
-      class(neuron) = c("catmaidneuron","neuron")
+      pruned = tryCatch(prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
+      class(pruned) = c("catmaidneuron","neuron")
     }else{
-      neuron = tryCatch(nat::prune_vertices(x,verticestoprune=v,invert=invert, ...),error = function(e)NULL)
+      pruned = tryCatch(nat::prune_vertices(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
     }
     if(!is.null(pruned)&method=="Cable"){
       summary(pruned)$cable.length
