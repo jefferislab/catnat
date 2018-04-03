@@ -10,9 +10,6 @@ prune_strahler.catmaidneuron(x, orderstoprune = 1:2, ...)
 \arguments{
 \item{x}{a CATMAID neuron object}
 
-\item{orderstoprune}{Integer indices of which Strahler orders to prune - 
-defaults to the lowest two orders (\code{1:2})}
-
 \item{...}{additional arguments passed to methods}
 }
 \value{
