@@ -17,7 +17,7 @@ cable_inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf,
 
 \method{cable_inside_neuropils}{neuronlist}(x,
   brain = nat.flybrains::FCWBNP.surf, method = c("neurites", "axons",
-  "dendrites"), min.endpoints = 2, alpha = 30, ...)
+  "dendrites"), min.endpoints = 1, alpha = 30, ...)
 
 points_in_neuropil(x, brain, alpha = 30, ...)
 }
