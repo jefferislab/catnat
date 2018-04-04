@@ -317,7 +317,6 @@ prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...)
 }
 
 
-
 #' Prune a CATMAID neuron by removing segments with a given Strahler order
 #'
 #' @description Prune branches by Strahler order from a catmaid neuron, keeping the synapses
