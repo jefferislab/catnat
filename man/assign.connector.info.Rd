@@ -13,8 +13,7 @@ assign.connector.info(x, ...)
 \method{assign.connector.info}{neuronlist}(x, ...)
 }
 \arguments{
-\item{x}{a neuron/neuronlist object that has primary neurites marked (Label =
-7) and soma as the root}
+\item{x}{a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root}
 
 \item{...}{Additional arguments passed to nlapply}
 }

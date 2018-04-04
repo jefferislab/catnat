@@ -2,7 +2,7 @@
 % Please edit documentation in R/prune.R
 \name{prune_vertices.catmaidneuron}
 \alias{prune_vertices.catmaidneuron}
-\alias{prune}
+\alias{prune_vertices}
 \title{Prune vertices from a CATMAID neuron, keeping the synapses}
 \usage{
 prune_vertices.catmaidneuron(x, verticestoprune, invert = FALSE, ...)
@@ -10,12 +10,8 @@ prune_vertices.catmaidneuron(x, verticestoprune, invert = FALSE, ...)
 \arguments{
 \item{x}{a CATMAID neuron object}
 
-\item{verticestoprune}{An integer vector describing which vertices to remove.}
-
-\item{invert}{Whether to keep vertices rather than dropping them (default 
-FALSE).}
-
-\item{...}{additional arguments passed to methods}
+\item{...}{additional arguments passed to methods
+\code{\link[nat]{prune_vertices}}).}
 }
 \value{
 A pruned neuron object
@@ -24,5 +20,5 @@ A pruned neuron object
 Prune nodes from a catmaid neuron, keeping the synapses
 }
 \seealso{
-\code{\link[nat]{prune}}
+\code{\link[nat]{prune_vertices}}
 }

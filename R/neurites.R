@@ -148,6 +148,192 @@ arbours.neuronlist <- function(arbourcluster, ...){
   skeletons
 }
 
+#' Extract axonic/dendritic points from a neuron/neuronlist
+#'
+#' @description Extract axonic/dendritic points/endpoints from a neuron/neuronlist object
+#'
+#' @param x a neuron/neuronlist object that has its axons/dendrites labelled in swc format in its neuron$d dataframes
+#' @param mixed whether or not to include points assigned as uncertain or mixed polarity cable
+#' @param ... additional arguments passed to methods
+#'
+#' @return a matrix of 3D points
+#' @export
+#' @rdname extract_cable
+axonic_points<-function(x, ...) UseMethod("axonic_points")
+#' @export
+#' @rdname extract_cable
+dendritic_points<-function(x, ...) UseMethod("dendritic_points")
+#' @export
+#' @rdname extract_cable
+mixed_points<-function(x, ...) UseMethod("mixed_points")
+#' @rdname extract_cable
+axonic_points.neuron <- function(x){
+  points=x$d
+  xyzmatrix(points[points$Label%in%c(-2,2),])
+}
+#' @rdname extract_cable
+dendritic_points.neuron <- function(x){
+  points=x$d
+  xyzmatrix(points[points$Label%in%c(-3,3),])
+}
+#' @rdname extract_cable
+mixed_points.neuron <- function(x){ # Mised also means that I do not know
+  points=x$d
+  xyzmatrix(points[points$Label%in%c(8),])
+}
+#' @rdname extract_cable
+dendritic_points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x,dendritic_points.neuron, ...))
+}
+#' @rdname extract_cable
+axonic_points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x,axonic_points.neuron, ...))
+}
+#' @rdname extract_cable
+mixed_points.neuronlist <- function(x, ...){
+  do.call(rbind,nlapply(x, mixed_points.neuron, ...))
+}
+#' @export
+#' @rdname extract_cable
+axonal_endings <- function(x){
+  points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
+  xyzmatrix(points[points$Label%in%c(-2,2),])
+}
+#' @export
+#' @rdname extract_cable
+dendritic_endings <- function(x){
+  points=x$d[nat::endpoints(x)[which(endpoints(x)!=rootpoints(x))],]
+  xyzmatrix(points[points$Label%in%c(-3,3),])
+}
+#' @export
+#' @rdname extract_cable
+axonic_cable<-function(x, ...) UseMethod("axonic_cable")
+#' @export
+#' @rdname extract_cable
+dendritic_cable<-function(x, ...) UseMethod("dendritic_cable")
+#' @export
+#' @rdname extract_cable
+arbour_cable<-function(x, ...) UseMethod("arbour_cable")
+#' @export
+#' @rdname extract_cable
+unsure_cable<-function(x, ...) UseMethod("unsure_cable")
+#' @rdname extract_cable
+axonic_cable.neuron <- function(x, mixed=FALSE, ...){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-2,2,8)
+  }else{
+    chosen = c(-2,2)
+  }
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  }
+  neuron
+}
+#' @export
+#' @rdname extract_cable
+dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-3,3,8)
+  } else{
+    chosen = c(-3,3)
+  }
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  }
+  neuron
+}
+#' @export
+#' @rdname extract_cable
+arbour_cable.neuron <- function(x, mixed = FALSE, ...){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-3,3,2,-2,8)
+  }else{
+    chosen = c(-3,3,2,-2)
+  }
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  }
+  neuron
+}
+#' @export
+#' @rdname extract_cable
+unsure_cable.neuron <- function(x, mixed=FALSE, ...){
+  points=x$d
+  chosen = c(-8,8:100)
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  }
+  neuron
+}
+#' @export
+#' @rdname extract_cable
+axonic_cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,axonic_cable.neuron,mixed=mixed,OmitFailures = T, ...)
+}
 
+#' @export
+#' @rdname extract_cable
+dendritic_cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,dendritic_cable.neuron,mixed=mixed,OmitFailures = T, ...)
+}
+#' @export
+#' @rdname extract_cable
+arbour_cable.neuronlist <- function(x,mixed=FALSE, ...){
+  nlapply(x,arbour_cable.neuron,mixed=mixed,OmitFailures = T, ...)
+}
+#' @export
+#' @rdname extract_cable
+unsure_cable.neuronlist <- function(x, ...){
+  nlapply(x,unsure_cable.neuron,OmitFailures = T, ...)
+}
+
+
+#' @export
+#' @rdname extract_cable
+arbour_cable<-function(x, ...) UseMethod("arbour_cable")
+
+#' @export
+#' @rdname extract_cable
+arbour_cable.neuron <- function(x,mixed = FALSE){
+  points=x$d
+  if (mixed==T){
+    chosen = c(-3,3,2,-2,8)
+  }else{
+    chosen = c(-3,3,2,-2)
+  }
+  v = subset(rownames(x$d), x$d$Label %in% chosen)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+  }
+  neuron
+}
+
+#' @export
+#' @rdname extract_cable
+arbour_cable.neuronlist <- function(x,mixed=FALSE){
+  nlapply(x,arbour_cable.neuron,mixed=mixed,OmitFailures = T)
+}
 
 

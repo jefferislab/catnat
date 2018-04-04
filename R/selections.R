@@ -130,11 +130,11 @@ select_points <- function (points, plot3d = NULL,...){
   progress = readline(prompt="Add (a) or remove (r) points, or exit (e)?  ")
   while (progress != "e"){
     if (progress == "a"){
-      keeps = select3d()
+      keeps = rgl::select3d()
       keep.points <- keeps(unique(points))
       keep.points = subset(unique(points), keep.points)
       selected.points = rbind(selected.points, keep.points)
-      clear3d();plot3d(plot3d); points3d(selected.points); points3d(unique(points), col = 'red')
+      rgl::clear3d();rgl::plot3d(plot3d); rgl::points3d(selected.points); rgl::points3d(unique(points), col = 'red')
     }
     if (progress == "r"){
       remove.points <- select3d()

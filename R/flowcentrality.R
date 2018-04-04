@@ -226,8 +226,8 @@ flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripe
 #' @export
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
 #' @importFrom stats sd
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), splitnode = FALSE,WithConnectors = T, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1){
-  someneuronlist = as.neuronlist(someneuronlist)
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), splitnode = FALSE,WithConnectors = T, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1, ...){
+  someneuronlist = nat::as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
     if(is.null(neuron$d$flow.cent)){
@@ -244,25 +244,25 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     #nulls = nat::prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
     p.d = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v)))
     p.n = prune_vertices(neuron, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v)))
-    rgl::plot3d(dendrites, col = col[1], WithNodes = WithNodes, lwd = lwd)
-    rgl::plot3d(axon, col = col[2], WithNodes = WithNodes, soma = FALSE, lwd = lwd)
-    rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = soma, lwd = lwd)
-    rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes, soma = FALSE, lwd = lwd)
+    rgl::plot3d(dendrites, col = col[1], WithNodes = WithNodes, lwd = lwd,...)
+    rgl::plot3d(axon, col = col[2], WithNodes = WithNodes, soma = FALSE, lwd = lwd,...)
+    rgl::plot3d(p.n, col = col[3], WithNodes = WithNodes, soma = soma, lwd = lwd,...)
+    rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes, soma = FALSE, lwd = lwd,...)
     #rgl::plot3d(nulls, col = col[5], WithNodes = WithNodes, soma = FALSE, lwd = lwd)
     #rgl::plot3d(neuron, col = col[3], WithNodes = WithNodes, soma = soma)
     if (WithConnectors == T){
-      rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan', radius = radius)
-      rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red', radius = radius)
+      rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan', radius = radius,...)
+      rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red', radius = radius,...)
     }
     if (highflow == T){
       highest = max(neuron$d[,"flow.cent"])
       s.d = sd(neuron$d[,"flow.cent"], na.rm = T)
       high = subset(neuron$d, neuron$d[,"flow.cent"] > (highest - s.d))
-      rgl::points3d(nat::xyzmatrix(high), col = col[6])
+      rgl::points3d(nat::xyzmatrix(high), col = col[6],...)
     }
     if(splitnode==T){
       ais = which(apply(neuron$d, 1, function(x) x["flow.cent"] == max(neuron$d[,"flow.cent"])))
-      rgl::spheres3d(nat::xyzmatrix(neuron$d[ais,]),radius=radius,col="magenta")
+      rgl::spheres3d(nat::xyzmatrix(neuron$d[ais,]),radius=radius,col="magenta",...)
     }
   }
 }

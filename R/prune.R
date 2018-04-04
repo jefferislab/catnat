@@ -70,7 +70,7 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @seealso \code{\link[nat]{prune}}
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
-  pruned = nat::prune(x,target=target, maxdist=maxdist, keep = keep,
+  pruned = nat:::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
                  return.indices = return.indices, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
@@ -98,8 +98,14 @@ prune_online.neuron <- function(x, ...){
   continue = "no"
   while(!continue%in%c("y","yes")){
     selected = select_points(nat::xyzmatrix(x), plot3d = x)
-    neuron = nat::prune(x, target = selected, keep = "near", maxdist = 0)
-    rgl::plot3d(neuron, col ="black")
+    v = match(data.frame(t(selected)), data.frame(t(nat::xyzmatrix(x))))
+    if("catmaidneuron"%in%class(x)){
+      neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
+      class(neuron) = c("catmaidneuron","neuron")
+    }else{
+      neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
+    }
+    rgl::clear3d();rgl::plot3d(neuron, col ="black",...)
     continue = readline("Finished with this neuron? yes/no ")
   }
   neuron
@@ -159,11 +165,11 @@ manually_assign_axon_dendrite.neuron <- function(x, ...){
 #' @export
 #' @rdname manually_assign_axon_dendrite
 plot3d.split <- function(x, soma = TRUE, ...){
-  d = dendritic.cable(x)
-  a = axonic.cable(x)
-  u = unsure.cable(x)
+  d = dendritic_cable(x)
+  a = axonic_cable(x)
+  u = unsure_cable(x)
   p = primary.neurite(x)
-  g = unsure.cable(x)
+  g = unsure_cable(x)
   if(length(d)>0) {rgl::plot3d(d,col="blue", soma = FALSE, ...)}
   if(length(a)>0) {rgl::plot3d(a, col = "orange", soma = FALSE, ...)}
   if(length(p)>0) {rgl::plot3d(p, col = "purple", soma = FALSE, ...)}
@@ -184,8 +190,7 @@ manually_assign_axon_dendrite.neuronlist<-function(x, ...){
 #'   node data. I.e. adding Label information to indicate compartments such as
 #'   axon and dendrite
 #'
-#' @param x a neuron/neuronlist object that has primary neurites marked (Label =
-#'   7) and soma as the root
+#' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
 #' @param ... Additional arguments passed to nlapply
 #' @export
 #' @rdname assign.connector.info
@@ -216,15 +221,28 @@ assign.connector.info.neuronlist<-function(x, ...){
 #'   surface should be pruned.
 #' @inheritParams nat::prune
 #' @export
-prune_in_volume<- function(x, brain, neuropil = "LH_R", invert = FALSE, maxdist = 0,...){
-  keep=ifelse(invert, "far", "near")
-  mesh= rgl::as.mesh3d(subset(brain, neuropil))
-  nat::prune(x,
-             target = nat::xyzmatrix(x)[nat::pointsinside(nat::xyzmatrix(x), maxdist = 0,surf = mesh), ],
-             maxdist = maxdist,
-             keep = keep, ...)
+#' @rdname prune_in_volume
+prune_in_volume <-function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...) UseMethod("prune_in_volume")
+
+#' @export
+#' @rdname prune_in_volume
+prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
+  mesh= rgl::as.mesh3d(subset(brain, neuropil), ...)
+  v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
+  if("catmaidneuron"%in%class(x)){
+    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
+    class(neuron) = c("catmaidneuron","neuron")
+  }else{
+    neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
+  }
+  neuron
 }
 
+#' @export
+#' @rdname prune_in_volume
+prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
+  nat::nlapply(x,prune_in_volume.neuron, brain = brain, neuropil = neuropil, invert = invert, ...)
+}
 
 #' Prune neuron by splitting it at CATMAID tags
 #'
@@ -282,14 +300,14 @@ prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TR
 #' @param x a CATMAID neuron object
 #' @inheritParams nat::prune_vertices
 #' @param ... additional arguments passed to methods
+#'   \code{\link[nat]{prune_vertices}}).
 #' @return A pruned neuron object
 #' @export
-#' @aliases prune
-#' @importFrom nat prune
-#' @seealso \code{\link[nat]{prune}}
-prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
-  class(x) = c("neuron")
-  pruned = nat::prune_vertices(x,verticestoprune,invert = invert)
+#' @aliases prune_vertices
+#' @importFrom nat prune_vertices
+#' @seealso \code{\link[nat]{prune_vertices}}
+prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...){
+  pruned = nat:::prune_vertices(x,verticestoprune,invert = invert,...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
   y = pruned
@@ -312,16 +330,9 @@ prune_vertices.catmaidneuron<- function (x,verticestoprune, invert = FALSE,...){
 #' @importFrom nat prune_strahler
 #' @seealso \code{\link[nat]{prune_strahler}}
 prune_strahler.catmaidneuron <- function(x, orderstoprune = 1:2, ...){
-  tryCatch(
-    prune_vertices.catmaidneuron(x, which(
-      nat::strahler_order(x)$points %in% orderstoprune),
-      ...),
-    error = function(c)
-      stop(paste0(
-        "No points left after pruning. ",
-        "Consider lowering orders to prune!")
-      )
-  )
+  tryCatch(prune_vertices.catmaidneuron(x, which(nat::strahler_order(x)$points %in%
+                                     orderstoprune), ...), error = function(c) stop(paste0("No points left after pruning. ",
+                                                                                           "Consider lowering orders to prune!")))
 }
 
 
