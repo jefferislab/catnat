@@ -12,7 +12,7 @@
 #' @aliases resample
 #' @importFrom nat resample
 resample.catmaidneuron<-function(x, stepsize=1, ...){
-  r = nat::resample(x,stepsize=stepsize,...)
+  r=NextMethod(x)
   c = catmaid::connectors(x)
   c$treenode_id = nabor::knn(
     data = nat::xyzmatrix(r),
