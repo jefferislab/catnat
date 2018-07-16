@@ -95,7 +95,7 @@ primary.neurite.neuron <- function(x, resample = 1, keep.pnt = T,...){
 #' @export
 #' @rdname primary.neurite
 primary.neurite.neuronlist <- function(x, resample = 1, keep.pnt = T, ...){
-  nlapply(x, primary.neurite.neuron, OmitFailures, resample, keep.pnt,...)
+  nlapply(x, primary.neurite.neuron, OmitFailures = TRUE, resample, keep.pnt,...)
 }
 
 #' @export
