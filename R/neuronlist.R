@@ -63,15 +63,16 @@ assignside <- function(someneuronlist, ...){
 #' @param x a neuron or neuronlist object
 #' @param resample The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
 #' @param k the number of nodes from the soma to include
+#' @param kee.pnt whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuron pruned to its primary dendrite
 #' @export
-primary.neurite<-function(x, ...) UseMethod("primary.neurite")
+primary.neurite<-function(x,resample = 1, keep.pnt = T, ...) UseMethod("primary.neurite")
 
 #' @export
 #' @rdname primary.neurite
-primary.neurite.neuron <- function(x, resample = 1, ...){
+primary.neurite.neuron <- function(x, resample = 1, keep.pnt = T,...){
   som <- if (is.null(x$tags$soma)){
     warning("No soma found, using startpoint")
     som = x$StartPoint
@@ -83,14 +84,18 @@ primary.neurite.neuron <- function(x, resample = 1, ...){
     som_seg=som_seg[1]
   } else if(length(som_seg)==0) stop("no segment found for soma!")
 
-  pn=nat::prune_vertices(x, verticestoprune = sl[[som_seg]], invert = T)
-  resample(pn, stepsize=resample)
+  pn=nat::prune_vertices(x, verticestoprune = sl[[som_seg]], invert = keep.pnt)
+  if(is.numeric(resample)){
+    resample(pn, stepsize=resample)
+  }else{
+    pn
+  }
 }
 
 #' @export
 #' @rdname primary.neurite
-primary.neurite.neuronlist <- function(x, ...){
-  nlapply(x, primary.neurite.neuron, OmitFailures = T, ...)
+primary.neurite.neuronlist <- function(x, resample = 1, keep.pnt = T, ...){
+  nlapply(x, primary.neurite.neuron, OmitFailures = T, resample = 1, keep.pnt = T,...)
 }
 
 #' @export

@@ -9,11 +9,11 @@
 \alias{starting.neurite.neuronlist}
 \title{Returns the primary neurite of a neuron}
 \usage{
-primary.neurite(x, ...)
+primary.neurite(x, resample = 1, keep.pnt = T, ...)
 
-\method{primary.neurite}{neuron}(x, resample = 1, ...)
+\method{primary.neurite}{neuron}(x, resample = 1, keep.pnt = T, ...)
 
-\method{primary.neurite}{neuronlist}(x, ...)
+\method{primary.neurite}{neuronlist}(x, resample = 1, keep.pnt = T, ...)
 
 starting.neurite(x, k, ...)
 
@@ -24,11 +24,13 @@ starting.neurite(x, k, ...)
 \arguments{
 \item{x}{a neuron or neuronlist object}
 
-\item{...}{additional arguments passed to methods}
-
 \item{resample}{The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.}
 
+\item{...}{additional arguments passed to methods}
+
 \item{k}{the number of nodes from the soma to include}
+
+\item{kee.pnt}{whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead}
 }
 \value{
 A neuron pruned to its primary dendrite
