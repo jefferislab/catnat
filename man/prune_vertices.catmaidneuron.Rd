@@ -10,11 +10,6 @@ prune_vertices.catmaidneuron(x, verticestoprune, invert = FALSE, ...)
 \arguments{
 \item{x}{a CATMAID neuron object}
 
-\item{verticestoprune}{An integer vector describing which vertices to remove.}
-
-\item{invert}{Whether to keep vertices rather than dropping them (default 
-FALSE).}
-
 \item{...}{additional arguments passed to methods
 \code{\link[nat]{prune_vertices}}).}
 }
