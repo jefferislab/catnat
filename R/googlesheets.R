@@ -90,27 +90,29 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
 
 # Hidden
 unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
-  count = c()
-  c = 0
-  if(prepost==0&!polypre){
-    df.c = lapply(df$connector_id, catmaid::catmaid_get_connectors)
-    skids = sapply(df.c,function(x) x$post)
-    for(n in 1:length(df.c)){
-      x = df.c[[n]]$post
-      if(is.null(x)) {
-        count = c(count,c)
-      }else{
-        c= c + ifelse(n==1,1,sum(!x%in%unlist(skids[1:(n-1)])))
+  if(nrow(df)>0){
+    count = c()
+    c = 0
+    if(prepost==0&!polypre){
+      df.c = lapply(df$connector_id, catmaid::catmaid_get_connectors)
+      skids = sapply(df.c,function(x) x$post)
+      for(n in 1:length(df.c)){
+        x = df.c[[n]]$post
+        if(is.null(x)) {
+          count = c(count,c)
+        }else{
+          c= c + ifelse(n==1,1,sum(!x%in%unlist(skids[1:(n-1)])))
+          count = c(count,c)
+        }
+      }
+    }else{
+      for(n in 1:length(df$partner_skid)){
+        c = c + ifelse(n==1,1,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
         count = c(count,c)
       }
     }
-  }else{
-    for(n in 1:length(df$partner_skid)){
-      c = c + ifelse(n==1,1,!df$partner_skid[n]%in%df$partner_skid[1:(n-1)])
-      count = c(count,c)
-    }
+    df$unique.neurons = count
   }
-  df$unique.neurons = count
   df
 }
 
