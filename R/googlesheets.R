@@ -128,6 +128,33 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' @param axon.dendrite.split if TRUE and the neuron is labelled in its neuron$d data frame in SWC fashion, then separate worksheets for randomised synapse lists in axon and dendrite are generated
 #' @param randomise whether to ranomise the synapse sampling list (recommended). If false, the sheet ir organise by  strongest known synaptic parners
 #' @param ws the individual google worksheet or path to .csv file to update
+#'
+#' @examples
+#' # Load the neurons for which we want to create sampling sheets
+#' wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
+#' # Assign their cell types to these neurons
+#' # This should be changed from being manual to depending on an external gogolesheet or the name in CATMAID at some point
+#' wedpns.chosen[,"cell.type"]  = c("WED-PN3","WED-PN4","WED-PN1","WED-PN5","WED-PN6","WED-PN2")
+#' # Run the flow-centrality axon-dendrite split algorithm
+#' wedpns.chosen.flow = catnat::flow.centrality(wedpns.chosen, polypre= FALSE, mode = "centrifugal")
+#' # Create a new folder for seach of these cell types locally
+#' dir.create("Data/sampling")
+#' for(ct in wedpns.chosen.flow[,"cell.type"]){
+#'   message(ct)
+#'   if(dir.exists(paste0("Data/sampling/",ct))){
+#'     message("Sampling sheets for this cell type ought already to be present!")
+#'   }else{
+#'     dir.create(paste0("Data/sampling/",ct))
+#'     wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
+#'     catnat::create_tracing_samplesheet(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct,"/"), polypre = TRUE, axon.dendrite.split = TRUE, randomise = TRUE)
+#'   }
+#' }
+#' #Update the sampling sheets as connections have been sampled / the subject neuron has been further modified
+#' for(ct in wedpns.chosen.flow[,"cell.type"]){
+#'   message("Working on ",ct)
+#'   wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
+#'   catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct), polypre = TRUE)
+#' }
 #' @export
 #' @rdname create_tracing_samplesheet
 create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", folder = "googlesheet", skid = neuron$skid, polypre = TRUE, axon.dendrite.split = FALSE, randomise = TRUE){
@@ -162,6 +189,8 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
   df$treenode_id = lapply(df$connector_id, function(y) ifelse(y%in%neuron$connectors$connector_id,neuron$connectors$treenode_id[neuron$connectors$connector_id==y][1],0) )
   df = subset(df, treenode_id%in%neuron$d$PointNo)
   df.post =  df[df$direction == "incoming",]
+  dend = subset(neuron$d, Label==3)$PointNo
+  axon = subset(neuron$d, Label==2)$PointNo
   if(nrow(df.post)>2){
     message("Adding input synapse list...")
     df.post = update_tracing_sheet(df=df.post, prepost = 1) # Add more information to this sheet
@@ -173,12 +202,10 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
     df.post[] = lapply(df.post, as.character)
     if(axon.dendrite.split){
       message("Adding input synapse list in separate dendrite and axon worksheets...")
-      dend = subset(neuron$d, Label==3)$PointNo
       df.dend = subset(df.post,treenode_id%in%dend)
-      df.dend$running.completion = (1:nrow(df.dend))/nrow(df.dend)
-      axon = subset(neuron$d, Label==2)$PointNo
+      if(nrow(df.dend)>0){df.dend$running.completion = (1:nrow(df.dend))/nrow(df.dend)}
       df.axon = subset(df.post,treenode_id%in%axon)
-      df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
+      if(nrow(df.axon)>0){df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)}
       df.other = subset(df.post,!treenode_id%in%c(dend,axon))
       df.dend[] = lapply(df.dend, as.character)
       df.axon[] = lapply(df.axon, as.character)
@@ -223,9 +250,9 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
     if(axon.dendrite.split){
       message("Adding output connector list in separate dendrite and axon worksheets...")
       df.pre.dend = subset(df.pre,treenode_id%in%dend)
-      df.pre.dend$running.completion = (1:nrow(df.pre.dend))/nrow(df.pre.dend)
+      if(nrow(df.pre.dend)>0){df.pre.dend$running.completion = (1:nrow(df.pre.dend))/nrow(df.pre.dend)}
       df.pre.axon = subset(df.pre,treenode_id%in%axon)
-      df.pre.axon$running.completion = (1:nrow(df.pre.axon))/nrow(df.pre.axon)
+      if(nrow(df.pre.axon)>0){df.pre.axon$running.completion = (1:nrow(df.pre.axon))/nrow(df.pre.axon)}
       df.pre.other = subset(df.pre,!treenode_id%in%c(dend,axon))
       df.pre.dend[] = lapply(df.pre.dend, as.character)
       df.pre.axon[] = lapply(df.pre.axon, as.character)
@@ -267,9 +294,9 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
       if(axon.dendrite.split){
         message("Adding randomised output connections list in separate dendrite and axon worksheets...")
         df.dend = subset(df.polypre,treenode_id%in%dend)
-        df.dend$running.completion = (1:nrow(df.dend))/nrow(df.dend)
-        df.axon = subset(df.polypre,treenode_id%in%axon)
-        df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
+        if(nrow(df.dend)>0){df.dend$running.completion = (1:nrow(df.dend))/nrow(df.dend)}
+        df.axon = subset(df.post,treenode_id%in%axon)
+        if(nrow(df.axon)>0){df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)}
         df.other = subset(df.polypre,!treenode_id%in%c(dend,axon))
         df.dend[] = lapply(df.dend, as.character)
         df.axon[] = lapply(df.axon, as.character)

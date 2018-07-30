@@ -40,3 +40,30 @@ Creates or updates a googlesheet in your drive for a neuron. Worksheets in the g
 as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 }
+\examples{
+# Load the neurons for which we want to create sampling sheets
+wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
+# Assign their cell types to these neurons
+# This should be changed from being manual to depending on an external gogolesheet or the name in CATMAID at some point
+wedpns.chosen[,"cell.type"]  = c("WED-PN3","WED-PN4","WED-PN1","WED-PN5","WED-PN6","WED-PN2")
+# Run the flow-centrality axon-dendrite split algorithm
+wedpns.chosen.flow = catnat::flow.centrality(wedpns.chosen, polypre= FALSE, mode = "centrifugal")
+# Create a new folder for seach of these cell types locally
+dir.create("Data/sampling")
+for(ct in wedpns.chosen.flow[,"cell.type"]){
+  message(ct)
+  if(dir.exists(paste0("Data/sampling/",ct))){
+    message("Sampling sheets for this cell type ought already to be present!")
+  }else{
+    dir.create(paste0("Data/sampling/",ct))
+    wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
+    catnat::create_tracing_samplesheet(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct,"/"), polypre = TRUE, axon.dendrite.split = TRUE, randomise = TRUE)
+  }
+}
+#Update the sampling sheets as connections have been sampled / the subject neuron has been further modified
+for(ct in wedpns.chosen.flow[,"cell.type"]){
+  message("Working on ",ct)
+  wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
+  catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct), polypre = TRUE)
+}
+}
