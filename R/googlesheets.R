@@ -41,32 +41,29 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     df = unique.neurons.trace(df,prepost=prepost,polypre = polypre)
   }else if (polypre==FALSE){
     message("Reading information on postsynaptic partners...")
+    df = df[,1:6]
     df.c = lapply(df$connector_id, catmaid::catmaid_get_connectors)
     df$connections.laid = lapply(df.c, nrow)
     max.post = max(unlist(lapply(df.c, nrow)))
     df = cbind(df, matrix(NA,ncol=max.post,nrow=nrow(df)))
     df$nsoma = 0
     skids = sapply(df.c,function(x) x$post)
-    count = c()
     c = 0
     for(n in 1:length(df.c)){
       message(paste0("Updating information on connector ",n," of ",length(df.c)))
       x = df.c[[n]]$post
       if(is.null(x)) {
         df[n,]$nsoma = 0
-        count = c(count,c)
       }else{
-        p = read.neurons.catmaid(unique(x),OmitFailures= TRUE,.progress="none")
+        p = read.neurons.catmaid(unique(x),OmitFailures= FALSE,.progress="none")
         xn = catmaid::catmaid_get_neuronnames(as.integer(x))
         max.post = max(unlist(lapply(df.c, nrow)))
         length(xn) <- max.post
-        df[n,9:(ncol(df)-1)] = xn
-        df[n,]$nsoma = sum(summary(p)$nsoma>0)
-        c= c + ifelse(n==1,1,sum(!x%in%unlist(skids[1:(n-1)])))
-        count = c(count,c)
+        df[n,8:(max.post+7)] = xn
+        df[n,]$nsoma = tryCatch(sum(summary(p)$nsoma>0),error=function(e) 0)
       }
     }
-    df$unique.neurons = count
+    df = unique.neurons.trace(df,prepost=0,polypre = FALSE)
   }else if (polypre==TRUE){
     message("Reading information on postsynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
@@ -216,7 +213,6 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
   if(nrow(df.pre)>2){
     message("Adding output connector list...")
     df.pre = update_tracing_sheet(df=df.pre, prepost = 0, polypre = FALSE)
-    df.pre$status = "TODO"
     if(randomise){
       df.pre = df.pre[sample(nrow(df.pre)),] # Randomise synapses
     }else{
@@ -406,7 +402,7 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
   }else{
     gss.final[] = lapply(gss.final, as.character)
     utils::write.csv(x=gss.final,file=file,row.names=FALSE)
-    message("Updated .csv files")
+    message("Updated .csv file")
   }
 }
 
