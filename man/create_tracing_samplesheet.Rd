@@ -14,12 +14,12 @@ update_single_samplesheet(sheet_title = "mystery_neuron",
   folder = "googlesheet", neuron = NULL, skid = neuron$skid,
   ws = "whole neuron input")
 
-update_tracing_samplesheets(sheet_title = "myster_neuron",
+update_tracing_samplesheets(sheet_title = "mystery_neuron",
   folder = "googlesheet", neuron = NULL, skid = neuron$skid,
-  polypre = FALSE)
+  polypre = TRUE)
 }
 \arguments{
-\item{neuron}{a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored}
+\item{neuron}{a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored. If axon.dendrite.split = TRUE, neuron should be passed through catnat::flow.centrality first in order to identify its axon and dendrite}
 
 \item{sheet_title}{title of the googlesheet to be created or updated}
 

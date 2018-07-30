@@ -17,16 +17,17 @@
 \alias{arbour_cable}
 \alias{unsure_cable}
 \alias{axonic_cable.neuron}
+\alias{axonic_cable.catmaidneuron}
 \alias{dendritic_cable.neuron}
+\alias{dendritic_cable.catmaidneuron}
 \alias{arbour_cable.neuron}
+\alias{arbour_cable.catmaidneuron}
 \alias{unsure_cable.neuron}
+\alias{unsure_cable.catmaidneuron}
 \alias{axonic_cable.neuronlist}
 \alias{dendritic_cable.neuronlist}
 \alias{arbour_cable.neuronlist}
 \alias{unsure_cable.neuronlist}
-\alias{arbour_cable}
-\alias{arbour_cable.neuron}
-\alias{arbour_cable.neuronlist}
 \title{Extract axonic/dendritic points from a neuron/neuronlist}
 \usage{
 axonic_points(x, ...)
@@ -61,25 +62,27 @@ unsure_cable(x, ...)
 
 \method{axonic_cable}{neuron}(x, mixed = FALSE, ...)
 
+\method{axonic_cable}{catmaidneuron}(x, mixed = FALSE, ...)
+
 \method{dendritic_cable}{neuron}(x, mixed = FALSE, ...)
 
-\method{arbour_cable}{neuron}(x, mixed = FALSE)
+\method{dendritic_cable}{catmaidneuron}(x, mixed = FALSE, ...)
+
+\method{arbour_cable}{neuron}(x, mixed = FALSE, ...)
+
+\method{arbour_cable}{catmaidneuron}(x, mixed = FALSE, ...)
 
 \method{unsure_cable}{neuron}(x, mixed = FALSE, ...)
+
+\method{unsure_cable}{catmaidneuron}(x, mixed = FALSE, ...)
 
 \method{axonic_cable}{neuronlist}(x, mixed = FALSE, ...)
 
 \method{dendritic_cable}{neuronlist}(x, mixed = FALSE, ...)
 
-\method{arbour_cable}{neuronlist}(x, mixed = FALSE)
+\method{arbour_cable}{neuronlist}(x, mixed = FALSE, ...)
 
 \method{unsure_cable}{neuronlist}(x, ...)
-
-arbour_cable(x, ...)
-
-\method{arbour_cable}{neuron}(x, mixed = FALSE)
-
-\method{arbour_cable}{neuronlist}(x, mixed = FALSE)
 }
 \arguments{
 \item{x}{a neuron/neuronlist object that has its axons/dendrites labelled in swc format in its neuron$d dataframes}

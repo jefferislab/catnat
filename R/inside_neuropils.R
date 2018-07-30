@@ -11,11 +11,11 @@
 #'
 #' @return a matrix of 3D points
 #' @export
-#' @rdname cable_inside_neuropils
+#' @rdname inside_neuropils
 inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable","PRE","POST"), min.endpoints = 1,alpha=30, ...) UseMethod("inside_neuropils")
 
 #' @export
-#' @rdname cable_inside_neuropils
+#' @rdname inside_neuropils
 inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable","PRE","POST"), min.endpoints = 1,alpha=30, ...){
   if(!requireNamespace('nat.flybrains', quietly = TRUE))
     stop("You must install suggested package nat.flybrains to use this function!")

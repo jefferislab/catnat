@@ -3,6 +3,11 @@
 \name{inside_neuropils}
 \alias{inside_neuropils}
 \alias{inside_neuropils.neuron}
+\alias{inside_neuropils.neuronlist}
+\alias{points_in_neuropil}
+\alias{in_neuropil}
+\alias{in_neuropil.neuron}
+\alias{in_neuropil.neuronlist}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
 inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable",
@@ -10,6 +15,23 @@ inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable",
 
 \method{inside_neuropils}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
   method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+
+\method{inside_neuropils}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
+  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+
+points_in_neuropil(x, brain, alpha = 30, ...)
+
+in_neuropil(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha, ...)
+
+\method{in_neuropil}{neuron}(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha)
+
+\method{in_neuropil}{neuronlist}(x, method = c("Cable", "PRE", "POST"),
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  min.endpoints = 1, alpha = alpha)
 }
 \arguments{
 \item{x}{a set of neurons or, for points_in_neuropil a mxn matrix of 3D points}

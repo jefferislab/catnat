@@ -22,7 +22,7 @@ connector_URL <- function(df){
 update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
   if(prepost==1){
     df$URL = connector_URL(df)
-    message("Reading information on synaptic partners...")
+    message("Reading information on presynaptic partners...")
     df$pre_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid))
     if(sum(is.na(df$pre_name))>0){
       df[which(is.na(df$pre_name)),]$partner_skid = sapply(df[which(is.na(df$pre_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$pre[1])
@@ -30,11 +30,14 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     }
     df$pre_nodes = 1
     df$partner_skid = as.character(df$partner_skid)
-    pre = catmaid::read.neurons.catmaid(unique(df$partner_skid)[unique(df$partner_skid)!="NULL"],OmitFailures= T)
-    result = summary(pre)
-    df$pre_nodes[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nodes
+    partner_skids = unique(df$partner_skid)[unique(df$partner_skid)!="NULL"]
     df$pre_soma = FALSE
-    df$pre_soma[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nsoma
+    if(length(partner_skids)>0){
+      pre = catmaid::read.neurons.catmaid(partner_skids,OmitFailures= T)
+      result = summary(pre)
+      df$pre_nodes[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nodes
+      df$pre_soma[df$partner_skid%in%names(pre)] = result[as.character(df$partner_skid[df$partner_skid%in%names(pre)]),]$nsoma
+    }
     df = unique.neurons.trace(df,prepost=prepost,polypre = polypre)
   }else if (polypre==FALSE){
     message("Reading information on postsynaptic partners...")
@@ -65,21 +68,24 @@ update_tracing_sheet <- function(df, prepost = 1, polypre = FALSE){
     }
     df$unique.neurons = count
   }else if (polypre==TRUE){
-    df$URL = connector_URL(df)
-    message("Reading information on presynaptic partners...")
+    message("Reading information on postsynaptic partners...")
     df$connections.laid = sapply(df$connector_id, function(x) sum(df$connector_id==x) )
+    df$partner_skid = as.character(df$partner_skid)
     df$post_name = catmaid::catmaid_get_neuronnames(as.integer(df$partner_skid)) #sapply(df$partner_skid, function(x) tryCatch(catmaid::catmaid_get_neuronnames(x),error = function(e) "neuron"))
     if(sum(is.na(df$post_name))>0){
-      df[which(is.na(df$post_name)),]$partner_skid = sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1])
+      df[which(is.na(df$post_name)),]$partner_skid = as.character(sapply(df[which(is.na(df$post_name)),]$connector_id, function(x) catmaid::catmaid_get_connectors(x)$post[1]))
       df$URL = connector_URL(df)
     }
     df$post_nodes = 1
-    df$partner_skid = as.character(df$partner_skid)
-    post = catmaid::read.neurons.catmaid(unique(df$partner_skid)[unique(df$partner_skid)!="NULL"],OmitFailures= T)
-    result = summary(post)
-    df$post_nodes[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nodes
+    partner_skids = unique(df$partner_skid)[unique(df$partner_skid)!="NULL"]
     df$post_soma = FALSE
-    df$post_soma[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nsoma
+    if(length(partner_skids)>0){
+      post = catmaid::read.neurons.catmaid(partner_skids,OmitFailures= T)
+      result = summary(post)
+      df$post_nodes[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nodes
+      df$post_soma = FALSE
+      df$post_soma[df$partner_skid%in%names(post)] = result[as.character(df$partner_skid[df$partner_skid%in%names(post)]),]$nsoma
+    }
     df = unique.neurons.trace(df,prepost=prepost,polypre = polypre)
   }
   df
@@ -117,7 +123,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 #' dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 #'
-#' @param neuron a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored
+#' @param neuron a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored. If axon.dendrite.split = TRUE, neuron should be passed through catnat::flow.centrality first in order to identify its axon and dendrite
 #' @param sheet_title title of the googlesheet to be created or updated
 #' @param folder location to save tracing sheets. Defaults to 'googleshet' which creates a tracign sheet in your ghome folder on googledrive. It can take a while to write a googelsheet. Alternatively, CSVs can be created in a local folder.
 #' @param skid CATMAID skeleton ID for the neuron
@@ -177,36 +183,42 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
       df.axon = subset(df.post,treenode_id%in%axon)
       df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
       df.other = subset(df.post,!treenode_id%in%c(dend,axon))
+      df.dend[] = lapply(df.dend, as.character)
+      df.axon[] = lapply(df.axon, as.character)
       if(nrow(df.other)>0){
+        df.other[] = lapply(df.other, as.character)
+        df.other = subset(df.post,!treenode_id%in%c(dend,axon))
+        df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
         if(nrow(df.other)>0){
-          df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
+          if(folder=="googlesheet"){
+            googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost=1), col_names = TRUE)
+          }else{
+            utils::write.csv(x = unique.neurons.trace(df.other, prepost = 1),file = paste0(folder,sheet_title,"_inputs_other",".csv"),row.names=FALSE)
+          }
         }
       }
       if(folder=="googlesheet"){
-        googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other), col_names = TRUE)
-        googlesheets::gs_edit_cells(gs, ws = "dendritic input", input = unique.neurons.trace(df.dend), col_names = TRUE)
-        googlesheets::gs_edit_cells(gs, ws = "axonal input", input = unique.neurons.trace(df.axon), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "dendritic input", input = unique.neurons.trace(df.dend, prepost = 1), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "axonal input", input = unique.neurons.trace(df.axon, prepost = 1), col_names = TRUE)
       }else{
-        utils::write.csv(x = unique.neurons.trace(df.axon),file = paste0(folder,sheet_title,"_inputs_axon",".csv"),row.names=FALSE)
-        utils::write.csv(x = unique.neurons.trace(df.dend),file = paste0(folder,sheet_title,"_inputs_dendrite",".csv"),row.names=FALSE)
-        utils::write.csv(x = unique.neurons.trace(df.other),file = paste0(folder,sheet_title,"_inputs_other",".csv"),row.names=FALSE)
+        utils::write.csv(x = unique.neurons.trace(df.axon, prepost = 1),file = paste0(folder,sheet_title,"_inputs_axon",".csv"),row.names=FALSE)
+        utils::write.csv(x = unique.neurons.trace(df.dend, prepost = 1),file = paste0(folder,sheet_title,"_inputs_dendrite",".csv"),row.names=FALSE)
       }
     }
     df.post$running.completion = (1:nrow(df.post))/nrow(df.post)
     if(folder=="googlesheet"){
       googlesheets::gs_edit_cells(gs, ws = "whole neuron input", input = unique.neurons.trace(df.post), col_names = TRUE)
     }else{
-      utils::write.csv(x = unique.neurons.trace(df.post),file = paste0(folder,sheet_title,"_inputs_whole",".csv"),row.names=FALSE)
+      utils::write.csv(x = unique.neurons.trace(df.post, prepost = 1),file = paste0(folder,sheet_title,"_inputs_whole",".csv"),row.names=FALSE)
     }
   }
   df.pre =  subset(neuron$connectors, prepost==0)
   if(nrow(df.pre)>2){
     message("Adding output connector list...")
     df.pre = update_tracing_sheet(df=df.pre, prepost = 0, polypre = FALSE)
-    df.pre= df.pre[sample(nrow(df.pre)),] # Randomise synapses
     df.pre$status = "TODO"
     if(randomise){
-      df.pre = df.post[sample(nrow(df.pre)),] # Randomise synapses
+      df.pre = df.pre[sample(nrow(df.pre)),] # Randomise synapses
     }else{
       df.pre[is.na(df.pre)] = 0
       df.pre = df.pre[order(df.pre$nsoma,decreasing=TRUE),]
@@ -214,32 +226,37 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
     df.pre[] = lapply(df.pre, as.character)
     if(axon.dendrite.split){
       message("Adding output connector list in separate dendrite and axon worksheets...")
-      df.dend = subset(df.pre,treenode_id%in%dend)
-      df.dend$running.completion = (1:nrow(df.dend))/nrow(df.dend)
-      df.axon = subset(df.pre,treenode_id%in%axon)
-      df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
-      df.other = subset(df.pre,!treenode_id%in%c(dend,axon))
-      if(nrow(df.other)>0){
-        df.other = subset(df.post,!treenode_id%in%c(dend,axon))
-        if(nrow(df.other)>0){
-          df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
-          googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost=0), col_names = TRUE)
+      df.pre.dend = subset(df.pre,treenode_id%in%dend)
+      df.pre.dend$running.completion = (1:nrow(df.pre.dend))/nrow(df.pre.dend)
+      df.pre.axon = subset(df.pre,treenode_id%in%axon)
+      df.pre.axon$running.completion = (1:nrow(df.pre.axon))/nrow(df.pre.axon)
+      df.pre.other = subset(df.pre,!treenode_id%in%c(dend,axon))
+      df.pre.dend[] = lapply(df.pre.dend, as.character)
+      df.pre.axon[] = lapply(df.pre.axon, as.character)
+      if(nrow(df.pre.other)>0){
+        df.pre.other[] = lapply(df.pre.other, as.character)
+        if(nrow(df.pre.other)>0){
+          df.pre.other$running.completion = (1:nrow(df.pre.other))/nrow(df.pre.other)
+          if(folder=="googlesheet"){
+            googlesheets::gs_edit_cells(gs, ws = "other output connectors", input = unique.neurons.trace(df.pre.other,prepost = 0, polypre = FALSE), col_names = TRUE)
+          }else{
+            utils::write.csv(x = unique.neurons.trace(df.pre.other, prepost = 0, polypre = FALSE),file = paste0(folder,sheet_title,"_ouput_connectors_other",".csv"),row.names=FALSE)
+          }
         }
       }
       if(folder=="googlesheet"){
-        googlesheets::gs_edit_cells(gs, ws = "dendritic output connectors", input = unique.neurons.trace(df.dend,prepost=0), col_names = TRUE)
-        googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.axon,prepost=0), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "dendritic output connectors", input = unique.neurons.trace(df.pre.dend,prepost = 0, polypre = FALSE), col_names = TRUE)
+        googlesheets::gs_edit_cells(gs, ws = "axonal output connectors", input = unique.neurons.trace(df.pre.axon,prepost = 0, polypre = FALSE), col_names = TRUE)
       }else{
-        utils::write.csv(x = unique.neurons.trace(df.axon),file = paste0(folder,sheet_title,"_output_connectors_axon",".csv"),row.names=FALSE)
-        utils::write.csv(x = unique.neurons.trace(df.dend),file = paste0(folder,sheet_title,"_ouput_connectors_dendrite",".csv"),row.names=FALSE)
-        utils::write.csv(x = unique.neurons.trace(df.other),file = paste0(folder,sheet_title,"_ouput_connectors_other",".csv"),row.names=FALSE)
+        utils::write.csv(x = unique.neurons.trace(df.pre.axon,prepost = 0, polypre = FALSE),file = paste0(folder,sheet_title,"_output_connectors_axon",".csv"),row.names=FALSE)
+        utils::write.csv(x = unique.neurons.trace(df.pre.dend,prepost = 0, polypre = FALSE),file = paste0(folder,sheet_title,"_ouput_connectors_dendrite",".csv"),row.names=FALSE)
       }
     }
     df.pre$running.completion = (1:nrow(df.pre))/nrow(df.pre)
     if(folder=="googlesheet"){
-      googlesheets::gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0), col_names = TRUE)
+      googlesheets::gs_edit_cells(gs, ws = "whole neuron output connectors", input = unique.neurons.trace(df.pre,prepost=0,polypre = FALSE), col_names = TRUE)
     }else{
-      utils::write.csv(x = unique.neurons.trace(df.pre),file = paste0(folder,sheet_title,"_ouput_connectors_whole",".csv"),row.names=FALSE)
+      utils::write.csv(x = unique.neurons.trace(df.pre,prepost = 0, polypre = FALSE),file = paste0(folder,sheet_title,"_ouput_connectors_whole",".csv"),row.names=FALSE)
     }
     if(polypre){
       message("Adding output connections list...")
@@ -258,27 +275,34 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
         df.axon = subset(df.polypre,treenode_id%in%axon)
         df.axon$running.completion = (1:nrow(df.axon))/nrow(df.axon)
         df.other = subset(df.polypre,!treenode_id%in%c(dend,axon))
+        df.dend[] = lapply(df.dend, as.character)
+        df.axon[] = lapply(df.axon, as.character)
         if(nrow(df.other)>0){
+          df.other[] = lapply(df.other, as.character)
           df.other = subset(df.post,!treenode_id%in%c(dend,axon))
           if(nrow(df.other)>0){
             df.other$running.completion = (1:nrow(df.other))/nrow(df.other)
+            if(folder=="googlesheet"){
+              googlesheets::gs_edit_cells(gs, ws = "other output connections", input = unique.neurons.trace(df.other, prepost=0, polypre = TRUE), col_names = TRUE)
+            }else{
+              utils::write.csv(x = unique.neurons.trace(df.other, prepost=0, polypre = TRUE),file = paste0(folder,sheet_title,"_ouput_connections_other",".csv"),row.names=FALSE)
             }
+          }
         }
         if(folder=="googlesheet"){
           googlesheets::gs_edit_cells(gs, ws = "dendritic output connections", input = unique.neurons.trace(df.dend, prepost = 0, polypre = TRUE), col_names = TRUE)
           googlesheets::gs_edit_cells(gs, ws = "axonal output connections", input = unique.neurons.trace(df.axon, prepost = 0, polypre = TRUE), col_names = TRUE)
-          googlesheets::gs_edit_cells(gs, ws = "other input", input = unique.neurons.trace(df.other, prepost = 0, polypre = TRUE), col_names = TRUE)
         }else{
-          utils::write.csv(x = unique.neurons.trace(df.axon),file = paste0(folder,sheet_title,"_output_connections_axon",".csv"),row.names=FALSE)
-          utils::write.csv(x = unique.neurons.trace(df.dend),file = paste0(folder,sheet_title,"_ouput_connections_dendrite",".csv"),row.names=FALSE)
-          utils::write.csv(x = unique.neurons.trace(df.other),file = paste0(folder,sheet_title,"_ouput_connections_other",".csv"),row.names=FALSE)
+          utils::write.csv(x = unique.neurons.trace(df.axon, prepost=0, polypre = TRUE),file = paste0(folder,sheet_title,"_output_connections_axon",".csv"),row.names=FALSE)
+          utils::write.csv(x = unique.neurons.trace(df.dend, prepost=0, polypre = TRUE),file = paste0(folder,sheet_title,"_ouput_connections_dendrite",".csv"),row.names=FALSE)
+          utils::write.csv(x = unique.neurons.trace(df.other, prepost=0, polypre = TRUE),file = paste0(folder,sheet_title,"_ouput_connections_other",".csv"),row.names=FALSE)
         }
       }
       df.polypre$running.completion = (1:nrow(df.polypre))/nrow(df.polypre)
       if(folder=="googlesheet"){
         googlesheets::gs_edit_cells(gs, ws = "whole neuron output connections", input = unique.neurons.trace(df.polypre, prepost = 0, polypre = TRUE), col_names = TRUE)
       }else{
-        utils::write.csv(x = unique.neurons.trace(df.polypre),file = paste0(folder,sheet_title,"_output_connections_whole",".csv"),row.names=FALSE)
+        utils::write.csv(x = unique.neurons.trace(df.polypre, prepost=0, polypre = TRUE),file = paste0(folder,sheet_title,"_output_connections_whole",".csv"),row.names=FALSE)
       }
     }
   }
@@ -302,14 +326,13 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
   }else{
     file = paste0(folder,ws)
     gss = read.csv(file=file)
+    gss[] = lapply(gss, as.character)
   }
   if(grepl("dend",ws)&!is.null(neuron)){
-    dend = rownames(subset(neuron$d, Label==3))
-    neuron = nat::prune_vertices(neuron, dend, invert = TRUE)
+    neuron = dendritic_cable(neuron)
   }
   if(grepl("axon",ws)&!is.null(neuron)){
-    axon = rownames(subset(neuron$d, Label==2))
-    neuron = nat::prune_vertices(neuron, axon, invert = TRUE)
+    neuron = axonic_cable(neuron)
   }
   if(grepl("input",ws)){
     prepost = 1
@@ -324,6 +347,7 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
   if(is.null(neuron)){
     gss.final = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)
   }else{
+    message("Updating sampling sheet based on supplied neuron")
     if(polypre==T|prepost==1){
       if(is.null(skid)){
         stop("Please provide a CATMAID skeleton ID")
@@ -346,8 +370,7 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
       add.df = neuron$connectors[neuron$connectors$connector_id%in%add,]
       gss = gss[old%in%new,] # remove connectors that no longer exist
     }
-    # Update old
-    gss.updated = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)
+    gss.updated = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)     # Update old
     if(nrow(add.df)>0){
       add.updated =  update_tracing_sheet(add.df,polypre = polypre, prepost = prepost)
       random.rows = base::sample(x = 1:(nrow(add.updated)+nrow(gss.updated)),size = nrow(add.updated))
@@ -379,15 +402,17 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
     googlesheets::gs_edit_cells(gs, ws = ws, input = gss.final, col_names = TRUE)
     googlesheets::gs_ws_delete(gs, ws = paste0("old ",ws), verbose = TRUE)
     message(paste0("Neuron tracing worksheet ",ws," fully updated in ",sheet_title))
+    message("Updated google worksheet")
   }else{
     gss.final[] = lapply(gss.final, as.character)
     utils::write.csv(x=gss.final,file=file,row.names=FALSE)
+    message("Updated .csv files")
   }
 }
 
 #' @export
 #' @rdname create_tracing_samplesheet
-update_tracing_samplesheets <-function(sheet_title = "myster_neuron", folder = "googlesheet", neuron = NULL, skid = neuron$skid, polypre = FALSE){
+update_tracing_samplesheets <-function(sheet_title = "mystery_neuron", folder = "googlesheet", neuron = NULL, skid = neuron$skid, polypre = TRUE){
   if(folder=="googlesheet"){
     gs = googlesheets::gs_title(sheet_title)
     googlesheets::gs_copy(from=gs, to = paste0(sheet_title,"_copy"), verbose = TRUE)

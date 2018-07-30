@@ -236,6 +236,9 @@ axonic_cable.neuron <- function(x, mixed=FALSE, ...){
 }
 #' @export
 #' @rdname extract_cable
+axonic_cable.catmaidneuron <- axonic_cable.neuron
+#' @export
+#' @rdname extract_cable
 dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
   points=x$d
   if (mixed==T){
@@ -252,6 +255,9 @@ dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
   }
   neuron
 }
+#' @export
+#' @rdname extract_cable
+dendritic_cable.catmaidneuron <- dendritic_cable.neuron
 #' @export
 #' @rdname extract_cable
 arbour_cable.neuron <- function(x, mixed = FALSE, ...){
@@ -272,6 +278,9 @@ arbour_cable.neuron <- function(x, mixed = FALSE, ...){
 }
 #' @export
 #' @rdname extract_cable
+arbour_cable.catmaidneuron <- arbour_cable.neuron
+#' @export
+#' @rdname extract_cable
 unsure_cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
   chosen = c(-8,8:100)
@@ -286,10 +295,12 @@ unsure_cable.neuron <- function(x, mixed=FALSE, ...){
 }
 #' @export
 #' @rdname extract_cable
+unsure_cable.catmaidneuron <- unsure_cable.neuron
+#' @export
+#' @rdname extract_cable
 axonic_cable.neuronlist <- function(x,mixed=FALSE, ...){
   nlapply(x,axonic_cable.neuron,mixed=mixed,OmitFailures = T, ...)
 }
-
 #' @export
 #' @rdname extract_cable
 dendritic_cable.neuronlist <- function(x,mixed=FALSE, ...){
@@ -307,33 +318,5 @@ unsure_cable.neuronlist <- function(x, ...){
 }
 
 
-#' @export
-#' @rdname extract_cable
-arbour_cable<-function(x, ...) UseMethod("arbour_cable")
-
-#' @export
-#' @rdname extract_cable
-arbour_cable.neuron <- function(x,mixed = FALSE){
-  points=x$d
-  if (mixed==T){
-    chosen = c(-3,3,2,-2,8)
-  }else{
-    chosen = c(-3,3,2,-2)
-  }
-  v = subset(rownames(x$d), x$d$Label %in% chosen)
-  if("catmaidneuron"%in%class(x)){
-    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
-    class(neuron) = c("catmaidneuron","neuron")
-  }else{
-    neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
-  }
-  neuron
-}
-
-#' @export
-#' @rdname extract_cable
-arbour_cable.neuronlist <- function(x,mixed=FALSE){
-  nlapply(x,arbour_cable.neuron,mixed=mixed,OmitFailures = T)
-}
 
 
