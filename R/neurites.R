@@ -232,6 +232,7 @@ axonic_cable.neuron <- function(x, mixed=FALSE, ...){
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron$d$Label=2
   neuron
 }
 #' @export
@@ -253,6 +254,7 @@ dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron$d$Label=3
   neuron
 }
 #' @export
@@ -291,6 +293,7 @@ unsure_cable.neuron <- function(x, mixed=FALSE, ...){
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
+  neuron$d$Label=8
   neuron
 }
 #' @export

@@ -155,7 +155,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' for(ct in wedpns.chosen.flow[,"cell.type"]){
 #'   message("Working on ",ct)
 #'   wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
-#'   catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct), polypre = TRUE)
+#'   catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct,"/"), polypre = TRUE)
 #' }
 #' @export
 #' @rdname create_tracing_samplesheet
@@ -395,27 +395,29 @@ update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "
       add.df = neuron$connectors[neuron$connectors$connector_id%in%add,]
       gss = gss[old%in%new,] # remove connectors that no longer exist
     }
-    gss.updated = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)     # Update old
-    if(nrow(add.df)>0){
-      add.updated =  update_tracing_sheet(add.df,polypre = polypre, prepost = prepost)
-      random.rows = base::sample(x = 1:(nrow(add.updated)+nrow(gss.updated)),size = nrow(add.updated))
-      gss.final = as.data.frame(matrix(0,ncol = ncol(gss.updated), nrow = (nrow(add.updated)+nrow(gss.updated))))
-      colnames(gss.final) = colnames(gss.updated)
-      for(r in 1:(nrow(add.updated)+nrow(gss.updated))){
-        if(r%in%random.rows){
-          gss.final[r,] = add.updated[1,]
-          add.updated = add.updated[-1,]
-        }else{
-          gss.final[r,] = gss.updated[1,]
-          gss.updated = gss.updated[-1,]
+    if(nrow(gss)>0){
+      gss.updated = update_tracing_sheet(gss, polypre = polypre, prepost = prepost)     # Update old
+      if(nrow(add.df)>0){
+        add.updated =  update_tracing_sheet(add.df,polypre = polypre, prepost = prepost)
+        random.rows = base::sample(x = 1:(nrow(add.updated)+nrow(gss.updated)),size = nrow(add.updated))
+        gss.final = as.data.frame(matrix(0,ncol = ncol(gss.updated), nrow = (nrow(add.updated)+nrow(gss.updated))))
+        colnames(gss.final) = colnames(gss.updated)
+        for(r in 1:(nrow(add.updated)+nrow(gss.updated))){
+          if(r%in%random.rows){
+            gss.final[r,] = add.updated[1,]
+            add.updated = add.updated[-1,]
+          }else{
+            gss.final[r,] = gss.updated[1,]
+            gss.updated = gss.updated[-1,]
+          }
         }
+        gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
+        gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
+      }else{
+        gss.final = gss.updated
+        gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
+        gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
       }
-      gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
-      gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
-    }else{
-      gss.updated = gss.final
-      gss.final = unique.neurons.trace(gss.final,prepost = prepost, polypre = polypre)
-      gss.final$running.completion = (1:nrow(gss.final))/nrow(gss.final)
     }
   }
   if(folder=="googlesheet"){
