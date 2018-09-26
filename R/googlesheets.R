@@ -132,6 +132,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' @param ws the individual google worksheet or path to .csv file to update
 #'
 #' @examples
+#' \donttest{
 #' # Load the neurons for which we want to create sampling sheets
 #' wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
 #' # Assign their cell types to these neurons
@@ -156,6 +157,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #'   message("Working on ",ct)
 #'   wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
 #'   catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct,"/"), polypre = TRUE)
+#' }
 #' }
 #' @export
 #' @rdname create_tracing_samplesheet

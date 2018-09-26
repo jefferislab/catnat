@@ -41,6 +41,7 @@ as well as other meta information to inform tracing. Different worksheets contai
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 }
 \examples{
+\donttest{
 # Load the neurons for which we want to create sampling sheets
 wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
 # Assign their cell types to these neurons
@@ -64,6 +65,7 @@ for(ct in wedpns.chosen.flow[,"cell.type"]){
 for(ct in wedpns.chosen.flow[,"cell.type"]){
   message("Working on ",ct)
   wedpn = subset(wedpns.chosen.flow,cell.type==ct)[[1]]
-  catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct), polypre = TRUE)
+  catnat::update_tracing_samplesheets(neuron=wedpn,sheet_title = ct, folder = paste0("Data/sampling/",ct,"/"), polypre = TRUE)
+}
 }
 }
