@@ -1,6 +1,6 @@
 context("Assigning LH cell types")
 test_that("Let's assign some neurons or known types",{
-  truelhns = subset(catnat::most.lhns, anatomy.group!="notLHproper")
+  truelhns = subset(lhns::most.lhns, anatomy.group!="notLHproper")
   tneurons = truelhns[1:10]
   aneurons = assign_lh_neuron(tneurons)
   expect_is(aneurons,"neuronlist")
