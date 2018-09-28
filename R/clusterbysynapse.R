@@ -3,7 +3,7 @@
 #' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 #'
 #' @param someneuronlist a neuronlist or neuron object
-#' @param sigma determines what distances between two synapses are considered close (defaults to 2 um)
+#' @param sigma determines what distances between two synapses are considered close (defaults to 1 um)
 #' @param omega synapse cluster radius. Defaults to sigma.
 #' @param symmetric whether to return a symmetric martrix (average of scores between two neurons in both directions)
 #' @param direction cluster neurons by presynapses (0), postysnapses (1) or both (2)
@@ -12,7 +12,7 @@
 #' @return A matrix of similarity scores between inputted neurons, based on synapse positions.
 #' @export
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}}
-clusterbysynapses <- function(someneuronlist, sigma = 1, omega = 1, symmetric = T, direction = c(0,1,2)){
+clusterbysynapses <- function(someneuronlist, sigma = 1, omega = sigma, symmetric = T, direction = c(0,1,2)){
   m = matrix(nrow = length(someneuronlist), ncol = length(someneuronlist))
   colnames(m) = rownames(m) = names(someneuronlist)
   for (neuron in 1:length(someneuronlist)){

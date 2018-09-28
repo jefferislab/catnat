@@ -4,13 +4,13 @@
 \alias{clusterbysynapses}
 \title{Cluster neurons by pre- and postsynapse positons}
 \usage{
-clusterbysynapses(someneuronlist, sigma = 1, omega = 1, symmetric = T,
+clusterbysynapses(someneuronlist, sigma = 1, omega = sigma, symmetric = T,
   direction = c(0, 1, 2))
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}
 
-\item{sigma}{determines what distances between two synapses are considered close (defaults to 2 um)}
+\item{sigma}{determines what distances between two synapses are considered close (defaults to 1 um)}
 
 \item{omega}{synapse cluster radius. Defaults to sigma.}
 
