@@ -73,21 +73,24 @@ primary.neurite<-function(x,resample = 1, keep.pnt = T, ...) UseMethod("primary.
 #' @export
 #' @rdname primary.neurite
 primary.neurite.neuron <- function(x, resample = 1, keep.pnt = T,...){
-  som <- if (is.null(x$tags$soma)){
+  som <- if (is.null(x$tags$soma)) {
     warning("No soma found, using startpoint")
     som = x$StartPoint
-  } else somapos(x)
-  sl=as.seglist(x, flatten=T, all=T)
-  som_seg=which(sapply(sl, function(x) som%in%x))
-  if(length(som_seg)>1){
+  }else { which(x$d$PointNo==somapos(x))}
+  sl = as.seglist(x, flatten = T, all = T)
+  som_seg = which(sapply(sl, function(x) som %in% x))
+  if (length(som_seg) > 1) {
     warning("more than one segment contains root, choosing first!")
-    som_seg=som_seg[1]
-  } else if(length(som_seg)==0) stop("no segment found for soma!")
-
-  pn=nat::prune_vertices(x, verticestoprune = sl[[som_seg]], invert = keep.pnt)
-  if(is.numeric(resample)){
-    resample(pn, stepsize=resample)
-  }else{
+    som_seg = som_seg[1]
+  }
+  else if (length(som_seg) == 0)
+    stop("no segment found for soma!")
+  pn = nat::prune_vertices(x, verticestoprune = sl[[som_seg]],
+                           invert = keep.pnt)
+  if (is.numeric(resample)) {
+    resample(pn, stepsize = resample)
+  }
+  else {
     pn
   }
 }
