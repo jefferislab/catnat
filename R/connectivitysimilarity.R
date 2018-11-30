@@ -52,4 +52,18 @@ connectivity_similarity_distance <-function(m,c1 = 0.5, c2 = 0.18,normalise = FA
   }
   stats::dist(M,diag = diag,upper = upper,method = "euclidean")
 }
-
+#' @export
+#' @rdname connectivity_similarity
+connectivity_similarity_matrix <-function(m,c1 = 0.5, c2 = 0.18,normalise = FALSE, diag = FALSE, upper = FALSE){
+  if(!is.matrix(m)){
+    stop("m is not a matrix")
+  }
+  M = matrix(0,ncol(m),ncol(m))
+  rownames(M) = colnames(M) = colnames(m)
+  for(e in colnames(m)){
+    for(i in colnames(m)){
+      M[e,i] = connectivity_similarity.numeric(x = m[,e], y= m[,i],c1=c1,c2=c2,normalise = normalise)
+    }
+  }
+  M
+}
