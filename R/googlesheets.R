@@ -1,19 +1,19 @@
 # Hidden
-connector_URL <- function(df){
+connector_URL <- function(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/"){
   if(!is.data.frame(df))
     stop("Please give me a data frame!")
-  base = "https://neuropil.janelia.org/tracing/fafb/v14"
-  catmaid_url = paste0(base, "?pid=1")
+  catmaid_url = paste0(server, "?pid=1")
   catmaid_url = paste0(catmaid_url, "&zp=", df[["z"]])
   catmaid_url = paste0(catmaid_url, "&yp=", df[["y"]])
   catmaid_url = paste0(catmaid_url, "&xp=", df[["x"]])
   catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-  id = if(is.null(df["partner_skid"])) {
-    df[["connector_id"]]
+  if(is.null(df["connector_id"])) {
+    id = df[["partner_skid"]]
+    catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", id)
   } else {
-    df[["partner_skid"]]
+    id = df[["connector_id"]]
+    catmaid_url = paste0(catmaid_url, "&active_node_id=", id)
   }
-  catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", id)
   catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
   invisible(catmaid_url)
 }
