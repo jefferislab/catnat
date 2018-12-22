@@ -205,9 +205,9 @@ upload_swc_to_catmaid <- function (swc, name ="ASB upload", pid = 1, conn = NULL
                       simplifyVector = T, conn = conn, ...)
   invisible(catmaid_error_check(res))
 }
-swc = readLines("/GD/LMBD/Papers/2017pns/fig/Alex/Data/tracing/swc/370309397.swc")
-obj_list <- lapply(list(swc),paste,collapse="\r\n")
-obj_vec <- as.vector(obj_list)
+# swc = readLines("/GD/LMBD/Papers/2017pns/fig/Alex/Data/tracing/swc/370309397.swc")
+# obj_list <- lapply(list(swc),paste,collapse="\r\n")
+# obj_vec <- as.vector(obj_list)
 
 
 
