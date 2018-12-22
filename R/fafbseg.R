@@ -28,6 +28,9 @@ read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, ...){
   if(name){
     x = paste0("name:",x)
     y = paste0("annotation:",x)
+    skids = unique(unlist(sapply(c(x,y),catmaid_skids,several.ok=FALSE,conn=conn, ...)))
+  }else{
+    skids = x
   }
   conn = catmaid::catmaid_login()
   if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
@@ -36,7 +39,6 @@ read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, ...){
 
   }
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
-  skids = unique(unlist(sapply(c(x,y),catmaid_skids,several.ok=FALSE,conn=conn, ...)))
   n = catmaid::read.neurons.catmaid(skids, conn=conn,OmitFailures = TRUE,...)
   n[,"nodes"] = nat:::summary.neuronlist(n)$nodes
   n[,"skeleton.type"] = "FAFB-seg"
@@ -68,6 +70,7 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
   }else{
     rs= fafbseg::read_segments2(x,  OmitFailures = TRUE, ...)
     nc = nat:::summary.neuronlist(rs)
+    rownames(nc) = rs[,"segment"]
   }
   nc
 }
@@ -80,7 +83,7 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @param ... methods passed to catmaid_get_connector_table
 #' @export
 #' @rdname set_segmentation_location
-fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), ...) {
+fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, ...) {
   require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
@@ -176,17 +179,36 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
                                add.links = TRUE, unique = TRUE, ...){
   df = fafb_neuron_details(skids, direction = direction, connector_ids = connector_ids)
   df = subset(df,as.numeric(partner_nodes)<=max.nodes)
-  if(add.links){
-    df$FAFB.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
-    df$FAFBseg.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/")
-  }
-  hits = table(df$segment)
-  hits["0"] = NA
-  df$hits = hits[as.character(df$segment)]
-  df = df[order(df$hits, decreasing = TRUE),]
-  if(unique){
+  if (nrow(df)>0){
+    if(add.links){
+      df$FAFB.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
+      df$FAFBseg.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/")
+    }
     df$segment[df$segment==0] = paste0(df$segment[df$segment==0],"_",1:sum(df$segment==0))
-    df = df[!duplicated(df$segment),]
+    hits = table(df$segment)
+    hits["0"] = NA
+    df$hits = hits[as.character(df$segment)]
+    df = df[order(df$hits, decreasing = TRUE),]
+    if(unique){
+      df = df[!duplicated(df$segment),]
+    }
   }
   df
 }
+
+upload_swc_to_catmaid <- function (swc, name ="ASB upload", pid = 1, conn = NULL, ...) {
+  post_data = list()
+  post_data[sprintf("file[%d]", seq_along(swc))] = as.list(swc)
+  post_data[sprintf("name[%d]", seq_along(annotations))] = as.list(name)
+  path = sprintf("/%d/skeletons/import", pid)
+  res = catmaid_fetch(path, body = post_data, include_headers = F,
+                      simplifyVector = T, conn = conn, ...)
+  invisible(catmaid_error_check(res))
+}
+swc = readLines("/GD/LMBD/Papers/2017pns/fig/Alex/Data/tracing/swc/370309397.swc")
+obj_list <- lapply(list(swc),paste,collapse="\r\n")
+obj_vec <- as.vector(obj_list)
+
+
+
+
