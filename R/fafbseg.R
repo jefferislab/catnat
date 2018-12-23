@@ -93,12 +93,13 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
     connected=catmaid::catmaid_get_connectors_between(pre_skids = skids, ...)
     connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
   }
-  if(!is.null(connector_ids)){
-    connected = subset(connected,connector_id%in%connector_ids)
-  }
   colnames(connected) = c("connector_id","X","Y","Z")
-  known= catmaid::catmaid_get_connector_table(skids, direction = direction,get_partner_names = TRUE, get_partner_nodes = TRUE)
-  df = merge(known,connected, all.x = FALSE, all.y = TRUE)
+  known = catmaid::catmaid_get_connector_table(skids, direction = direction,get_partner_names = TRUE, get_partner_nodes = TRUE)
+  known = known[match(connected$connector_id,known$connector_id),]
+  df = cbind(known,connected[,-1])
+  if(!is.null(connector_ids)){
+    df = subset(df,connector_id%in%connector_ids)
+  }
   df[is.na(df$X),c("X","Y","Z")] = df[is.na(df$X),c("x","y","z")] # In the cases where there are no pre nodes
   df$segment = fafbseg::brainmaps_xyz2id(df[,c('X','Y', 'Z')])
   df
