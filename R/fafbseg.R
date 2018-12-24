@@ -201,7 +201,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #'
 #' @description  Uploads neurons to CATMAIDs, names them and annotates them.
 #' Please use with caution, as you could be heavily adding to a live tracing environment.
-#' @param swc local file path to your saved .swc files. Can be a list of file paths in order ot upload multuple .swc files.
+#' @param swc a neuron or neuronlist object, or a local file path to your saved .swc files. Can be a list of file paths in order ot upload multuple .swc files.
 #' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
 #' @param annotations a character vector of annotations, to be added to all ofthe uploaded neurons
 #' @param pid project id. Defaults to 1
@@ -209,8 +209,13 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' @param max.upload the maximum number of files that the function will allow you to upload at once
 #' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
-#' @rdname upload_swc_to_catmaid
-upload_swc_to_catmaid <- function (swc, name ="neuron SWC upload", annotations = "SWC upload", pid = 1, conn = NULL, max.upload = 10, ...) {
+#' @rdname catmaid_upload_neurons
+catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations = "SWC upload", pid = 1, conn = NULL, max.upload = 10, ...) {
+  if(is.neuronlist(swc)|is.neuron(swc)){
+    temp.files = paste0(names(swc),".swc")
+    nat::write.neurons(swc, format= "swc",dir = tempdir(), files = temp.files, ...)
+    swc = paste0(tempdir(),temp.files)
+  }
   if (length(swc)>max.upload){
     stop(paste0('You are uploading a large number of SWC files.
                 Are you sure you want to do this?
@@ -241,3 +246,11 @@ upload_swc_to_catmaid <- function (swc, name ="neuron SWC upload", annotations =
     message(paste0("Annotations ", annotations," set to new skeletons: ", res$skeleton_id))
   }
 }
+
+
+
+
+
+
+
+
