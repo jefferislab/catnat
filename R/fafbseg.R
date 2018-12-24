@@ -223,10 +223,10 @@ upload_swc_to_catmaid <- function (swc, name ="neuron SWC upload", annotations =
                 or a vector the same length as swc'))
   }
   skids = c()
-  for(file in swc){
+  for(file in 1:length(swc)){
     post_data = list()
-    post_data["name[1]"] = as.list(name[1])
-    post_data["file[1]"] = list(upload_file(swc[1]))
+    post_data["name[1]"] = as.list(name[file])
+    post_data["file[1]"] = list(upload_file(swc[file]))
     path = sprintf("/%d/skeletons/import", pid)
     res = catmaid::catmaid_fetch(path, body = post_data, include_headers = F,
                                  simplifyVector = T, conn = conn, ...)
