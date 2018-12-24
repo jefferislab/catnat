@@ -238,15 +238,6 @@ upload_swc_to_catmaid <- function (swc, name ="neuron SWC upload", annotations =
     catmaid::catmaid_set_annotations_for_skeletons(skids = as.numeric(skids),
                                           annotations = annotations,
                                           pid = pid, conn = conn, ...)
-    message(paste0("Annotations ", annotations," set to skeletons: ", res$skeleton_id))
+    message(paste0("Annotations ", annotations," set to new skeletons: ", res$skeleton_id))
   }
 }
-
-
-# swc = readLines("/GD/LMBD/Papers/2017pns/fig/Alex/Data/tracing/swc/370309397.swc")
-# obj_list <- lapply(list(swc),paste,collapse="\r\n")
-# obj_vec <- as.vector(obj_list)
-
-
-
-
