@@ -142,6 +142,7 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
   connected_ids= fafbseg::brainmaps_xyz2id(connected[,c('X','Y', 'Z')])
   connected_ids
 }
+#' @export
 #' @rdname fafb_frags
 fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","outgoing"),
                                  connector_ids = NULL, read.from = c("CATMAID","Neuroglancer","local"), ...) {
@@ -164,6 +165,7 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
   rs[,]=m
   rs
 }
+#' @export
 #' @rdname fafb_frags
 fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
                              connector_ids = NULL, ...){
@@ -173,13 +175,15 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
   colnames(df) = c("ngl_ids","hits")
   df
 }
-
+#' @export
 #' @rdname fafb_frags
 fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
                                connector_ids = NULL, max.nodes = 10,
                                add.links = TRUE, unique = TRUE, ...){
-  df = fafb_neuron_details(skids, direction = direction, connector_ids = connector_ids)
-  df = subset(df,as.numeric(partner_nodes)<=max.nodes)
+  df = fafb_neuron_details(skids = skids, direction = direction, connector_ids = connector_ids)
+  if(!is.null(max.nodes)){
+   df = subset(df,as.numeric(partner_nodes)<=max.nodes)
+  }
   if (nrow(df)>0){
     if(add.links){
       df$FAFB.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
@@ -199,9 +203,9 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 
 #' Upload neuron(s) to CATMAID
 #'
-#' @description  Uploads neurons to CATMAIDs, names them and annotates them.
+#' @description  Uploads neurons to CATMAID, names them and annotates them.
 #' Please use with caution, as you could be heavily adding to a live tracing environment.
-#' @param swc a neuron or neuronlist object, or a local file path to your saved .swc files. Can be a list of file paths in order ot upload multuple .swc files.
+#' @param swc a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).
 #' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
 #' @param annotations a character vector of annotations, to be added to all ofthe uploaded neurons
 #' @param pid project id. Defaults to 1
@@ -239,7 +243,7 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
     skids = c(skids,res$skeleton_id)
   }
   if(!is.null(annotations)){
-    #sapply(seq_along(skids), function(x) catmaid_rename_neuron(skids = skids[x], names = name[x], pid = pid, conn = conn))
+    sapply(seq_along(skids), function(x) catmaid_rename_neuron(skids = skids[x], names = name[x], pid = pid, conn = conn))
     catmaid::catmaid_set_annotations_for_skeletons(skids = as.numeric(skids),
                                           annotations = annotations,
                                           pid = pid, conn = conn, ...)
@@ -247,10 +251,35 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
   }
 }
 
-
-
-
-
-
-
+#' Find out what is already known about a neuron's connectivity profile and connected FAFB segments
+#'
+#' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons
+#' @param someneuronlist a neuronlist or neuron object
+#' @param node.match how many nodes of each neuron in someneuronlist
+#' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
+#' @param ... methods passed to fafbseg::brainmaps_xyz2id
+#' @export
+#' @rdname map_fafbsegs_to_neuron
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 10, ...){
+  if(is.neuron(someneuronlist)){
+    segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
+    t = reshape2::melt(table(segs))
+    colnames(t) = c("ngl_id","node_hits")
+    t = subset(t,node_hits<=node.match)
+  } else if (is.neuronlist(someneuronlist)){
+    t = data.frame()
+    for(n in 1:length(someneuronlist)){
+      message(names(someneuronlist)[n])
+      neuron = someneuronlist[[n]]
+      segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
+      m = reshape2::melt(table(segs))
+      colnames(m) = c("ngl_id","node_hits")
+      m$skid = names(someneuronlist)[n]
+      t = rbind(t,subset(m,node_hits>=node.match))
+    }
+  }else {
+    t = NULL
+  }
+  t
+}
 
