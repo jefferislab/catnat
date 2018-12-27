@@ -117,6 +117,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' Default set to NULL, searches all incoming or outgoing connectors, as specified by direction.
 #' @param max.nodes the maximum number of nodes that an extant FAFB partner can have, before we consider using the segmentation for our tracing list.
 #' @param add.links add links to CATMAID in our tracing list
+#' @param treat.skids.separately create hitlist, with hits pooled for all skids given (FALSE, default) or per skid given (TRUE)
 #' @param unique if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column
 #' @param ... methods passed to catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons
 #' @details fafb_frags_ids returns Neuroglancer IDs for FAFB segments up or downstream of the specified FAFB CATMAID skeleton IDs.
@@ -168,18 +169,32 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
 #' @export
 #' @rdname fafb_frags
 fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
-                             connector_ids = NULL, ...){
-  ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, ...)
-  df = reshape2::melt(table(ids))
-  df = df[order(df$value, decreasing = TRUE),]
-  colnames(df) = c("ngl_ids","hits")
+                             connector_ids = NULL, treat.skids.separately = FALSE,...){
+  direction=match.arg(direction)
+  func <- function(skids = skids, direction = direction, connector_ids = connector_ids, ...){
+    ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, ...)
+    df = reshape2::melt(table(ids))
+    df = df[order(df$value, decreasing = TRUE),]
+    colnames(df) = c("ngl_id","hits")
+    df
+  }
+  if(treat.skids.separately){
+    hitlist = lapply(skids, function(skid) func(skids = skid, ...))
+    nams = rep(skids,sapply(hitlist,nrow))
+    df = do.call(rbind, hitlist)
+    df$skid = nams
+  }else{
+    df = func(...)
+  }
   df
 }
+
 #' @export
 #' @rdname fafb_frags
 fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
                                connector_ids = NULL, max.nodes = 10,
                                add.links = TRUE, unique = TRUE, ...){
+  direction=match.arg(direction)
   df = fafb_neuron_details(skids = skids, direction = direction, connector_ids = connector_ids)
   if(!is.null(max.nodes)){
    df = subset(df,as.numeric(partner_nodes)<=max.nodes)
@@ -196,6 +211,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
     df = df[order(df$hits, decreasing = TRUE),]
     if(unique){
       df = df[!duplicated(df$segment),]
+      df$entry = "example_connection_to_segment"
     }
   }
   df
