@@ -36,13 +36,29 @@ read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, ...){
   if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
     message("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
     message("See ?catmaid_login")
-
   }
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
   n = catmaid::read.neurons.catmaid(skids, conn=conn,OmitFailures = TRUE,...)
   n[,"nodes"] = nat:::summary.neuronlist(n)$nodes
   n[,"skeleton.type"] = "FAFB-seg"
   n
+}
+
+#' Use any CATMAID function in the v14-seg environment, without logging into separate CATMAID instance
+#'
+#' @description Use any CATMAID function in the v14-seg environment, without logging into separate CATMAID instance
+#' @param FUN catmaid function from rcatmaid or catnat
+#' @param ... methods passed to FUN
+#' @export
+#' @rdname fafb_seg
+fafb_seg <- function(FUN, ...){
+  conn = catmaid::catmaid_login()
+  if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
+    message("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
+    message("See ?catmaid_login")
+  }
+  conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+  FUN(conn=conn, ...)
 }
 
 #' @export
@@ -80,10 +96,11 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons
 #' @param skids neuron skeleton ids
 #' @param direction whether to fetch putative incoming or outgoing partners
+#' @param volume volume to which to restrict connector locations
 #' @param ... methods passed to catmaid_get_connector_table
 #' @export
 #' @rdname set_segmentation_location
-fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, ...) {
+fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, ...) {
   require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
@@ -94,6 +111,13 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
     connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
   }
   colnames(connected) = c("connector_id","X","Y","Z")
+  if(!is.null(volume)){
+    i = nat::pointsinside(nat::xyzmatrix(connected),volume,rval = "logical")
+    connected = connected[i,]
+    if(is.null(connector_ids)){
+      connector_ids = connected[,"connector_id"]
+    }
+  }
   known = catmaid::catmaid_get_connector_table(skids, direction = direction,get_partner_names = TRUE, get_partner_nodes = TRUE)
   known = known[match(connected$connector_id,known$connector_id),]
   df = cbind(known,connected[,-1])
@@ -113,6 +137,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @param skids neuron skeleton ids
 #' @param ids ids for FAFB segmentations to be read. If skids are given, fafb_frags_ids is called and ids is overlooked.
 #' @param direction whether to fetch putative incoming or outgoing partners
+#' @param volume volume to which to restrict connector locations
 #' @param connector_ids restrict your search to only certain connectors. Use if, for example, you want to spatially restrict your search.
 #' Default set to NULL, searches all incoming or outgoing connectors, as specified by direction.
 #' @param max.nodes the maximum number of nodes that an extant FAFB partner can have, before we consider using the segmentation for our tracing list.
@@ -126,7 +151,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' fafb_seg_tracing_list goes a bit further and supplies emt information and links to FAFBv14 and the FAFBv14-segmentation instance.
 #' @export
 #' @rdname fafb_frags
-fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, ...) {
+fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, ...) {
   require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
@@ -140,6 +165,13 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
     connected = subset(connected,connector_id%in%connector_ids)
   }
   colnames(connected) = c("connector_id","X","Y","Z")
+  if(!is.null(volume)){
+    i = nat::pointsinside(nat::xyzmatrix(connected),volume,rval = "logical")
+    connected = connected[i,]
+  }
+  if(!is.null(connector_ids)){
+    connected = subset(connected,connector_id%in%connector_ids)
+  }
   connected_ids= fafbseg::brainmaps_xyz2id(connected[,c('X','Y', 'Z')])
   connected_ids
 }
@@ -184,7 +216,7 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
     df = do.call(rbind, hitlist)
     df$skid = nams
   }else{
-    df = func(...)
+    df = func(skids = skids, direction = direction, connector_ids = connector_ids, ...)
   }
   df
 }
