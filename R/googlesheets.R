@@ -1,4 +1,11 @@
-# Hidden
+#' Generate URLs to CATMAID conenctor location
+#'
+#' @description   Generate URLs to CATMAID conenctor location
+#' @param df data frame that must contain a connector_id column, and x, y, z columns
+#' @param server CATMAID instance
+#' @export
+#' @rdname connector_URL
+#' @export
 connector_URL <- function(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/"){
   if(!is.data.frame(df))
     stop("Please give me a data frame!")

@@ -211,7 +211,7 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
     df
   }
   if(treat.skids.separately){
-    hitlist = lapply(skids, function(skid) func(skids = skid, ...))
+    hitlist = lapply(skids, function(skid) func(skids = skid, direction = direction, connector_ids = connector_ids, ...))
     nams = rep(skids,sapply(hitlist,nrow))
     df = do.call(rbind, hitlist)
     df$skid = nams
@@ -303,12 +303,14 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
 #'
 #' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons
 #' @param someneuronlist a neuronlist or neuron object
-#' @param node.match how many nodes of each neuron in someneuronlist
+#' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
+#' These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
+#' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segement.
 #' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
 #' @param ... methods passed to fafbseg::brainmaps_xyz2id
 #' @export
 #' @rdname map_fafbsegs_to_neuron
-map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 10, ...){
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, ...){
   if(is.neuron(someneuronlist)){
     segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
     t = reshape2::melt(table(segs))
@@ -321,9 +323,26 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 10, ...){
       neuron = someneuronlist[[n]]
       segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
       m = reshape2::melt(table(segs))
+      s = neuron$SegList
       colnames(m) = c("ngl_id","node_hits")
       m$skid = names(someneuronlist)[n]
-      t = rbind(t,subset(m,node_hits>=node.match))
+      mm = subset(m,node_hits>=node.match)
+      keep = c()
+      for(nid in m$ngl_id){
+        if(nid!=0){
+          pnos = which(segs==nid)
+          in.segs = lapply(s,function(y) pnos%in%y)
+          in.segs.sum = sapply(in.segs,sum)
+          for(pos in which(in.segs.sum>0)){
+            branches = sapply(s,function(x) sum(s[[pos]]%in%x))
+            score = sum(in.segs.sum[which(branches>0)])
+            if(score>=node.match){
+              keep = c(keep,nid)
+            }
+          }
+        }
+      }
+      t = rbind(t,subset(mm,ngl_id%in%keep))
     }
   }else {
     t = NULL
