@@ -307,10 +307,11 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
 #' These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
 #' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segement.
 #' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
+#' @param return.unmatched defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.
 #' @param ... methods passed to fafbseg::brainmaps_xyz2id
 #' @export
 #' @rdname map_fafbsegs_to_neuron
-map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, ...){
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
     segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
     t = reshape2::melt(table(segs))
@@ -342,7 +343,15 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, ...){
           }
         }
       }
-      t = rbind(t,subset(mm,ngl_id%in%keep))
+      mm = subset(mm,ngl_id%in%keep)
+      if(return.unmatched){
+        as = assign_strahler(neuron)
+        unmatched.pnos = neuron$d$PointNo[which(!segs%in%mm$ngl_id)]
+        mm = subset(as$d,PointNo%in%unmatched.pnos)
+        mm$index = rownames(mm)
+        mm$skid = neuron$skid
+      }
+      t = rbind(t,mm)
     }
   }else {
     t = NULL

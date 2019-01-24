@@ -220,15 +220,14 @@ unsure_cable<-function(x, ...) UseMethod("unsure_cable")
 #' @rdname extract_cable
 axonic_cable.neuron <- function(x, mixed=FALSE, ...){
   points=x$d
-  if (mixed==T){
+  if (mixed==TRUE){
     chosen = c(-2,2,8)
   }else{
     chosen = c(-2,2)
   }
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
-    neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
-    class(neuron) = c("catmaidneuron","neuron")
+    neuron = prune_vertices.catmaidneuron(x=x,verticestoprune=v,invert=TRUE)
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }
@@ -250,7 +249,6 @@ dendritic_cable.neuron <- function(x, mixed = FALSE, ...){
   v = subset(rownames(x$d), x$d$Label %in% chosen)
   if("catmaidneuron"%in%class(x)){
     neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE)
-    class(neuron) = c("catmaidneuron","neuron")
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=TRUE)
   }

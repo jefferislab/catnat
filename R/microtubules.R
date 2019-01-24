@@ -70,7 +70,6 @@ prune_microtubules.neuron <- function(x, microtubules = TRUE, ...){
   }
   mt = as.numeric(rownames(subset(x$d,microtubules==TRUE)))
   x = prune_vertices.catmaidneuron(x, verticestoprune = mt, invert = microtubules)
-  #class(x) = c("catmaidneuron","list")
   x
 }
 

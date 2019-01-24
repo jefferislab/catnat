@@ -313,7 +313,12 @@ prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...)
   y = pruned
   y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
   y$d$Parent = pruned$d$Parent
-  pruned
+  y$tags = lapply(x$tags, function(t) t[t%in%y$PointNo])
+  y$url = x$url
+  y$headers = x$headers
+  y$AD.segregation.index = x$AD.segregation.index
+  class(y) = c("catmaidneuron","neuron")
+  y
 }
 
 
