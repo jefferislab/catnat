@@ -301,7 +301,8 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
 
 #' Find out what is already known about a neuron's connectivity profile and connected FAFB segments
 #'
-#' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons
+#' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons. This function also very roughly estimates
+#' whether fragment is microtubule containing,  what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
 #' @param someneuronlist a neuronlist or neuron object
 #' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
 #' These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
@@ -313,21 +314,40 @@ catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations 
 #' @rdname map_fafbsegs_to_neuron
 map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
-    segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
-    t = reshape2::melt(table(segs))
-    colnames(t) = c("ngl_id","node_hits")
-    t = subset(t,node_hits<=node.match)
-  } else if (is.neuronlist(someneuronlist)){
-    t = data.frame()
+    someneuronlist = as.neuronlist(someneuronlist)
+  }
+  t = data.frame()
     for(n in 1:length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
       segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
       m = reshape2::melt(table(segs))
-      s = neuron$SegList
       colnames(m) = c("ngl_id","node_hits")
       m$skid = names(someneuronlist)[n]
+      # Get a rough idea if a fragment if microtubule containing, or what Strahler order it is at, if the neuron has this marked
+      if(!is.null(neuron$d$microtubules)){
+        mt = aggregate(neuron$d$microtubules,list(ngl_id = segs),function(x) (sum(x)/length(x))>=0.5)
+        colnames(mt) = c("ngl_id","microtubules")
+        m = merge(m,mt,all = TRUE)
+      }else{
+        m$microtubules = NA
+      }
+      if(!is.null(neuron$d$strahler_order)){
+        so = aggregate(neuron$d$strahler_order,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
+        colnames(so) = c("ngl_id","strahler_order")
+        m = merge(m,so,all = TRUE)
+      }else{
+        m$strahler_order = NA
+      }
+      if(!is.null(neuron$d$Label)){
+        lab = aggregate(neuron$d$Label,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
+        colnames(lab) = c("ngl_id","Label")
+        m = merge(m,lab,all = TRUE)
+      }else{
+        m$Label = NA
+      }
       mm = subset(m,node_hits>=node.match)
+      s = neuron$SegList
       keep = c()
       for(nid in m$ngl_id){
         if(nid!=0){

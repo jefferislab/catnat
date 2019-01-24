@@ -22,33 +22,30 @@ mark.microtubules <-function(x, ...) UseMethod("mark.microtubules")
 mark.microtubules.neuron <- function(x, ...){
   if(is.null(x$d$microtubules)){
     if(is.null(x$tags$`microtubules end`)){
-      message("No microtubular endings marked in CATMAID neuron")
-      break
+      x$d$microtubules = NA
+      x$connectors$microtubules = NA
+      warning("No microtubular endings marked in CATMAID neuron")
+    }else{
+      root = nat::rootpoints(x)
+      leaves = nat::endpoints(x)
+      microtubule.endings.pointno = x$tags$`microtubules end`
+      microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
+      splitAt <- function(x, pos) unname(split(x, cumsum(seq_along(x) %in% pos)))
+      i = igraph::shortest_paths(igraph::as.directed(nat::as.ngraph(x)), from = root, to = leaves, mode = "out")$vpath
+      p = c()
+      for(ii in 1:length(i)){
+        pos = which(i[ii][[1]]%in%microtubule.endings)
+        iii = splitAt(i[ii][[1]], pos)
+        p = c(p,unlist(iii[1]))
+      }
+      p = unique(p)
+      x$d$microtubules = FALSE
+      x$d[p,]$microtubules = TRUE
+      relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
+      x$connectors$microtubules = relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),]$microtubules
     }
-    root = nat::rootpoints(x)
-    leaves = nat::endpoints(x)
-    microtubule.endings.pointno = x$tags$`microtubules end`
-    microtubule.endings = as.numeric(rownames(subset(x$d,PointNo%in%microtubule.endings.pointno)))
-    splitAt <- function(x, pos) unname(split(x, cumsum(seq_along(x) %in% pos)))
-    i = igraph::shortest_paths(igraph::as.directed(nat::as.ngraph(x)), from = root, to = leaves, mode = "out")$vpath
-    p = c()
-    for(ii in 1:length(i)){
-      pos = which(i[ii][[1]]%in%microtubule.endings)
-      iii = splitAt(i[ii][[1]], pos)
-      p = c(p,unlist(iii[1]))
-    }
-    p = unique(p)
-    #p = c()
-    #for(m in microtubule.endings){
-    #  p = c(p,unique(unlist(suppressWarnings(igraph::shortest_paths(igraph::as.directed(as.ngraph(x)), from = microtubule.endings[1], to = leaves, mode = "out")))))
-    #}
-    #p = unique(p)
-    x$d$microtubules = FALSE
-    x$d[p,]$microtubules = TRUE
-    relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
-    x$connectors$microtubules = relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),]$microtubules
   }
-  #class(x) = c("catmaidneuron","list")
+  class(x) = c("catmaidneuron","neuron")
   x
 }
 
@@ -174,9 +171,9 @@ distance.from.first.branchpoint <-function(x, ...) UseMethod("distance.from.firs
 distance.from.first.branchpoint.neuron<-function(x, graph.distance = TRUE, ...){
   # Find axon-dendrite branch point
   pn = subset(x$d,Label==7)
-  bp = endpoints(pn)[!endpoints(pn)%in%rootpoints(pn)]
+  bp = nat::endpoints(pn)[!nat::endpoints(pn)%in%nat::rootpoints(pn)]
   bp = as.numeric(rownames(subset(x$d,PointNo==bp)))
-  n=as.ngraph(x)
+  n=nat::as.ngraph(x)
   path = suppressWarnings(igraph::shortest_paths(n,from=bp, mode= "out")$vpath)
   x$d$geodesic.distance = sapply(path,length)
   if(!graph.distance){

@@ -231,7 +231,6 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
   v = which(nat::pointsinside(nat::xyzmatrix(x),surf = mesh)>0)
   if("catmaidneuron"%in%class(x)){
     neuron = prune_vertices.catmaidneuron(x,verticestoprune=v,invert=invert, ...)
-    class(neuron) = c("catmaidneuron","neuron")
   }else{
     neuron = nat::prune_vertices(x,verticestoprune=v,invert=invert, ...)
   }
@@ -313,7 +312,7 @@ prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...)
   y = pruned
   y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
   y$d$Parent = pruned$d$Parent
-  y$tags = lapply(x$tags, function(t) t[t%in%y$PointNo])
+  y$tags = lapply(x$tags, function(t) t[t%in%pruned$d$PointNo])
   y$url = x$url
   y$headers = x$headers
   y$AD.segregation.index = x$AD.segregation.index
