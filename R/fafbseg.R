@@ -452,20 +452,20 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
       for(ng in 1:length(nglids)){
         s = fafbseg::find_merged_segments(nglids[ng])
         vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) "read error")
-      }
-      if(is.character(vol)){
-        message(vol)
-        next
-      }
-      else if(is.null(vol)|length(vol)<1){
-        message("no volume to read")
-        vol = NULL
-        nams = c(nams,nglids[ng])
-        volumes[[ng]] = vol
-      }else{
-        message(paste0("volume read: ",ng))
-        nams = c(nams,nglids[ng])
-        volumes[[ng]] = vol
+        if(is.character(vol)){
+          message(vol)
+          next
+        }
+        else if(is.null(vol)|length(vol)<1){
+          message("no volume to read")
+          vol = NULL
+          nams = c(nams,nglids[ng])
+          volumes[[ng]] = vol
+        }else{
+          message(paste0("volume read: ",ng))
+          nams = c(nams,nglids[ng])
+          volumes[[ng]] = vol
+        }
       }
       nglids = setdiff(nglids,nams)
       names(seg.volumes) = nams
