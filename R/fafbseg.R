@@ -440,9 +440,9 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
   }
   if(map){ # Map neuron points onto FAFBseg volumes
     mapping = map_fafbsegs_to_neuron(neuron, node.match = node.match)
-    unmapped = subset(mapping.all,ngl_id=="0")
-    unmapped = sum(unmapped.all$node_hits)/nrow(nat::xyzmatrix(neuron))
-    nglids = unique(mapping.all$ngl_id)
+    unmapped = subset(mapping,ngl_id=="0")
+    unmapped = sum(unmapped$node_hits)/nrow(nat::xyzmatrix(neuron))
+    nglids = unique(mapping$ngl_id)
     nglids = nglids[nglids!=0]
     volumes = list()
     nams = c()
@@ -468,7 +468,6 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
         }
       }
       nglids = setdiff(nglids,nams)
-      names(seg.volumes) = nams
       message("re-trying: ", length(nglids))
       utils::setTxtProgressBar(pb, ng)
     }
@@ -525,7 +524,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
       query = neuron.points[p,]
       if(sum(p)==1){query=matrix(neuron.points[p,],ncol=3)}
       near = nabor::knn(query=query,data=dv,
-                        k=ifelse(200>nrow(dv),nrow(dv),200),radius=5000) # 5 micron search area
+                        k=ifelse(300>nrow(dv),nrow(dv),300),radius=5000) # 5 micron search area
       r = apply(near$nn.dists,1,mean)
       r[is.infinite(r)] = 5000
       neuron$d$radius[p] = r
