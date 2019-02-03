@@ -423,8 +423,8 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
     v = Rvcg::vcgUniformRemesh(vol, voxelSize = voxelSize, offset = 0, discretize = FALSE,
                                 multiSample = TRUE, absDist = FALSE, mergeClost = FALSE,
                                 silent = TRUE)
-    v = Rvcg::vcgIsolated(v, facenum = NULL, diameter = NULL, split = FALSE,
-                           keep = 0, silent = TRUE)
+    v = tryCatch(Rvcg::vcgIsolated(v, facenum = NULL, diameter = NULL, split = FALSE,
+                           keep = 0, silent = TRUE),error = function(e) v)
     v
   }
   if(!nat::is.neuron(neuron)){
@@ -485,7 +485,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
   neuron$d$volume = NA
   neuron$volume = list() # For collecting volume data
   message("Downsampling meshes")
-  downvolumes = pbapply::pblapply(volumes,function(s) downsample_vol(s))
+  downvolumes = pbapply::pblapply(volumes,function(s) tryCatch(downsample_vol(s),error = function(e) s))
   ### FIND SOMA ###
   if(soma){
     message("Identifying soma")
