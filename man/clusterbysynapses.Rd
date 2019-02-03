@@ -4,8 +4,8 @@
 \alias{clusterbysynapses}
 \title{Cluster neurons by pre- and postsynapse positons}
 \usage{
-clusterbysynapses(someneuronlist, sigma = 1, omega = sigma, symmetric = T,
-  direction = c(0, 1, 2))
+clusterbysynapses(someneuronlist, sigma = 1, omega = sigma,
+  symmetric = T, direction = c(0, 1, 2))
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}

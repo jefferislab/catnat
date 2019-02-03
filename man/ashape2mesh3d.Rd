@@ -4,10 +4,12 @@
 \alias{ashape2mesh3d}
 \title{Convert an alpha shape to a mesh3D object}
 \usage{
-ashape2mesh3d(ashape)
+ashape2mesh3d(ashape, remove.interior.points = TRUE)
 }
 \arguments{
 \item{ashape}{List of alphashape objects}
+
+\item{remove.interior.points}{whether or not to remove points that are not part of a bounding triangle for the mesh}
 
 \item{...}{additional arguments passed to methods}
 }

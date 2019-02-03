@@ -4,8 +4,9 @@
 \alias{make.mirror.transform}
 \title{Get the transformation matrix from the Morpho::mirror function}
 \usage{
-make.mirror.transform(x, icpiter = 50, subsample = NULL, pcAlign = FALSE,
-  mirroraxis = 1, initPC = TRUE, initCenter = TRUE, mc.cores = 2)
+make.mirror.transform(x, icpiter = 50, subsample = NULL,
+  pcAlign = FALSE, mirroraxis = 1, initPC = TRUE,
+  initCenter = TRUE, mc.cores = 2)
 }
 \arguments{
 \item{x}{k x 3 matrix or mesh3d}

@@ -4,8 +4,8 @@
 \alias{synapsecolours.neuron}
 \title{Plot a neuron with different coloured synapses depending on partners}
 \usage{
-synapsecolours.neuron(neuron, skids = NULL, col = "black", inputs = T,
-  outputs = T, printout = F)
+synapsecolours.neuron(neuron, skids = NULL, col = "black",
+  inputs = T, outputs = T, printout = F)
 }
 \arguments{
 \item{neuron}{a neuron to plot}

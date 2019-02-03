@@ -10,14 +10,17 @@
 \alias{in_neuropil.neuronlist}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
-inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable",
-  "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf,
+  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30,
+  ...)
 
 \method{inside_neuropils}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30,
+  ...)
 
-\method{inside_neuropils}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+\method{inside_neuropils}{neuronlist}(x,
+  brain = nat.flybrains::FCWBNP.surf, method = c("Cable", "PRE",
+  "POST"), min.endpoints = 1, alpha = 30, ...)
 
 points_in_neuropil(x, brain, alpha = 30, ...)
 

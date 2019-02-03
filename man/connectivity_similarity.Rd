@@ -5,6 +5,7 @@
 \alias{connectivity_similarity.numeric}
 \alias{connectivity_similarity.matrix}
 \alias{connectivity_similarity_distance}
+\alias{connectivity_similarity_matrix}
 \title{Calculate a connectivity similarity score between two connectivity profiles}
 \usage{
 connectivity_similarity(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
@@ -16,6 +17,9 @@ connectivity_similarity(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
   normalise = TRUE)
 
 connectivity_similarity_distance(m, c1 = 0.5, c2 = 0.18,
+  normalise = FALSE, diag = FALSE, upper = FALSE)
+
+connectivity_similarity_matrix(m, c1 = 0.5, c2 = 0.18,
   normalise = FALSE, diag = FALSE, upper = FALSE)
 }
 \arguments{

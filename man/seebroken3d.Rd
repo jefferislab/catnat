@@ -4,7 +4,8 @@
 \alias{seebroken3d}
 \title{Plot neurons split up by synapse clusters}
 \usage{
-seebroken3d(neuron, WithConnectors = T, WithNodes = F, soma.size = 100)
+seebroken3d(neuron, WithConnectors = T, WithNodes = F,
+  soma.size = 100)
 }
 \arguments{
 \item{neuron}{a neuron object that has been modified by flow.centrality}

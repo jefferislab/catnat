@@ -5,7 +5,8 @@
 \alias{overlap.connectivity.matrix.catmaid}
 \title{Generate a connectivity matrix based on euclidean distance between points}
 \usage{
-overlap.connectivity.matrix(neurons, targets, neuropil = NULL, delta = 1)
+overlap.connectivity.matrix(neurons, targets, neuropil = NULL,
+  delta = 1)
 
 overlap.connectivity.matrix.catmaid(neurons, targets, neuropil = NULL,
   delta = 1, split = FALSE, rval = c("score.matrix", "neuronlist"))

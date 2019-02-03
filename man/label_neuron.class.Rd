@@ -5,7 +5,8 @@
 \title{See neurons with chosen neuropils to determine their types}
 \usage{
 label_neuron.class(x, plotting.brain = nat.flybrains::FCWB,
-  regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH", ...)
+  regionalised.brain = nat.flybrains::FCWBNP.surf, neuropils = "LH",
+  ...)
 }
 \arguments{
 \item{x}{a neuronlist object, with neurons split into axon and dendrite}

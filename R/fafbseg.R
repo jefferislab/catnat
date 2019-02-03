@@ -498,11 +498,21 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
       utils::setTxtProgressBar(pb, i)
     }
     find.soma[is.infinite(find.soma)] = 0
-    soma.dv = downvolumes[[which.max(find.soma)]]
+    if(sum(find.soma)==0|sum(find.soma)>1){
+      children = neuron$d$PointNo[neuron$d$Parent==nat::rootpoints(neuron)]
+      som.points = nat:::xyzmatrix(neuron$d[c(nat::rootpoints(neuron),children),])
+      soma.dv = tryCatch(fafbseg::read_brainmaps_meshes(som.points), error = function(e) "soma read error")
+    }else{
+      soma.dv = downvolumes[[which.max(find.soma)]]
+    }
+    if(is.character(soma.dv)|is.null(soma.dv)){
+      soma = FALSE
+      break
+    }
     soma.points = nat::xyzmatrix(soma.dv)
     p = nabor::knn(data=neuron.points[-1:-3,],query=soma.points,k=1,radius=1000)
     soma.ashape = alphashape3d::ashape3d(unique(soma.points[p$nn.dists>1000,]),pert = TRUE,alpha = voxelSize*50)
-    soma.mesh = ashape2mesh3d(soma.ashape, remove.interior.points = TRUE)
+    soma.mesh = tryCatch(ashape2mesh3d(soma.ashape, remove.interior.points = TRUE),error = function(e) ashape2mesh3d(soma.ashape, remove.interior.points = FALSE))
     soma.dv = tryCatch(Rvcg::vcgUniformRemesh(x=soma.mesh,voxelSize = voxelSize*4),error = function(e) soma.mesh)
     downvolumes[[length(downvolumes)+1]] = soma.dv
     soma.ashape.volume = alphashape3d::volume_ashape3d(as3d=soma.ashape, byComponents = FALSE, indexAlpha = 1)

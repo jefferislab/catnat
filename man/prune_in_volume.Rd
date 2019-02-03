@@ -6,14 +6,15 @@
 \alias{prune_in_volume.neuronlist}
 \title{Prune neuron within neuropil volume}
 \usage{
-prune_in_volume(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  invert = TRUE, ...)
+prune_in_volume(x, brain = nat.flybrains::FCWBNP.surf,
+  neuropil = "LH_R", invert = TRUE, ...)
 
 \method{prune_in_volume}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
   neuropil = "LH_R", invert = TRUE, ...)
 
-\method{prune_in_volume}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
-  neuropil = "LH_R", invert = TRUE, ...)
+\method{prune_in_volume}{neuronlist}(x,
+  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+  invert = TRUE, ...)
 }
 \arguments{
 \item{x}{a \code{neuron} object}

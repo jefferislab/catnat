@@ -6,13 +6,15 @@
 \title{Plot neurons split up by flow centrality}
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
-  "grey", "pink"), splitnode = FALSE, WithConnectors = T, WithNodes = F,
-  soma = 100, highflow = F, lwd = 1, radius = 1, ...)
+  "grey", "pink"), splitnode = FALSE, WithConnectors = T,
+  WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1,
+  ...)
 
-splitscan(someneuronlist, col = c("blue", "orange", "purple", "green", "grey",
-  "pink"), WithConnectors = T, WithNodes = F, soma = 100, highflow = F,
-  Verbose = T, Wait = T, sleep = 0.1, extrafun = NULL,
-  selected_file = NULL, selected_col = "black", yaml = TRUE, ...)
+splitscan(someneuronlist, col = c("blue", "orange", "purple", "green",
+  "grey", "pink"), WithConnectors = T, WithNodes = F, soma = 100,
+  highflow = F, Verbose = T, Wait = T, sleep = 0.1,
+  extrafun = NULL, selected_file = NULL, selected_col = "black",
+  yaml = TRUE, ...)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object that has been modified by flow.centrality}
