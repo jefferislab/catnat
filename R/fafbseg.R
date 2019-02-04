@@ -507,17 +507,17 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
     }
     if(is.character(soma.dv)|is.null(soma.dv)){
       soma = FALSE
-      break
+    }else{
+      soma.points = nat::xyzmatrix(soma.dv)
+      p = nabor::knn(data=neuron.points[-1:-3,],query=soma.points,k=1,radius=1000)
+      soma.ashape = alphashape3d::ashape3d(unique(soma.points[p$nn.dists>1000,]),pert = TRUE,alpha = voxelSize*50)
+      soma.mesh = tryCatch(ashape2mesh3d(soma.ashape, remove.interior.points = TRUE),error = function(e) ashape2mesh3d(soma.ashape, remove.interior.points = FALSE))
+      soma.dv = tryCatch(Rvcg::vcgUniformRemesh(x=soma.mesh,voxelSize = voxelSize*4),error = function(e) soma.mesh)
+      downvolumes[[length(downvolumes)+1]] = soma.dv
+      soma.ashape.volume = alphashape3d::volume_ashape3d(as3d=soma.ashape, byComponents = FALSE, indexAlpha = 1)
+      neuron$volume$volume.estimation$soma.ashape.volume = soma.ashape.volume
+      neuron$volume$mesh3d$soma = soma.dv
     }
-    soma.points = nat::xyzmatrix(soma.dv)
-    p = nabor::knn(data=neuron.points[-1:-3,],query=soma.points,k=1,radius=1000)
-    soma.ashape = alphashape3d::ashape3d(unique(soma.points[p$nn.dists>1000,]),pert = TRUE,alpha = voxelSize*50)
-    soma.mesh = tryCatch(ashape2mesh3d(soma.ashape, remove.interior.points = TRUE),error = function(e) ashape2mesh3d(soma.ashape, remove.interior.points = FALSE))
-    soma.dv = tryCatch(Rvcg::vcgUniformRemesh(x=soma.mesh,voxelSize = voxelSize*4),error = function(e) soma.mesh)
-    downvolumes[[length(downvolumes)+1]] = soma.dv
-    soma.ashape.volume = alphashape3d::volume_ashape3d(as3d=soma.ashape, byComponents = FALSE, indexAlpha = 1)
-    neuron$volume$volume.estimation$soma.ashape.volume = soma.ashape.volume
-    neuron$volume$mesh3d$soma = soma.dv
     close(pb)
   }
   ### RADIUS ESTIMATION ###
@@ -526,7 +526,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
   pb <- utils::txtProgressBar(min = 0, max = length(downvolumes), style = 3)
   for(i in 1:length(downvolumes)){
     dv = downvolumes[[i]]
-    p = nat::pointsinside(neuron.points,surf=dv)
+    p = tryCatch(nat::pointsinside(neuron.points,surf=dv),error = function(e) FALSE)
     neuron$d$in.segment = (neuron$d$in.segment+p)>0
     neuron$d$volume[p] = i
     dv= nat::xyzmatrix(dv)
@@ -591,28 +591,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
     from = as.numeric(rownames(distances)[i])
     to = as.numeric(names(which.min(distances[i,])))
     done.d = c(done.d,to)
-    path = as.vector(igraph::get.shortest.paths(graph=ng, from = from, to=to, mode = "out",weights = NULL)$vpath[[1]])
-    radii = neuron$d$radius[path]
-    if(sum(is.na(radii))>0){
-      radii.first = min(which(is.na(radii)))-1
-      r = radii[radii.first]
-      path = path[radii.first:length(path)]
-      radii = radii[radii.first:length(radii)]
-    }else{
-      r = neuron$d$radius[from]
-    }
-    radii[is.na(radii)] = 0
-    u.propagate = seq(from=r,to=0, length.out = length(path))
-    d.propagate = seq(to=neuron$d$radius[to],from=0, length.out = length(path))
-    propagate = u.propagate+d.propagate
-    propagate = sapply(seq_along(propagate),function(x) max(c(propagate[x],radii[x]),na.rm=TRUE))
-    neuron$d$radius[path] = propagate
-    utils::setTxtProgressBar(pb, i)
-  }
-  if(sum(!d%in%done.d)>0){
-    for(i in d[!d%in%done.d]){
-      to = i
-      from = as.numeric(names(which.min(distances[,as.character(i)])))
+    if(length(from)>0){
       path = as.vector(igraph::get.shortest.paths(graph=ng, from = from, to=to, mode = "out",weights = NULL)$vpath[[1]])
       radii = neuron$d$radius[path]
       if(sum(is.na(radii))>0){
@@ -629,6 +608,31 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
       propagate = u.propagate+d.propagate
       propagate = sapply(seq_along(propagate),function(x) max(c(propagate[x],radii[x]),na.rm=TRUE))
       neuron$d$radius[path] = propagate
+    }
+    utils::setTxtProgressBar(pb, i)
+  }
+  if(sum(!d%in%done.d)>0){
+    for(i in d[!d%in%done.d]){
+      to = i
+      from = as.numeric(names(which.min(distances[,as.character(i)])))
+      if(length(from)>0){
+        path = as.vector(igraph::get.shortest.paths(graph=ng, from = from, to=to, mode = "out",weights = NULL)$vpath[[1]])
+        radii = neuron$d$radius[path]
+        if(sum(is.na(radii))>0){
+          radii.first = min(which(is.na(radii)))-1
+          r = radii[radii.first]
+          path = path[radii.first:length(path)]
+          radii = radii[radii.first:length(radii)]
+        }else{
+          r = neuron$d$radius[from]
+        }
+        radii[is.na(radii)] = 0
+        u.propagate = seq(from=r,to=0, length.out = length(path))
+        d.propagate = seq(to=neuron$d$radius[to],from=0, length.out = length(path))
+        propagate = u.propagate+d.propagate
+        propagate = sapply(seq_along(propagate),function(x) max(c(propagate[x],radii[x]),na.rm=TRUE))
+        neuron$d$radius[path] = propagate
+      }
     }
   }
   close(pb)
@@ -661,13 +665,20 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
   pb <-  utils::txtProgressBar(min = 0, max = 5, style = 3)
   points = do.call(rbind,lapply(downvolumes,function(s) nat::xyzmatrix(s)))
   points = unique(points)
-  p = points[sample(1:nrow(points),nrow(points)/downsample.factor),] # Downsample
+  if(nrow(points)>15000){
+    downsample.factor = 1.5*downsample.factor
+  }
   edge.points = nabor::knn(query=points,data=points,k=10,radius=100)
   e = points[apply(edge.points$nn.dists,1,function(e) max(e)>voxelSize*2),]
+  #outside.points = nabor::knn(query=points,data=neuron.points,k=10,radius=3000)
+  #points = points[apply(outside.points$nn.dists,1,function(e) min(e)>3000|is.infinite(min(e))),] # Remove points unlikely to be associated with neuron
+  p = points[sample(1:nrow(points),nrow(points)/downsample.factor),] # Downsample
   p = unique(rbind(p,e,
                    as.matrix(neuron.points),
                    as.matrix(interpolated.points)))
   utils::setTxtProgressBar(pb, 1)
+  p.na = apply(p,1,function(x) sum(is.na(x)>0))
+  p = p[!p.na,]
   a = alphashape3d::ashape3d(p,pert = TRUE,alpha = voxelSize*4)
   utils::setTxtProgressBar(pb, 2)
   triangles = a$triang[apply(a$triang, 1, function(x) {( any(as.numeric(x[9]) > 1))} ),][,1:3]
