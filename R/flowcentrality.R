@@ -13,6 +13,11 @@
 #' @param primary.dendrite whether to try to assign nodes to a 'primary
 #'   dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
 #'   Assigning to NULL will prevent generating this compartment.
+#' @param bending.flow we may need to add the 'bending flow' to all the branchpoints if looking at centripetal flow centrality
+#' @param bending.flow the algorithm will assign two main neurite compartments, which as per SWC format will be indicates as either axon (Label =2)
+#' or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
+#' This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
+#' or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").
 #' @param ... additional arguments passed to methods.
 #'
 #' @details From Schneider-Mizell et al. (2016): "We use flow centrality for
@@ -39,12 +44,16 @@
 #'   = PN).
 #' @export
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
-flow.centrality <-function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,...) UseMethod("flow.centrality")
+flow.centrality <-function(x, mode = c("sum","centrifugal","centripetal"), polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"),...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE, ...){
+flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"),
+                                   polypre = TRUE, primary.dendrite = 0.9,
+                                   bending.flow = FALSE, split = c("postsynapses","presynapses","distance"), ...){
   # prune Strahler first...and use segmentgraph?
+  split = match.arg(split)
+  mode = match.arg(mode)
   # Generate ngraph object
   x$d$Label = 0
   el = x$d[x$d$Parent != -1, c("Parent", "PointNo")] # Get list of soma=leaf directed conenctions
@@ -149,11 +158,6 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
       upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
     }
   }
-  if (sum(nodes[as.character(downstream),"post"]) < sum(nodes[as.character(upstream),"post"])){
-    nodes[as.character(downstream),"Label"] = 2
-  }else {
-    nodes[as.character(upstream),"Label"] = 2
-  }
   # Work out the primary neurite and empty leaf Labels
   zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
   remove = rownames(nodes)[!rownames(nodes)%in%zeros]
@@ -166,8 +170,81 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   if(!is.null(primary.dendrite)){
     highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
     nodes[as.character(highs),"Label"] = 4
+  }else{
+    primary.dendrite = 0.9
+    highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
   }
-  # Calculate segregation score
+  ### Find primary and secondary branch points ###
+  # Find tract parent node for downstream
+  downstream.unclassed = downstream[!downstream%in%c(p.n,highs)]
+  remove = rownames(nodes)[!rownames(nodes)%in%downstream.unclassed]
+  downstream.g = igraph::delete_vertices(n, v = as.character(remove))
+  main1 = igraph::components(downstream.g) # Minimally the 'two' main branches, as a primary dendrite node will bisect the singular main branch
+  main1 = names(main1$membership[main1$membership%in%1])
+  nodes.downstream = nodes[as.character(main1),]
+  tract.parent = unique(nodes.downstream$Parent[!nodes.downstream$Parent%in%nodes.downstream$PointNo])
+  downstream.tract.parent = match(tract.parent,nodes$PointNo)
+  if(sum(match(tract.parent,nodes$PointNo)%in%p.n)>0){
+    bps.all = rownames(nodes)[match(as.numeric(nat::branchpoints(nodes)),nodes$PointNo)]
+    bps.downstream = bps.all[bps.all%in%downstream.unclassed]
+    runstoprimarybranchpoint = unlist(lapply(bps.downstream, function(x) length(unlist(igraph::shortest_paths(n, to = downstream.tract.parent, from = x)$vpath))))
+    downstream.tract.parent = bps.downstream[which.min(runstoprimarybranchpoint)]
+  }
+  downstream.tract.parent = nodes[downstream.tract.parent,]
+  # Find tract parent node for upstream
+  upstream.unclassed = upstream[!upstream%in%c(p.n,highs)]
+  remove = rownames(nodes)[!rownames(nodes)%in%upstream.unclassed]
+  upstream.g = igraph::delete_vertices(n, v = as.character(remove))
+  main1 = igraph::components(upstream.g) # Minimally the 'two' main branches, as a primary dendrite node will bisect the singular main branch
+  main1 = names(main1$membership[main1$membership%in%1])
+  nodes.upstream = nodes[as.character(main1),]
+  tract.parent = unique(nodes.upstream$Parent[!nodes.upstream$Parent%in%nodes.upstream$PointNo])
+  upstream.tract.parent = match(tract.parent,nodes$PointNo)
+  if(sum(match(tract.parent,nodes$PointNo)%in%p.n)>0){
+    bps.all = rownames(nodes)[match(as.numeric(nat::branchpoints(nodes)),nodes$PointNo)]
+    bps.upstream = bps.all[bps.all%in%upstream.unclassed]
+    runstoprimarybranchpoint = unlist(lapply(bps.upstream, function(x) length(unlist(igraph::shortest_paths(n, to = upstream.tract.parent, from = x)$vpath))))
+    upstream.tract.parent = bps.upstream[which.min(runstoprimarybranchpoint)]
+  }
+  upstream.tract.parent = nodes[upstream.tract.parent,]
+  # Find primary branchpoint
+  neurite.nodes = nodes[!rownames(nodes)%in%p.n,]
+  p.n.PointNo = nodes[p.n,"PointNo"]
+  primary.branch.point = p.n[p.n.PointNo%in%neurite.nodes$Parent]
+  ### Assign putative axonic and dendritic compartments ###
+  if(grepl("synapses",split)){
+    synapse.choice = gsub("synapses","",split)
+    message(split)
+    choice = sum(nodes[as.character(downstream.unclassed),synapse.choice]) < sum(nodes[as.character(upstream.unclassed),synapse.choice])
+    if (choice){
+      nodes[as.character(downstream.unclassed),"Label"] = 2
+    }else if(!choice) {
+      nodes[as.character(upstream.unclassed),"Label"] = 2
+    } else{
+      split=="distance"
+      warning("synapse numbers are the same, splitting based on branch point distances to primary branchpoint")
+    }
+  }
+  if(split=="distance"){ # Distance from primary branchpoint
+    primary.branch.point.xyz = as.matrix(nat::xyzmatrix(nodes[primary.branch.point,]))
+    secondary.branch.points.xyz = nat::xyzmatrix(rbind(upstream.tract.parent,downstream.tract.parent))
+    dist.upstream.to.primary.branchpoint = length(unlist(igraph::shortest_paths(n, to = primary.branch.point, from = rownames(upstream.tract.parent))$vpath))# Or euclidean distance: nabor::knn(query=primary.branch.point.xyz,data= nat::xyzmatrix(upstream.tract.parent),k=1)$nn.dists
+    dist.downstream.to.primary.branchpoint = length(unlist(igraph::shortest_paths(n, to = primary.branch.point, from = rownames(downstream.tract.parent))$vpath))# Or euclidean distance: nabor::knn(query=primary.branch.point.xyz,data= nat::xyzmatrix(downstream.tract.parent),k=1)$nn.dists
+    if(dist.upstream.to.primary.branchpoint<dist.downstream.to.primary.branchpoint){
+      nodes[as.character(downstream.unclassed),"Label"] = 2
+    }else if(dist.upstream.to.primary.branchpoint>dist.downstream.to.primary.branchpoint){
+      nodes[as.character(upstream.unclassed),"Label"] = 2
+    }else{
+      warning("branch point distances are the same, splitting based on postsynapses")
+      choice = sum(nodes[as.character(downstream.unclassed),"post"]) < sum(nodes[as.character(upstream.unclassed),"post"])
+      if (choice){
+        nodes[as.character(downstream.unclassed),"Label"] = 2
+      }else{
+        nodes[as.character(upstream.unclassed),"Label"] = 2
+      }
+    }
+  }
+  ### Calculate segregation score ###
   dendrites = subset(nodes, nodes$Label == 3)
   dendrites.post = sum(subset(dendrites$post,dendrites$post>0))
   dendrites.pre = sum(subset(dendrites$pre,dendrites$pre>0))
@@ -192,13 +269,16 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   x$d = nodes
   x$AD.segregation.index = segregation.index
   x$type = ifelse(segregation.index < 0.05, "interneuron", "PN")
+  x$primary.branch.point = as.numeric(primary.branch.point)
+  x$secondary.branch.points = as.numeric(c(downstream.tract.parent$PointNo,upstream.tract.parent$PointNo))
+  x$max.flow.centrality = as.numeric(ais)
   x
 }
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,...){
-  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, ...)
+flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"),...){
+  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, split = split, ...)
   neurons
 }
 
@@ -354,3 +434,15 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
     savetodisk(selected, selected_file)
   selected
 }
+
+# 18, 34
+# nopen3d()
+# for(i in 1:length(l)){
+#   message(i)
+#   seesplit3d(l[[i]],lwd=2,soma=500)
+#   y = ll[[i]]
+#   xyzmatrix(y) = xyzmatrix(y)+1000
+#   seesplit3d(y,lwd=2,soma=500, col = c("cyan", "yellow", "magenta","darkgreen", "darkgrey", "deeppink"))
+#   p = readline("Next? ")
+#   clear3d()
+# }
