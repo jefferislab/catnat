@@ -158,14 +158,18 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
       upstream = rownames(nodes)[!rownames(nodes)%in%downstream]
     }
   }
-  # Work out the primary neurite and empty leaf Labels
-  zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
-  remove = rownames(nodes)[!rownames(nodes)%in%zeros]
   igraph::V(n)$name = igraph::V(n)
-  nn = igraph::delete_vertices(n, v = as.character(remove))
-  clust = igraph::clusters(nn)
-  soma.group = clust$membership[names(clust$membership)==root]
-  p.n = names(clust$membership)[clust$membership==soma.group]
+  # Work out the primary neurite and empty leaf Labels
+  x.pruned = nat::prune_strahler(x=x,orderstoprune = 1:2)
+  pnt = suppressWarnings(primary.neurite(x.pruned,keep.pnt = TRUE, resample = FALSE))
+  p.n = rownames(nodes)[match(pnt$d$PointNo,nodes$PointNo)]
+  ### OLD WAY OF DETECTING PNT ###
+  # zeros = subset(rownames(nodes),nodes[,"flow.cent"]==0)
+  # remove = rownames(nodes)[!rownames(nodes)%in%zeros]
+  # nn = igraph::delete_vertices(n, v = as.character(remove))
+  # clust = igraph::clusters(nn)
+  # soma.group = clust$membership[names(clust$membership)==root]
+  # p.n = names(clust$membership)[clust$membership==soma.group]
   nodes[p.n,"Label"] = 7
   if(!is.null(primary.dendrite)){
     highs = subset(rownames(nodes),nodes[,"flow.cent"]>=primary.dendrite*max(nodes[,"flow.cent"]))
@@ -306,7 +310,7 @@ flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripe
 #' @export
 #' @seealso \code{\link{flow.centrality}} \code{\link{get.synapses}}
 #' @importFrom stats sd
-seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), splitnode = FALSE,WithConnectors = T, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1, ...){
+seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green", "grey", "pink"), splitnode = FALSE,WithConnectors = TRUE, WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1, ...){
   someneuronlist = nat::as.neuronlist(someneuronlist)
   for (n in 1:length(someneuronlist)){
     neuron = someneuronlist[[n]]
@@ -330,7 +334,7 @@ seesplit3d = function(someneuronlist, col = c("blue", "orange", "purple","green"
     rgl::plot3d(p.d, col = col[4], WithNodes = WithNodes, soma = FALSE, lwd = lwd,...)
     #rgl::plot3d(nulls, col = col[5], WithNodes = WithNodes, soma = FALSE, lwd = lwd)
     #rgl::plot3d(neuron, col = col[3], WithNodes = WithNodes, soma = soma)
-    if (WithConnectors == T){
+    if (WithConnectors){
       rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan', radius = radius,...)
       rgl::spheres3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red', radius = radius,...)
     }
@@ -435,7 +439,7 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
   selected
 }
 
-# 18, 34
+
 # nopen3d()
 # for(i in 1:length(l)){
 #   message(i)
