@@ -6,7 +6,7 @@
 \title{Plot neurons split up by flow centrality}
 \usage{
 seesplit3d(someneuronlist, col = c("blue", "orange", "purple", "green",
-  "grey", "pink"), splitnode = FALSE, WithConnectors = T,
+  "grey", "pink"), splitnode = FALSE, WithConnectors = TRUE,
   WithNodes = F, soma = 100, highflow = F, lwd = 1, radius = 1,
   ...)
 

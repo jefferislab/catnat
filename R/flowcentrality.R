@@ -191,7 +191,7 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   if(sum(match(tract.parent,nodes$PointNo)%in%p.n)>0){
     bps.all = rownames(nodes)[match(as.numeric(nat::branchpoints(nodes)),nodes$PointNo)]
     bps.downstream = bps.all[bps.all%in%downstream.unclassed]
-    runstoprimarybranchpoint = unlist(lapply(bps.downstream, function(x) length(unlist(igraph::shortest_paths(n, to = downstream.tract.parent, from = x)$vpath))))
+    runstoprimarybranchpoint = unlist(lapply(bps.downstream, function(x) length(unlist(suppressWarnings(igraph::shortest_paths(n, to = downstream.tract.parent, from = x)$vpath)))))
     downstream.tract.parent = bps.downstream[which.min(runstoprimarybranchpoint)]
   }
   downstream.tract.parent = nodes[downstream.tract.parent,]
@@ -207,7 +207,7 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   if(sum(match(tract.parent,nodes$PointNo)%in%p.n)>0){
     bps.all = rownames(nodes)[match(as.numeric(nat::branchpoints(nodes)),nodes$PointNo)]
     bps.upstream = bps.all[bps.all%in%upstream.unclassed]
-    runstoprimarybranchpoint = unlist(lapply(bps.upstream, function(x) length(unlist(igraph::shortest_paths(n, to = upstream.tract.parent, from = x)$vpath))))
+    runstoprimarybranchpoint = unlist(lapply(bps.upstream, function(x) length(unlist(suppressWarnings(igraph::shortest_paths(n, to = upstream.tract.parent, from = x)$vpath)))))
     upstream.tract.parent = bps.upstream[which.min(runstoprimarybranchpoint)]
   }
   upstream.tract.parent = nodes[upstream.tract.parent,]

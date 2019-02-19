@@ -7,15 +7,18 @@
 \title{Determine dendritic/axonal by calculating flow centrality}
 \usage{
 flow.centrality(x, mode = c("sum", "centrifugal", "centripetal"),
-  polypre = T, primary.dendrite = 0.9, bending.flow = FALSE, ...)
+  polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,
+  split = c("postsynapses", "presynapses", "distance"), ...)
 
 \method{flow.centrality}{neuron}(x, mode = c("sum", "centrifugal",
-  "centripetal"), polypre = T, primary.dendrite = 0.9,
-  bending.flow = FALSE, ...)
+  "centripetal"), polypre = TRUE, primary.dendrite = 0.9,
+  bending.flow = FALSE, split = c("postsynapses", "presynapses",
+  "distance"), ...)
 
 \method{flow.centrality}{neuronlist}(x, mode = c("sum", "centrifugal",
   "centripetal"), polypre = T, primary.dendrite = 0.9,
-  bending.flow = FALSE, ...)
+  bending.flow = FALSE, split = c("postsynapses", "presynapses",
+  "distance"), ...)
 }
 \arguments{
 \item{x}{a neuronlist or neuron object}
@@ -32,7 +35,14 @@ the numbers of connections each makes}
 dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
 Assigning to NULL will prevent generating this compartment.}
 
+\item{bending.flow}{we may need to add the 'bending flow' to all the branchpoints if looking at centripetal flow centrality}
+
 \item{...}{additional arguments passed to methods.}
+
+\item{bending.flow}{the algorithm will assign two main neurite compartments, which as per SWC format will be indicates as either axon (Label =2)
+or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
+This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
+or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").}
 }
 \value{
 the neuron or neuron list object inputted, with centipetal flow

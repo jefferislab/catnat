@@ -740,6 +740,13 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
     neuron$volume$mesh3d$primary.neurite = ashape2mesh3d(primary.neurite.ashape, remove.interior.points = FALSE)
     message("primary neurite volume created")
   }
+  if(4%in%mesh.vertices$Label){
+    primary.dendrite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==4)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    primary.dendrite.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=primary.dendrite.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
+    neuron$volume$volume.estimation$primary.dendrite.ashape.volume = primary.dendrite.ashape.volume
+    neuron$volume$mesh3d$primary.dendrite = ashape2mesh3d(primary.dendrite.ashape, remove.interior.points = FALSE)
+    message("primary dendrite volume created")
+  }
   if(TRUE%in%mesh.vertices$microtubule){
     mt.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,microtubule==TRUE)[,1:3]),pert = TRUE,alpha = voxelSize*4)
     mt.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=mt.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
@@ -764,8 +771,8 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
 #' @description Visualise neuron meshes or point clouds, retrieved and downsampled from the Google brainmaps segmentation by Peter Li.
 #' @param neuronvolume an object of class neuronvolume, as returned by catnat::fafb_segs_stitch_volumes
 #' @param volumes a list of mesh3d objects, retrieved using fafbseg::read_brainmaps_meshes
-#' @param type a single number, which is used to downsmaple the starting meshes, resample neuron, and choose an alpha value for alphashape3d::ashape3d()
-#' @param split if TRUE, instead of using the volumes argument, map_fafbsegs_to_neuron and fafbseg::read_brainmaps_meshes are used to retrieve Google 3D segmentations as mesh3d objects
+#' @param type whether to plot meshes of a point cloud
+#' @param split whether to plot the whole neuron or some subset of it
 #' @param alpha mesh transparency
 #' @param synapse.radius radius information passed to rgl:spheres3d
 #' @param cols colours for different parts of the neuron
@@ -775,7 +782,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
 #' @rdname fafb_segs_stitch_volumes
 neuronvolume3d <- function(neuronvolume,
                                 type = c("volume","points"),
-                                split = c("whole","split", "soma", "primary neurite","axon", "dendrite","microtubule"),
+                                split = c("whole","split", "soma", "primary neurite","axon", "dendrite","microtubule", "primary dendrite"),
                                 alpha = 0.3, WithConnectors = TRUE, synapse.radius=500,
                                 cols = c(neuron = "grey",
                                          dendrite = "cyan",

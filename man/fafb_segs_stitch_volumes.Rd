@@ -14,10 +14,10 @@ fafb_segs_stitch_volumes(neuron, volumes = NULL, map = FALSE,
 
 neuronvolume3d(neuronvolume, type = c("volume", "points"),
   split = c("whole", "split", "soma", "primary neurite", "axon",
-  "dendrite", "microtubule"), alpha = 0.3, WithConnectors = TRUE,
-  synapse.radius = 500, cols = c(neuron = "grey", dendrite = "cyan",
-  soma = "magenta", primary.neurite = "purple", axon = "orange",
-  microtubule = "green", twig = "brown"))
+  "dendrite", "microtubule", "primary dendrite"), alpha = 0.3,
+  WithConnectors = TRUE, synapse.radius = 500, cols = c(neuron =
+  "grey", dendrite = "cyan", soma = "magenta", primary.neurite = "purple",
+  axon = "orange", microtubule = "green", twig = "brown"))
 }
 \arguments{
 \item{neuron}{a neuron object that macthes the volumes given}
@@ -58,9 +58,9 @@ need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, 
 
 \item{neuronvolume}{an object of class neuronvolume, as returned by catnat::fafb_segs_stitch_volumes}
 
-\item{type}{a single number, which is used to downsmaple the starting meshes, resample neuron, and choose an alpha value for alphashape3d::ashape3d()}
+\item{type}{whether to plot meshes of a point cloud}
 
-\item{split}{if TRUE, instead of using the volumes argument, map_fafbsegs_to_neuron and fafbseg::read_brainmaps_meshes are used to retrieve Google 3D segmentations as mesh3d objects}
+\item{split}{whether to plot the whole neuron or some subset of it}
 
 \item{alpha}{mesh transparency}
 
