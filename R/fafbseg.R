@@ -20,10 +20,11 @@ set_segmentation_location <- function(path){
 #' @param name when TRUE, "name:" is added in front of ever element in x
 #' @param and.annotation when Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read
 #' @param read.from from where to read FAFB segmented skeletons to generate node count data
+#' @param conn a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.
 #' @param ... methods passed to catmaid::read.neurons.catmaid
 #' @export
 #' @rdname read.neurons.fafbseg
-read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, ...){
+read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, conn = NULL, ...){
   require(catmaid)
   if(name){
     x = paste0("name:",x)
@@ -32,7 +33,9 @@ read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, ...){
   }else{
     skids = x
   }
-  conn = catmaid::catmaid_login()
+  if(is.null(conn)){
+    conn = catmaid::catmaid_login()
+  }
   if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
     message("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
     message("See ?catmaid_login")
