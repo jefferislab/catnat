@@ -24,11 +24,15 @@ set_segmentation_location <- function(path){
 #' @param ... methods passed to catmaid::read.neurons.catmaid
 #' @export
 #' @rdname read.neurons.fafbseg
-read.neurons.fafbseg <- function(x, name = TRUE, and.annotation = TRUE, conn = NULL, ...){
+read.neurons.fafbseg <- function(x, name = FALSE, and.annotation = TRUE, conn = NULL, ...){
   require(catmaid)
   if(name){
     x = paste0("name:",x)
-    y = paste0("annotation:",x)
+    if(and.annotation){
+      y = paste0("annotation:",x)
+    }else{
+      y=NULL
+    }
     skids = unique(unlist(sapply(c(x,y),catmaid_skids,several.ok=FALSE,conn=conn, ...)))
   }else{
     skids = x
@@ -250,56 +254,6 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
     }
   }
   df
-}
-
-#' Upload neuron(s) to CATMAID
-#'
-#' @description  Uploads neurons to CATMAID, names them and annotates them.
-#' Please use with caution, as you could be heavily adding to a live tracing environment.
-#' @param swc a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).
-#' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
-#' @param annotations a character vector of annotations, to be added to all ofthe uploaded neurons
-#' @param pid project id. Defaults to 1
-#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param max.upload the maximum number of files that the function will allow you to upload at once
-#' @param ... methods passed to catmaid::catmaid_fetch
-#' @export
-#' @rdname catmaid_upload_neurons
-catmaid_upload_neurons <- function (swc, name ="neuron SWC upload", annotations = "SWC upload", pid = 1, conn = NULL, max.upload = 10, ...) {
-  if(is.neuronlist(swc)|is.neuron(swc)){
-    temp.files = paste0(names(swc),".swc")
-    nat::write.neurons(swc, format= "swc",dir = tempdir(), files = temp.files, ...)
-    swc = paste0(tempdir(),temp.files)
-  }
-  if (length(swc)>max.upload){
-    stop(paste0('You are uploading a large number of SWC files.
-                Are you sure you want to do this?
-                If so change the value of the max.upload argument'))
-  }
-  if(length(name)==1&length(swc)>1){
-    name = paste0(name,"_",seq_along(swc))
-  } else if (length(name)>length(swc)|length(swc)>length(name)){
-    stop(paste0('The names argument mut be a vector or length 1, to be applied to all neurons
-                or a vector the same length as swc'))
-  }
-  skids = c()
-  for(file in 1:length(swc)){
-    post_data = list()
-    post_data["name[1]"] = as.list(name[file])
-    post_data["file[1]"] = list(upload_file(swc[file]))
-    path = sprintf("/%d/skeletons/import", pid)
-    res = catmaid::catmaid_fetch(path, body = post_data, include_headers = F,
-                                 simplifyVector = T, conn = conn, ...)
-    invisible(catmaid:::catmaid_error_check(res))
-    skids = c(skids,res$skeleton_id)
-  }
-  if(!is.null(annotations)){
-    sapply(seq_along(skids), function(x) catmaid_rename_neuron(skids = skids[x], names = name[x], pid = pid, conn = conn))
-    catmaid::catmaid_set_annotations_for_skeletons(skids = as.numeric(skids),
-                                          annotations = annotations,
-                                          pid = pid, conn = conn, ...)
-    message(paste0("Annotations ", annotations," set to new skeletons: ", res$skeleton_id))
-  }
 }
 
 #' Find out what is already known about a neuron's connectivity profile and connected FAFB segments

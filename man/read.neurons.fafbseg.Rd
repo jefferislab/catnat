@@ -5,7 +5,8 @@
 \alias{fafbseg_get_node_count}
 \title{Read neurons from the FAFB segmentation instance (temportary)}
 \usage{
-read.neurons.fafbseg(x, name = TRUE, and.annotation = TRUE, ...)
+read.neurons.fafbseg(x, name = FALSE, and.annotation = TRUE,
+  conn = NULL, ...)
 
 fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
   "local"), ...)
@@ -17,6 +18,8 @@ if given as a character starting with 'name:' or 'anotation:' respectively.}
 \item{name}{when TRUE, "name:" is added in front of ever element in x}
 
 \item{and.annotation}{when Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read}
+
+\item{conn}{a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.}
 
 \item{...}{methods passed to catmaid::read.neurons.catmaid}
 
