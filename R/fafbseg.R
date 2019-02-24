@@ -33,7 +33,7 @@ read.neurons.fafbseg <- function(x, name = FALSE, and.annotation = TRUE, conn = 
     }else{
       y=NULL
     }
-    skids = unique(unlist(sapply(c(x,y),catmaid_skids,several.ok=FALSE,conn=conn, ...)))
+    skids = unique(unlist(sapply(c(x,y),catmaid::catmaid_skids,several.ok=FALSE,conn=conn, ...)))
   }else{
     skids = x
   }
