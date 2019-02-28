@@ -10,29 +10,24 @@ set_segmentation_location <- function(path){
   options(fafbseg.skelziproot = path)
 }
 
-#' Read neurons from the FAFB segmentation instance (temportary)
+#' Read neurons from the FAFB segmentation instance (temporary)
 #'
 #' @description  Reads neurons (or node count data) from the temporary FAFB segmentation instance.
 #' containing auto-segmented fragments from Peter Li. Neurons can also be read using a neuroglancer server fafbseg::read.neurons.brainmaps
 #' or fafbseg::read_segments2 if from local .zip files
-#' @param x typically a neuroglancer ID. By default, we treat it as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
-#' if given as a character starting with 'name:' or 'anotation:' respectively.
-#' @param name when TRUE, "name:" is added in front of ever element in x
-#' @param and.annotation when Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read
+#' @param x typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.
+#' @param google if TRUE, we treat x as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
+#' if given as a character starting with 'name:' or 'anotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.
 #' @param read.from from where to read FAFB segmented skeletons to generate node count data
 #' @param conn a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.
 #' @param ... methods passed to catmaid::read.neurons.catmaid
 #' @export
 #' @rdname read.neurons.fafbseg
-read.neurons.fafbseg <- function(x, name = FALSE, and.annotation = TRUE, conn = NULL, ...){
+read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
   require(catmaid)
-  if(name){
+  if(google){
     x = paste0("name:",x)
-    if(and.annotation){
-      y = paste0("annotation:",x)
-    }else{
-      y=NULL
-    }
+    y = paste0("annotation:",x)
     skids = unique(unlist(sapply(c(x,y),catmaid::catmaid_skids,several.ok=FALSE,conn=conn, ...)))
   }else{
     skids = x
@@ -45,7 +40,7 @@ read.neurons.fafbseg <- function(x, name = FALSE, and.annotation = TRUE, conn = 
     message("See ?catmaid_login")
   }
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
-  n = catmaid::read.neurons.catmaid(skids, conn=conn,OmitFailures = TRUE,...)
+  n = catmaid::read.neurons.catmaid(skids, conn=conn, OmitFailures = TRUE,...)
   n[,"nodes"] = nat:::summary.neuronlist(n)$nodes
   n[,"skeleton.type"] = "FAFB-seg"
   n
@@ -66,6 +61,15 @@ fafb_seg <- function(FUN, ...){
   }
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
   FUN(conn=conn, ...)
+}
+#' @export
+#' @rdname fafb_seg
+fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
+  if(is.null(conn)){
+    conn = catmaid::catmaid_login()
+  }
+  conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+  conn
 }
 
 #' @export
@@ -193,7 +197,7 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
   }
   uids=setdiff(ids,0)
   if(read.from=="CATMAID"){
-    rs = read.neurons.fafbseg(uids,name = TRUE, OmitFailures = TRUE, ...)
+    rs = read.neurons.fafbseg(uids, google = TRUE, OmitFailures = TRUE, ...)
   }else if (read.from=="Neuroglancer"){
     rs = fafbseg::read.neurons.brainmaps(x, OmitFailures = TRUE, ...)
   }else{
