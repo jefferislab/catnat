@@ -68,9 +68,8 @@ catmaid_upload_neurons <- function (swc = NULL, name ="neuron SWC upload", annot
     }
     skids = c(skids,res$skeleton_id)
   }
-  #sapply(seq_along(skids), function(x) catmaid_rename_neuron(skids = skids[x], names = name[x], pid = pid, conn = conn, ...))
   if(return.new.skids){
-    return(skids)
+    skids
   }
 }
 
@@ -803,6 +802,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
                                       brain = NULL, return.uploaded.skids = TRUE,
                                       pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),  ...){
   if(!is.neuronlist(x)){
+    message("Reading neurons from ", catmaid_get_server(conn2))
     neurons = catmaid::read.neurons.catmaid(x,pid=pid2,conn=conn2, ...)
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
     already.there = subset(anns,annotation%in%avoid)$skid
@@ -832,11 +832,19 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
     if(!is.null(brain)){
       rgl::plot3d(brain,alpha=0.1,col="grey")
     }
-    rgl::plot3d(neuron,WithConnectors = TRUE)
+    rgl::plot3d(neuron, lwd = 2, WithConnectors = TRUE)
     message("Assessing whether upload of neuron ",i, " may cause a duplication:" )
     dupe = catmaid_duplicated(neuron, tolerance = NULL, pid = pid, conn = conn, ...)
-    calc = (sum(dupe$duplicated.nodes)/nrow(dupe$duplicated.nodes))
+    calc = (sum(dupe$duplicated.nodes)/length(dupe$duplicated.nodes))
     calc = ifelse(length(calc)>0,calc,0)
+    if(calc>0){
+      t = table(unlist(dupe$overlapping.skids))
+      t = names(t)[which.max(t)]
+      similar = catmaid::read.neurons.catmaid(t, pid = pid, conn = conn, ...)
+      rgl::plot3d(similar, col="grey", lwd=1)
+      message("overlapping neuron")
+      print(similar[,])
+    }
     dupe = calc > tolerance
     message("The neuron flagged for upload seems to have ", calc*100, "% of its nodes already in the targetted CATMAID instance")
     progress = "n"
@@ -846,8 +854,11 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
               Upload for neuron ", i, " aborted.")
       next
     }else if(progress=="y"){
+      if(calc>0){
+        nat::npop3d()
+      }
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=name,annotations= c(annotations, paste0("v14-seg: ",old.skid), avoid),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=name,annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         search.range.nm=10, return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -858,7 +869,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
       if(join){
         message("Finding tagged potential join points ...")
         TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
-        if(nrow(TODO)>0){
+        if(length(TODO)){
           possible.merges = catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                        min_nodes = min_nodes, search.range.nm = search.range.nm, ...)
             if(nrow(possible.merges)>1){
@@ -897,16 +908,6 @@ catmaid_get_server<-function(conn=NULL,...){
 }
 
 
-# Test these functions
-#frags = read.neurons.fafbseg("annotation:ASB downseg")
-uploaded = catmaid_upload_neurons(swc = frags[398:length(frags)], name ="neuron SWC upload", annotations = NULL,
-                                  include.tags = TRUE,include.connectors = TRUE,
-                                  search.range.nm = 100, return.new.skids = TRUE,
-                                  pid = 4, conn = local_conn(), max.upload = 1000)
-dels1 = catmaid_skids(x = "annotation:SWC upload",conn=local_conn(),pid=4)
-dels2 = catmaid_skids(x = "annotation:neuron upload",conn=local_conn(),pid=4)
-dels = c(dels1,dels2)
-catmaid_delete_neurons(skid=dels,conn=local_conn(),pid=4, max.nodes = 5000)
 
 
 
