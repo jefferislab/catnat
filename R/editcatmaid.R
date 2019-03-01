@@ -412,11 +412,21 @@ catmaid_connector_nodes <- function(connector_id, node = c("presynaptic","postsy
   detail
 }
 
-
+#' Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume
+#'
+#' @description Join free connectors (the up or downstream node of a conector is joined, where this point belong to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
+#' @param neurons a neuronlist object
+#' @param putatively.connected.skids the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered
+#' @param connector.range.nm the range in nm within which to search for a treenode ID to attach the connector
+#' @param pid project id. Defaults to 1
+#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
+#' @param ... methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail
+#' @export
+#' @rdname fafbseg_join_connectors_in_brainmaps_volumes
 fafbseg_join_connectors_in_brainmaps_volumes <- function(neurons,
-                                                                       putatively.connected.skids,
-                                                                       connector.range.nm = 1000,
-                                                                       pid=1,conn = NULL, ...){
+                                                         putatively.connected.skids,
+                                                         connector.range.nm = 10000,
+                                                         pid=1,conn = NULL, ...){
   require(fafbseg)
   if(length(putatively.connected.skids)>10){
     stop("A maximum 10 potentially connected skeleton IDs can be given at any one time")
@@ -832,7 +842,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
     if(!is.null(brain)){
       rgl::plot3d(brain,alpha=0.1,col="grey")
     }
-    rgl::plot3d(neuron, lwd = 2, WithConnectors = TRUE)
+    rgl::plot3d(neuron, lwd = 1, WithConnectors = TRUE)
     message("Assessing whether upload of neuron ",i, " may cause a duplication:" )
     dupe = catmaid_duplicated(neuron, tolerance = NULL, pid = pid, conn = conn, ...)
     calc = (sum(dupe$duplicated.nodes)/length(dupe$duplicated.nodes))
@@ -906,8 +916,6 @@ catmaid_get_server<-function(conn=NULL,...){
   }
   conn$server
 }
-
-
 
 
 
