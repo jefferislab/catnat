@@ -284,11 +284,12 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
     message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
       if(fafbseg){
         require(fafbseg)
+        message("Checking whether potential merges are within the same FAFB volumetric auto-traced segments")
         seg = tryCatch(fafbseg::brainmaps_xyz2id(todo[,c('X','Y', 'Z')]),error=function(e)NULL)
         seg = segs[seg!=0]
         s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
         s = s[s!=0]
-        vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) message("warning: Google brainmaps read error, take extra care when deciding on join"))
+        vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error, take extra care when deciding on join"))
         in.vol = tryCatch(sapply(neuron.bbx,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
         neuron.bbx = neuron.bbx[in.vol]
         message(length(neuron.bbx), " fragments found in FAFB Google auto-traced segment corresponding with merge tag")
@@ -573,13 +574,14 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
     close(pb)
     if(fafbseg){
       require(fafbseg)
+      message("Checking whether potential duplicates are within the same FAFB volumetric auto-traced segments")
       similar.skids = unique(unlist(skids))
       similars = read.neurons.catmaid(similar.skids, pid = pid, conn = conn, ...)
       seg = tryCatch(fafbseg::brainmaps_xyz2id(points),error=function(e)NULL)
       seg = segs[seg!=0]
       s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
       s = s[s!=0]
-      vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) message("warning: Google brainmaps read error"))
+      vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error"))
       in.vol = tryCatch(sapply(similars,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
       similar.skids = similar.skids[in.vol]
       skids = lapply(skids,function(s) s[s%in%similar.skids])
@@ -1062,5 +1064,68 @@ catmaid_get_server<-function(conn=NULL,...){
   conn$server
 }
 
+# Test these functions
+uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg", tolerance = 0.05, name = "v14-seg neuron upload ASB",
+                                       annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
+                                       include.tags = TRUE, include.connectors = FALSE, downsample = 1,
+                                       search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
+                                       fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
+                                       pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+uploaded = catmaid_controlled_upload(x ="annotation:ASB downseg", tolerance = 0.5, name = "v14-seg neuron upload ASB",
+                                     annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
+                                     include.tags = TRUE, include.connectors = FALSE,
+                                     search.range.nm = 1000, join = TRUE, join.tag = "TODO",
+                                     fafbseg = TRUE, min_nodes = 2, downsample = 2,
+                                     brain = NULL, return.uploaded.skids = TRUE,
+                                     pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+
+### ASP-g project
+annoatation.asp = "aSP-g L upstream"
+uploaded = catmaid_controlled_upload(x = annoatation.asp, tolerance = 0.5, name = "pheromonal circuit v14-seg upload ASB",
+                                     annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = "v14", lock = TRUE,
+                                     include.tags = TRUE, include.connectors = FALSE,
+                                     search.range.nm = 1000, join = TRUE, join.tag = "TODO",
+                                     fafbseg = TRUE, min_nodes = 2, downsample = 2,
+                                     brain = NULL, return.uploaded.skids = TRUE,
+                                     pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+
+
+### Other
+lns = read.neurons.catmaid("annotation:LH LN")
+uploaded.lns = catmaid_upload_neurons(swc = pns, name = names(pns), annotations = "v14 LHN upload",
+                                      include.tags = TRUE,include.connectors = TRUE,
+                                      search.range.nm = 100, return.new.skids = TRUE,
+                                      pid = 4, conn = local_conn(), max.upload = 10000)
+uploaded.pns = catmaid_upload_neurons(swc = pns, name = names(pns), annotations = "v14 AL PN upload",
+                                      include.tags = TRUE,include.connectors = TRUE,
+                                      search.range.nm = 100, return.new.skids = TRUE,
+                                      pid = 4, conn = local_conn(), max.upload = 10000)
+uploaded = catmaid_controlled_upload(x ="annotation:ASB downseg", tolerance = 0.5, name = "v14-seg neuron upload",
+                                     annotations = "v14-seg upload", avoid = "v14",
+                                     include.tags = TRUE, include.connectors = TRUE,
+                                     search.range.nm = 1000, join = TRUE, join.tag = "TODO",
+                                     fafbseg = TRUE, min_nodes = 2,
+                                     brain = NULL, return.uploaded.skids = TRUE,
+                                     pid = 4, conn = local_conn(), pid2 = 1, conn2 = fafb_seg_conn())
+uploaded = catmaid_upload_neurons(swc = frags, name ="neuron SWC upload", annotations = NULL,
+                                  include.tags = TRUE,include.connectors = TRUE,
+                                  search.range.nm = 100, return.new.skids = TRUE,
+                                  pid = 4, conn = local_conn(), max.upload = 1000)
+dels1 = catmaid_skids(x = "annotation:SWC upload",conn=local_conn(),pid=4)
+dels2 = catmaid_skids(x = "annotation:neuron upload",conn=local_conn(),pid=4)
+dels = c(dels1,dels2)
+catmaid_delete_neurons(skid=dels,conn=local_conn(),pid=4, max.nodes = 500000, control = FALSE)
+
+
+uploaded = catmaid_controlled_upload(x = "name:ASB Tester", join = TRUE, name = "ASB Tester from v14-seg",
+                                     search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", brain = elmr::FAFB14, lock = TRUE)
+#' # Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.
+#' # let's lock the neurons we just uploaded, to lessen the chance someone else will connect stuff to them and want to upload them AGAIN later...
+catmaid_lock_neurons(skids = uploaded$downloaded.skids, conn = fafb_seg_conn())
+#' # Oops, did you make a mistake in uploading this neuron?
+delete.skids = catmaid::catmaid_skids("annotation:ASB Test v14-seg Upload")
+catmaid_delete_neurons(delete.skids)
+# Be careful wen deleting, especially if you have merged your fragment during the interactive join.
+# Phew.
 
 
