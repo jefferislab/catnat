@@ -5,26 +5,34 @@
 \alias{fafbseg_transfer_connectors}
 \title{Transfer information between v14 and v14-seg neurons}
 \usage{
-fafbseg_transfer_tags(new.neuron, old.neuron, search.range.nm = 100,
-  pid = 1, conn = NULL, ...)
+fafbseg_transfer_tags(new.neuron, old.neuron, offset = TRUE,
+  search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1,
+  conn2 = fafb_seg_conn(), ...)
 
-fafbseg_transfer_connectors(new.neuron, old.neuron,
-  search.range.nm = 100, links = TRUE, pid = 1, conn = NULL, ...)
+fafbseg_transfer_connectors(new.neuron, old.neuron, offset = FALSE,
+  search.range.nm = 1000, links = TRUE, pid = 1, conn = NULL,
+  pid2 = 1, conn2 = fafb_seg_conn(), ...)
 }
 \arguments{
 \item{new.neuron}{a neuron object, or the skeleton ID of a neuron in v14 space}
 
+\item{old.neuron}{a neuron object, or the skeleton ID of a neuron in v14-seg space}
+
+\item{offset}{whether or not to expect a displacement in space between the new and old neurons. If so, search.range.nm is used to find the nearest nodes to which to assign tags/connectors, within the radius it specifies}
+
 \item{search.range.nm}{the maimum distance between points in the v14 and v14-seg skeleton, that is acceptable for the transfer ot tag/connector information. Not set to 0 be default to accept small variations in node position that might occur between the two tracing environments, due to tracer edit.s}
 
-\item{pid}{project id. Defaults to 1}
+\item{pid}{project id for conn. Defaults to 1}
 
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{conn2}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_set_labels}
 
 \item{links}{whether or not to link transferred connectors  to post-pre synaptic sites on the neuron identified with the new.neuron argument}
 
-\item{fafbseg.skid}{a neuron object, or the skeleton ID of a neuron in v14-seg space}
+\item{pid}{project id for conn2. Defaults to 1}
 
 \item{max.upload}{the maximum number of files that the function will allow you to upload at once}
 }

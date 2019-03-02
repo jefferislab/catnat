@@ -17,7 +17,8 @@ neuronvolume3d(neuronvolume, type = c("volume", "points"),
   "dendrite", "microtubule", "primary dendrite"), alpha = 0.3,
   WithConnectors = TRUE, synapse.radius = 500, cols = c(neuron =
   "grey", dendrite = "cyan", soma = "magenta", primary.neurite = "purple",
-  axon = "orange", microtubule = "green", twig = "brown"))
+  primary.dendrite = "chartreuse", axon = "orange", microtubule = "green",
+  twig = "brown"))
 }
 \arguments{
 \item{neuron}{a neuron object that macthes the volumes given}

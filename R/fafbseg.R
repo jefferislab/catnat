@@ -64,6 +64,7 @@ fafb_seg <- function(FUN, ...){
 }
 #' @export
 #' @rdname fafb_seg
+#'
 fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
   if(is.null(conn)){
     conn = catmaid::catmaid_login()
@@ -749,12 +750,13 @@ neuronvolume3d <- function(neuronvolume,
                                          dendrite = "cyan",
                                          soma = "magenta",
                                          primary.neurite = "purple",
+                                         primary.dendrite = "chartreuse",
                                          axon = "orange",
                                          microtubule = "green",
                                          twig = "brown")){
   type = match.arg(type)
   split = match.arg(split)
-  names(cols) = c("neuron","dendrite","soma","primary.neurite","axon","microtubule","twig")[1:length(cols)]
+  names(cols) = c("neuron","dendrite","soma","primary.neurite","primary.dendrite","axon","microtubule","twig")[1:length(cols)]
   ### plot mesh3d objects ###
   if(type=="volume"){
     if(split=="whole"){
@@ -763,23 +765,28 @@ neuronvolume3d <- function(neuronvolume,
         rgl::spheres3d(get.synapses(neuronvolume,"POST"),col="cyan",radius = synapse.radius/3)
         rgl::spheres3d(get.synapses(neuronvolume,"PRE", polypre = FALSE),col="red",radius = synapse.radius)
       }
-    } else if (grepl("axon|split",split)){
+    }
+    if (grepl("axon|split",split)){
       rgl::plot3d(neuronvolume$volume$mesh3d$axon, col = cols["axon"], alpha = alpha, add = TRUE)
       if(WithConnectors){
         rgl::spheres3d(get.synapses(axonic_cable(neuronvolume),"POST"),col="cyan",radius = synapse.radius/3)
         rgl::spheres3d(get.synapses(axonic_cable(neuronvolume),"PRE", polypre = FALSE),col="red",radius = synapse.radius)
       }
-    } else if (grepl("dendrite|split",split)){
-      rgl::plot3d(neuronvolume$volume$mesh3d$axon, col = cols["dendrite"], alpha = alpha, add = TRUE)
+    }
+    if (grepl("dendrite|split",split)){
+      rgl::plot3d(neuronvolume$volume$mesh3d$dendrite, col = cols["dendrite"], alpha = alpha, add = TRUE)
       if(WithConnectors){
         rgl::spheres3d(get.synapses(dendritic_cable(neuronvolume),"POST"),col="cyan",radius = synapse.radius/3)
         rgl::spheres3d(get.synapses(dendritic_cable(neuronvolume),"PRE", polypre = FALSE),col="red",radius = synapse.radius)
       }
     }
+    if (grepl("primary.dendrite|split",split)){
+      rgl::plot3d(neuronvolume$volume$mesh3d$primary.dendrite, col = cols["primary.dendrite"], alpha = alpha, add = TRUE)
+    }
     if(grepl("split|soma",split)){
       rgl::plot3d(neuronvolume$volume$mesh3d$soma, col = cols["soma"], alpha = alpha, add = TRUE)
     }
-    if(grepl("split|primary",split)){
+    if(grepl("split|primary.neurite",split)){
       rgl::plot3d(neuronvolume$volume$mesh3d$primary.neurite, col = cols["primary.neurite"], alpha = alpha, add = TRUE)
     }
     if(split=="microtubule"){
@@ -815,8 +822,11 @@ neuronvolume3d <- function(neuronvolume,
     if(grepl("split|soma",split)){
       rgl::points3d(nat::xyzmatrix(subset(neuronvolume$volume$vertices, Label==1)), col = cols["soma"], alpha = alpha, add = TRUE)
     }
-    if(grepl("split|primary",split)){
+    if(grepl("split|primary.neurite",split)){
       rgl::points3d(nat::xyzmatrix(subset(neuronvolume$volume$vertices, Label==7)), col = cols["primary.neurite"], alpha = alpha, add = TRUE)
+    }
+    if(grepl("split|primary.dendrite",split)){
+      rgl::points3d(nat::xyzmatrix(subset(neuronvolume$volume$vertices, Label==7)), col = cols["primary.dendrite"], alpha = alpha, add = TRUE)
     }
     if(split=="microtubule"){
       rgl::points3d(nat::xyzmatrix(subset(neuronvolume$volume$vertices, microtubule==TRUE)), col = cols["microtubule"], alpha = alpha, add = TRUE)

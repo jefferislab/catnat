@@ -2,9 +2,12 @@
 % Please edit documentation in R/fafbseg.R
 \name{fafb_seg}
 \alias{fafb_seg}
+\alias{fafb_seg_conn}
 \title{Use any CATMAID function in the v14-seg environment, without logging into separate CATMAID instance}
 \usage{
 fafb_seg(FUN, ...)
+
+fafb_seg_conn(pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{FUN}{catmaid function from rcatmaid or catnat}

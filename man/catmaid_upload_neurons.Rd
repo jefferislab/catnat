@@ -4,9 +4,9 @@
 \alias{catmaid_upload_neurons}
 \title{Upload neuron(s) to CATMAID}
 \usage{
-catmaid_upload_neurons(swc, name = "neuron SWC upload",
-  annotations = "SWC upload", include.tags = TRUE,
-  include.connectors = TRUE, search.range.nm = 100, pid = 1,
+catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
+  annotations = NULL, include.tags = TRUE, include.connectors = TRUE,
+  search.range.nm = 0, return.new.skids = FALSE, pid = 1,
   conn = NULL, max.upload = 10, ...)
 }
 \arguments{
@@ -14,7 +14,13 @@ catmaid_upload_neurons(swc, name = "neuron SWC upload",
 
 \item{name}{whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.}
 
-\item{annotations}{a character vector of annotations, to be added to all ofthe uploaded neurons}
+\item{annotations}{a character vector of annotations, to be added to all of the uploaded neurons}
+
+\item{include.tags}{whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its tags to its newly uploaded cognate}
+
+\item{include.connectors}{whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its connectors to its newly uploaded cognate}
+
+\item{return.new.skids}{if TRUE, the new skids created in the CATMAID instance specificed by conn, are returned}
 
 \item{pid}{project id. Defaults to 1}
 

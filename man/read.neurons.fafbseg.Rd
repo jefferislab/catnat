@@ -3,21 +3,18 @@
 \name{read.neurons.fafbseg}
 \alias{read.neurons.fafbseg}
 \alias{fafbseg_get_node_count}
-\title{Read neurons from the FAFB segmentation instance (temportary)}
+\title{Read neurons from the FAFB segmentation instance (temporary)}
 \usage{
-read.neurons.fafbseg(x, name = FALSE, and.annotation = TRUE,
-  conn = NULL, ...)
+read.neurons.fafbseg(x, google = FALSE, conn = NULL, ...)
 
 fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
   "local"), ...)
 }
 \arguments{
-\item{x}{typically a neuroglancer ID. By default, we treat it as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
-if given as a character starting with 'name:' or 'anotation:' respectively.}
+\item{x}{typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.}
 
-\item{name}{when TRUE, "name:" is added in front of ever element in x}
-
-\item{and.annotation}{when Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read}
+\item{google}{if TRUE, we treat x as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
+if given as a character starting with 'name:' or 'anotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.}
 
 \item{conn}{a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.}
 

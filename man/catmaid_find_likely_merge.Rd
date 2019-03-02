@@ -4,15 +4,11 @@
 \alias{catmaid_find_likely_merge}
 \title{Find the TODO tagged merge sites between a given neuron and the CATMAID database at large}
 \usage{
-catmaid_find_likely_merge(TODO, skid, pid = 1, fafbseg = FALSE,
-  min_nodes = 2, search.range.nm = 100)
+catmaid_find_likely_merge(TODO, fafbseg = FALSE, min_nodes = 2,
+  search.range.nm = 1000, pid = 1, conn = conn, ...)
 }
 \arguments{
-\item{TODO}{a data.frame, as returned by catmaid_get_tag with tag = "TODO" and url = FALSE}
-
-\item{skid}{the skeleton ID of a neuron for which merges are to be found}
-
-\item{pid}{project id. Defaults to 1}
+\item{TODO}{a data.frame, as returned by catmaid_get_tag with tag = "TODO" (or a different tag indicative of a merge point) and url = FALSE}
 
 \item{fafbseg}{whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible merges to neurons within the search range and within the cognate auto-segmented volume}
 
@@ -20,7 +16,13 @@ catmaid_find_likely_merge(TODO, skid, pid = 1, fafbseg = FALSE,
 
 \item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
 
+\item{pid}{project id. Defaults to 1}
+
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{skid}{the skeleton ID of a neuron for which merges are to be found}
 }
 \description{
 Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.

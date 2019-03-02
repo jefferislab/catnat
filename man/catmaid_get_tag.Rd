@@ -4,8 +4,7 @@
 \alias{catmaid_get_tag}
 \title{Find the location of specified tags for a CATMAID neuron}
 \usage{
-catmaid_get_tag(x, tag = "TODO", url = TRUE,
-  server = "https://neuropil.janelia.org/tracing/fafb/v14/")
+catmaid_get_tag(x, tag = "TODO", url = FALSE, conn = NULL, pid = 1)
 }
 \arguments{
 \item{x}{a neuron or neuronlist object}
@@ -13,8 +12,6 @@ catmaid_get_tag(x, tag = "TODO", url = TRUE,
 \item{tag}{a single character specifying which tag to look for. Defaults to TODO.}
 
 \item{url}{if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags}
-
-\item{server}{the CATMAID server for which URLs should be created if url == TRUE}
 }
 \description{
 Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.

@@ -14,7 +14,7 @@
 #' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
 #' @rdname catmaid_upload_neurons
-catmaid_upload_neurons <- function (swc = NULL, name ="neuron SWC upload", annotations = NULL,
+catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annotations = NULL,
                                     include.tags = TRUE,include.connectors = TRUE,
                                     search.range.nm = 0, return.new.skids = FALSE,
                                     pid = 1, conn = NULL, max.upload = 10, ...) {
@@ -230,8 +230,8 @@ catmaid_link_connectors <- function(treenode_id, connector_id,
 #' @param url if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags
 #' @export
 #' @rdname catmaid_get_tag
-catmaid_get_tag<-function(x, tag = "TODO", url = TRUE) UseMethod("catmaid_get_tag")
-catmaid_get_tag.neuron <- function(x, tag = "TODO", url = TRUE){
+catmaid_get_tag<-function(x, tag = "TODO", url = FALSE, conn = NULL, pid = 1) UseMethod("catmaid_get_tag")
+catmaid_get_tag.neuron <- function(x, tag = "TODO", url = FALSE, conn = NULL, pid = 1){
   TODO = unique(unlist(x$tags[[tag]]))
   if(is.null(TODO)){
     NULL
@@ -251,7 +251,7 @@ catmaid_get_tag.neuron <- function(x, tag = "TODO", url = TRUE){
     }
   }
 }
-catmaid_get_tag.neuronlist <- function(x, tag = "TODO", url = TRUE){
+catmaid_get_tag.neuronlist <- function(x, tag = "TODO", url = FALSE, conn = NULL, pid = 1){
   if(url){
     unlist(lapply(x,catmaid_get_tag.neuron, url=url, tag= tag))
   }else{
@@ -281,16 +281,17 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
     skids.bbx = catmaid_skeletons_in_bbx(bbx=bbx, min_nodes=min_nodes, pid=pid, conn = conn, ...)
     neuron.bbx = catmaid::read.neurons.catmaid(skids.bbx, OmitFailures = TRUE, pid=pid, conn = conn, ...)
     neuron.bbx = neuron.bbx[setdiff(names(neuron.bbx),skid)]
+    message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
       if(fafbseg){
         require(fafbseg)
         seg = tryCatch(fafbseg::brainmaps_xyz2id(todo[,c('X','Y', 'Z')]),error=function(e)NULL)
-        s = fafbseg::find_merged_segments(seg)
-        vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) "read error")
-        in.vol = sapply(neuron.bbx,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0)
+        seg = segs[seg!=0]
+        s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
+        s = s[s!=0]
+        vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) message("warning: Google brainmaps read error, take extra care when deciding on join"))
+        in.vol = tryCatch(sapply(neuron.bbx,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
         neuron.bbx = neuron.bbx[in.vol]
-        message(length(neuron.bbx), " fragments found in fafb auto-traced segment corresponding with merge tag")
-      }else{
-        message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
+        message(length(neuron.bbx), " fragments found in FAFB Google auto-traced segment corresponding with merge tag")
       }
       neuron.bbx.d = do.call(rbind,lapply(1:length(neuron.bbx),function(n) cbind(neuron.bbx[[n]]$d,skid=names(neuron.bbx[n]))))
       near = nabor::knn(query = todo[,c('X','Y', 'Z')], data =nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
@@ -328,6 +329,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
     TODO.possible = subset(possible.merges,downstream.node==unique(possible.merges$downstream.node)[todo])
     skid = unique(TODO.possible[,"downstream.skid"])[todo]
     todo = unique(possible.merges$downstream.node)[todo]
+    TODO.possible = subset(TODO.possible, upstream.node!=todo)
     if(!is.null(downstream.neurons)){
       neuron = downstream.neurons[as.character(skid)]
     }else{
@@ -363,7 +365,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
         rgl::plot3d(merger.neuron,col="green",lwd=2,soma=T)
         sure = readline("Sure? y = yes, n = no : ")
         if(sure=="y"){
-          catmaid_join_skeletons(from_treenode_id = possible.merges[i,"downstream.node"], to_treenode_id = possible.merges[i,"upstream.node"], pid = pid, conn = conn, ...)
+          catmaid_join_skeletons(from_treenode_id = TODO.possible[i,"downstream.node"], to_treenode_id = TODO.possible[i,"upstream.node"], pid = pid, conn = conn, ...)
           continue=TRUE
         }else{
           i = ifelse(i==nrow(TODO.possible),i,i+1)
@@ -542,7 +544,9 @@ catmaid_skeletons_in_bbx <- function(bbx, min_nodes = 2, pid = 1, conn = NULL, .
 #' @param neuron the neuron object you are thinking about uploading
 #' @param skid the skeleton ID that corresponds to neuron
 #' @param tolerance how many potentially duplictated nodes you will tolerate. If NULL, skeleton IDs for potentially duplictated neurons are returned.
-#' @param search.range.nm determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 1 nm
+#' @param duplication.range.nm determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 10 nm
+#' @param downsample if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up
+#' @param fafbseg whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible duplication to skeletons within the search range and within the cognate auto-segmented volume
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch
@@ -550,24 +554,43 @@ catmaid_skeletons_in_bbx <- function(bbx, min_nodes = 2, pid = 1, conn = NULL, .
 #' and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
 #' @export
 #' @rdname catmaid_skeletons_in_bbx
-catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.range.nm = 10, pid = 1, conn = NULL, ...){
+catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.range.nm = 10, downsample = 1,  fafbseg = FALSE, pid = 1, conn = NULL, ...){
   duplicated = c()
   skids = list()
-  pb <- utils::txtProgressBar(min = 0, max = nrow(neuron$d), style = 3)
-  for(i in 1:nrow(neuron$d)){
-    bbx = rbind(nat::xyzmatrix(neuron$d[i,])-duplication.range.nm, nat::xyzmatrix(neuron$d[i,])+duplication.range.nm)
-    skids.bbx = catmaid_skeletons_in_bbx(bbx=bbx, min_nodes = 2, pid = pid, conn = conn, ...)
-    skids.bbx = setdiff(skids.bbx,as.integer(skid))
-    duplicated = c(duplicated,length(skids.bbx)>0)
-    skids[[i]] = unique(skids.bbx)
-    utils::setTxtProgressBar(pb, i)
-  }
-  close(pb)
-  if(is.null(tolerance)){
-    list(duplicated.nodes = duplicated, overlapping.skids = skids)
+  if(!length(neuron$d)|nrow(neuron$d)==1){
+    NULL
   }else{
-    calc = (sum(duplicated)/nrow(duplicated))
-    ifelse(length(calc)>0,calc,0) > tolerance
+    points = neuron$d[sample(1:nrow(neuron$d),nrow(neuron$d)/downsample),]
+    pb <- utils::txtProgressBar(min = 0, max = nrow(neuron$d), style = 3)
+    for(i in 1:nrow(points)){
+      bbx = rbind(nat::xyzmatrix(points[i,])-duplication.range.nm, nat::xyzmatrix(points[i,])+duplication.range.nm)
+      skids.bbx = catmaid_skeletons_in_bbx(bbx=bbx, min_nodes = 2, pid = pid, conn = conn, ...)
+      skids.bbx = setdiff(skids.bbx,as.integer(skid))
+      duplicated = c(duplicated,length(skids.bbx)>0)
+      skids[[i]] = unique(skids.bbx)
+      utils::setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    if(fafbseg){
+      require(fafbseg)
+      similar.skids = unique(unlist(skids))
+      similars = read.neurons.catmaid(similar.skids, pid = pid, conn = conn, ...)
+      seg = tryCatch(fafbseg::brainmaps_xyz2id(points),error=function(e)NULL)
+      seg = segs[seg!=0]
+      s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
+      s = s[s!=0]
+      vol = tryCatch(fafbseg::read_brainmaps_meshes(s), error = function(e) message("warning: Google brainmaps read error"))
+      in.vol = tryCatch(sapply(similars,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
+      similar.skids = similar.skids[in.vol]
+      skids = lapply(skids,function(s) s[s%in%similar.skids])
+      duplicated = sapply(skids, function(s) length(s)>0)
+    }
+    if(is.null(tolerance)){
+      list(duplicated.nodes = duplicated, overlapping.skids = skids)
+    }else{
+      calc = (sum(duplicated)/length(duplicated))
+      ifelse(length(calc)>0,calc,0) > tolerance
+    }
   }
 }
 
@@ -605,7 +628,7 @@ catmaid_delete_neuron <- function(skid,
           You will first be shown the neuron you want to delete and who has worked on it,
           and then asked whether or not you want to continue.")
   if(control){
-    progress = readline(paste0("Do you want to continue with: ", skid," in CATMAID instance ", server, " y=yes, n=no : "))
+    progress = readline(paste0("Do you want to continue with: ", skid," in CATMAID instance ", catmaid_get_server(conn), " y=yes, n=no : "))
   }else{
     progress = "y"
   }
@@ -767,7 +790,7 @@ catmaid_convert_time <- function(utc){
 #' Upload neuron(s) to CATMAID
 #'
 #' @description  Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
-#' Please use with caution, as you could be heavily adding to a live tracing environment.
+#' Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 #' @param x either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server
 #' @param tolerance how many potentially duplictated nodes you will tolerate
 #' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
@@ -776,12 +799,15 @@ catmaid_convert_time <- function(utc){
 #' @param include.connectors whether of not to transfer each neuron's connectors to its newly uploaded cognate
 #' @param join whether or not to attempt to join each uploaded neuron to neurons within the new CATMAID instance, based on the placement of join.tags specified using the next argument
 #' @param join.tag a single character specifying a tag that has been used to signify a potential merge point
+#' @param lock if TRUE, neurons in the CATMAID instance specified by conn2 (i.e. the environment from which you are uploading) will be 'locked' so other users cannot edit them (via addition of a 'locked' annotation)
 #' @param min_nodes the minimum number of nodes a potential merger skeleton needs to have
 #' @param search.range.nm the maimum distance from which to search from the TODO point tag to find potential mergers
+#' @param duplication.range.nm the radius around each node of a skeleton you are looking to upload, in which to search for other CATMAID skeletons that might represent a duplication of the same neuron
 #' @param fafbseg whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible merges to neurons within the search range and within the cognate auto-segmented volume
+#' @param downsample if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up
 #' @param brain the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.
 #' @param pid project id for conn. Defaults to 1
-#' @param pid project id for conn2. Defaults to 1
+#' @param pid2 project id for conn2. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param conn2 CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param max.upload the maximum number of files that the function will allow you to upload at once
@@ -792,11 +818,10 @@ catmaid_convert_time <- function(utc){
 #' # Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.
 #' # Be aware that the interactive join will often suggest the same neuron multiple times at different join sites.
 #' # The join sites are indicated by spheres - you may need to zoom in in order to see them.
-#' uploaded = catmaid_controlled_upload(x = "name:ASB Tester", join = TRUE, name = "ASB Tester from v14-seg",
+#' # If lock = TRUE, the neurons we just uploaded will be locked, to lessen the chance someone else will connect stuff to them and want to upload them AGAIN later...
+#' uploaded = catmaid_controlled_upload(x = "name:ASB Tester", join = TRUE, name = "ASB Tester from v14-seg", duplication.range.nm = 10,
 #' search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", brain = elmr::FAFB14)
 #' # Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.
-#' # let's lock the neurons we just uploaded, to lessen the chance someone else will connect stuff to them and want to upload them AGAIN later...
-#' catmaid_lock_neurons(skids = uploaded$downloaded.skids, conn = fafb_seg_conn())
 #' # Oops, did you make a mistake in uploading this neuron?
 #' delete.skids = catmaid::catmaid_skids("annotation:ASB Tester from v14-seg")
 #' catmaid_delete_neurons(delete.skids)
@@ -804,19 +829,21 @@ catmaid_convert_time <- function(utc){
 #' # Phew.
 #' @export
 #' @rdname catmaid_controlled_upload
-catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron upload",
+catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuron upload",
                                       annotations = "v14-seg upload", avoid = "v14",
                                       include.tags = TRUE, include.connectors = TRUE,
                                       search.range.nm = 1000, join = FALSE, join.tag = "TODO",
-                                      fafbseg = FALSE, min_nodes = 2,
-                                      brain = NULL, return.uploaded.skids = TRUE,
+                                      lock = TRUE, fafbseg = FALSE, downsample = 2, min_nodes = 2,
+                                      brain = NULL, return.uploaded.skids = TRUE,duplication.range.nm,
                                       pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),  ...){
   if(!is.neuronlist(x)){
     message("Reading neurons from ", catmaid_get_server(conn2))
     neurons = catmaid::read.neurons.catmaid(x,pid=pid2,conn=conn2, ...)
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
-    already.there = subset(anns,annotation%in%avoid)$skid
-    neurons = neurons[setdiff(names(neurons),already.there)]
+    if("annotation"%in%colnames(anns)){
+      already.there = subset(anns,annotation%in%avoid)$skid
+      neurons = neurons[setdiff(names(neurons),already.there)]
+    }
     if(length(already.there)){
       warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
     }
@@ -827,8 +854,12 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
     stop("The name argument must be a chracter vector the same length as neurons,
          or if all uploaded neurons are to be named the same, a character vector of length one")
   }
+  if(lock){
+    avoid = unique(c(avoid,"locked"))
+  }
   uploaded.new = c()
   uploaded.old = c()
+  message("Considering upload to ", catmaid_get_server(conn))
   nat::nopen3d()
   for(i in 1:length(neurons)){
     neuron = neurons[[i]]
@@ -843,16 +874,22 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
       rgl::plot3d(brain,alpha=0.1,col="grey")
     }
     rgl::plot3d(neuron, lwd = 1, WithConnectors = TRUE)
-    message("Assessing whether upload of neuron ",i, " may cause a duplication:" )
-    dupe = catmaid_duplicated(neuron, tolerance = NULL, pid = pid, conn = conn, ...)
+    tag.point  = catmaid_get_tag(neuron, tag = join.tag)
+    if(length(tag.point)){
+      rgl::spheres3d(nat::xyzmatrix(tag.point),col="orange",alpha=0.5,radius=search.range.nm)
+    }
+    message("Assessing whether upload of this neuron ",i, " of ", length(neurons), " may cause a duplication:" )
+    print(neurons[i,])
+    dupe = catmaid_duplicated(neuron, tolerance = NULL, duplication.range.nm = duplication.range.nm, downsample = downsample, fafbseg = fafbseg, pid = pid, conn = conn, ...)
     calc = (sum(dupe$duplicated.nodes)/length(dupe$duplicated.nodes))
     calc = ifelse(length(calc)>0,calc,0)
     if(calc>0){
       t = table(unlist(dupe$overlapping.skids))
-      t = names(t)[which.max(t)]
+      t = names(t)[order(t,decreasing = TRUE)]
+      t = t[1:3]; t = t[!is.na(t)]
       similar = catmaid::read.neurons.catmaid(t, pid = pid, conn = conn, ...)
-      rgl::plot3d(similar, col="grey", lwd=1)
-      message("overlapping neuron")
+      rgl::plot3d(similar, col=c("darkgrey","grey","lightgrey")[1:length(t)], lwd=4, WithConnectors = TRUE)
+      message("most overlapping neurons:")
       print(similar[,])
     }
     dupe = calc > tolerance
@@ -861,8 +898,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
     progress = readline("Do you want to upload this neuron? y=yes, n=no: ")
     if(dupe){
       warning("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
-              Upload for neuron ", i, " aborted.")
-      next
+              Upload for neuron ", i, " aborted (tolerance:",tolerance,").")
     }else if(progress=="y"){
       if(calc>0){
         nat::npop3d()
@@ -874,17 +910,20 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
                                         conn = conn, pid = pid, max.upload = 1, ...)
       new.neuron = read.neurons.catmaid(new.skid, conn=conn, pid=pid, ...)
       message("Upload successful, neuron ", new.skid, " created, named: ", new.neuron[,"name"])
+      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = avoid, pid = pid2, conn = conn2, ...)
       uploaded.new = c(uploaded.new,new.skid)
       uploaded.old = c(uploaded.old,old.skid)
       if(join){
         message("Finding tagged potential join points ...")
         TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
         if(length(TODO)){
-          possible.merges = catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
-                                                       min_nodes = min_nodes, search.range.nm = search.range.nm, ...)
-            if(nrow(possible.merges)>1){
+          possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
+                                                       min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
+                                     error = function(e) message("Error finding join sites, aborting join"))
+            if(length(possible.merges)){
               message("Choose join sites interactively: ")
-              catmaid_interactive_join(possible.merges=possible.merges, downstream.neurons = new.neuron, brain = brain, pid = pid, conn = conn, ...)
+              tryCatch(catmaid_interactive_join(possible.merges=possible.merges, downstream.neurons = new.neuron, brain = brain, pid = pid, conn = conn, ...),
+                       error = function(e) message("Error making join, aborting join"))
             }else{
               message("No potential join sites found for new neuron ", new.skid)
               next
@@ -896,11 +935,117 @@ catmaid_controlled_upload <- function(x, tolerance = 0.5, name = "v14-seg neuron
       }
     }
   }
-  catmaid::catmaid_set_annotations_for_skeletons(skids = uploaded.old, annotations = avoid, pid = pid2, conn = conn2, ...)
   if(return.uploaded.skids){
     list(uploaded.skids = uploaded.new, downloaded.skids = uploaded.old)
   }
 }
+
+# Hidden function, for efficiency
+catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron upload",
+                                      annotations = "v14-seg upload", avoid = "v14",
+                                      include.tags = TRUE, include.connectors = TRUE,
+                                      search.range.nm = 1000, duplication.range.nm = 10, join = TRUE, join.tag = "TODO",
+                                      lock = TRUE, fafbseg = TRUE, downsample = 2, min_nodes = 2,
+                                      return.uploaded.skids = TRUE,
+                                      pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),  ...){
+  if(!is.neuronlist(x)){
+    message("Reading neurons from ", catmaid_get_server(conn2))
+    neurons = catmaid::read.neurons.catmaid(x,pid=pid2,conn=conn2, ...)
+    anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
+    if("annotation"%in%colnames(anns)){
+      already.there = subset(anns,annotation%in%avoid)$skid
+      neurons = neurons[setdiff(names(neurons),already.there)]
+    }
+    if(length(already.there)){
+      warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", paste(avoid, collapse = " "))
+    }
+  }else{
+    neurons = x
+  }
+  if(length(name)!=1&length(name)!=length(neurons)){
+    stop("The name argument must be a chracter vector the same length as neurons,
+         or if all uploaded neurons are to be named the same, a character vector of length one")
+  }
+  if(lock){
+    avoid = unique(c(avoid,"locked"))
+  }
+  uploaded.new = c()
+  uploaded.old = c()
+  message("Considering upload to ", catmaid_get_server(conn))
+  for(i in 1:length(neurons)){
+    neuron = neurons[[i]]
+    old.skid = neurons[i,"skid"]
+    if(length(name)==1){
+      nam = names
+    }else{
+      nam = names[i]
+    }
+    message("Assessing whether upload of this neuron ",i, " of ", length(neurons), " may cause a duplication:" )
+    print(neurons[i,])
+    dupe = catmaid_duplicated(neuron, tolerance = NULL, duplication.range.nm = duplication.range.nm, downsample = downsample, fafbseg = fafbseg, pid = pid, conn = conn, ...)
+    calc = (sum(dupe$duplicated.nodes)/length(dupe$duplicated.nodes))
+    calc = ifelse(length(calc)>0,calc,0)
+    dupe = calc > tolerance
+    message("The neuron flagged for upload seems to have ", calc*100, "% of its nodes already in the targetted CATMAID instance")
+    if(dupe){
+      message("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
+              Upload for neuron ", i, " aborted (tolerance: ",tolerance,").")
+    }else{
+      message("Uploading neuron ", i)
+      new.skid = catmaid_upload_neurons(swc=neuron,name=name,annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
+                                        include.tags=include.tags,include.connectors=include.connectors,
+                                        search.range.nm=10, return.new.skids = TRUE,
+                                        conn = conn, pid = pid, max.upload = 1, ...)
+      new.neuron = read.neurons.catmaid(new.skid, conn=conn, pid=pid, ...)
+      message("Upload successful, neuron ", new.skid, " created, named: ", new.neuron[,"name"])
+      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = avoid, pid = pid2, conn = conn2, ...)
+      uploaded.new = c(uploaded.new,new.skid)
+      uploaded.old = c(uploaded.old,old.skid)
+      if(join){
+        message("Finding tagged potential join points ...")
+        TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
+        if(length(TODO)){
+          possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
+                                                               min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
+                                     error = function(e) message("Error finding join sites, aborting join"))
+          if(length(possible.merges)){
+            message("making joins")
+            for(todo in unique(possible.merges$downstream.node)){
+              TODO.possible = subset(possible.merges,downstream.node==todo&upstream.node!=todo)
+              downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
+              merger = catmaid::catmaid_get_treenodes_detail(tnids = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
+              merger.neuron = catmaid::catmaid_get_neuronnames(as.character(merger$skid), pid = pid, conn = conn, ...)
+              message("Merging to:  ",paste(merger.neuron,collapse = " "))
+              catmaid_url = paste0(catmaid_get_server(conn), "?pid=",pid)
+              catmaid_url = paste0(catmaid_url, "&zp=", TODO.possible[1,"Z"])
+              catmaid_url = paste0(catmaid_url, "&yp=", TODO.possible[1,"Y"])
+              catmaid_url = paste0(catmaid_url, "&xp=", TODO.possible[1,"X"])
+              catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
+              catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", skid)
+              catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
+              message("See merge site in CATMAID: ", catmaid_url)
+              catmaid_join_skeletons(from_treenode_id = TODO.possible[1,"downstream.node"], to_treenode_id = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
+            }
+          }else{
+            message("No potential join sites found for new neuron ", new.skid)
+            next
+          }
+        }else{
+          message("No potential join sites found for new neuron ", new.skid)
+          next
+        }
+      }
+    }
+  }
+  if(return.uploaded.skids){
+    list(uploaded.skids = uploaded.new, downloaded.skids = uploaded.old)
+  }
+}
+
+
+
+
+
 
 # Hidden function to connect to a local CATMAID server
 local_conn <- function(){
