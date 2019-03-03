@@ -64,7 +64,6 @@ fafb_seg <- function(FUN, ...){
 }
 #' @export
 #' @rdname fafb_seg
-#'
 fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
   if(is.null(conn)){
     conn = catmaid::catmaid_login()
