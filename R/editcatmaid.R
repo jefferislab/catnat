@@ -286,7 +286,7 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
         require(fafbseg)
         message("Checking whether potential merges are within the same FAFB volumetric auto-traced segments")
         seg = tryCatch(fafbseg::brainmaps_xyz2id(todo[,c('X','Y', 'Z')]),error=function(e)NULL)
-        seg = segs[seg!=0]
+        seg = seg[seg!=0]
         s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
         s = s[s!=0]
         vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error, take extra care when deciding on join"))
@@ -578,7 +578,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
       similar.skids = unique(unlist(skids))
       similars = read.neurons.catmaid(similar.skids, OmitFailures = TRUE, pid = pid, conn = conn, ...)
       seg = tryCatch(fafbseg::brainmaps_xyz2id(points),error=function(e)NULL)
-      seg = segs[seg!=0]
+      seg = seg[seg!=0]
       s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
       s = s[s!=0]
       vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error"))
