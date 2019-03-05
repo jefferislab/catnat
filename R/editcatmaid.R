@@ -300,11 +300,11 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
       near = neuron.bbx.d[near,]
       near$TODO = todo$PointNo
       near$merger = skid
+      near = subset(possible.merges,upstream.skid!=skid)
       possible.merges = rbind(possible.merges,near)
   }
   possible.merges = possible.merges[,setdiff(colnames(possible.merges),"Parent")]
   colnames(possible.merges) = c("upstream.node","label","X","Y","Z","W","upstream.skid","downstream.node","downstream.skid")
-  possible.merges = subset(possible.merges,upstream.skid!=new.skid)
   possible.merges
 }
 
@@ -1090,3 +1090,6 @@ catmaid_get_server<-function(conn=NULL,...){
   }
   conn$server
 }
+
+
+
