@@ -330,7 +330,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
     TODO.possible = subset(possible.merges,downstream.node==unique(possible.merges$downstream.node)[todo])
     skid = unique(TODO.possible[,"downstream.skid"])[todo]
     todo = unique(possible.merges$downstream.node)[todo]
-    TODO.possible = subset(TODO.possible, upstream.node!=todo)
+    TODO.possible = subset(TODO.possible, upstream.skid!=skid)
     if(!is.null(downstream.neurons)){
       neuron = downstream.neurons[as.character(skid)]
     }else{
@@ -438,30 +438,45 @@ fafbseg_join_connectors_in_brainmaps_volumes <- function(neurons,
     stop("Neurons must be a neuronlist object")
   }
   ### Get ngl IDs corresponding to potential presynapses ###
-  connectors.pre = catmaid::catmaid_get_connector_table(skids=putatively.connected.skids, direction = "incoming",
-                                                       get_partner_nodes = TRUE,
-                                                       pid = pid, conn = conn, ...)
+  message("Fetching putatively connected presynapses")
+  connectors.pre = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
+    tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
+                                                  direction = "incoming",
+                                                  get_partner_nodes = TRUE,
+                                                  pid = pid, conn = conn, ...),
+             error = function(e) NULL)))
+  connectors.pre = connectors.pre[apply(connectors.pre,1,function(r) sum(is.na(r))==0),]
   connectors.pre = connectors.pre[!duplicated(connectors.pre$connector_id),]
   connectors.pre[is.na(connectors.pre$partner_skid)&is.na(connectors.pre$partner_nodes),"partner_nodes"] = 0
   connectors.pre = subset(connectors.pre,partner_nodes<10)
+  message("Assigning FAFB segmented volumes to connector locations")
   connector.pre.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.pre))
   df.pre.connectors = data.frame(connector_id = connectors.pre$connector_id, connector.skid = connectors.pre$skid,
                              x = connectors.pre$x, y = connectors.pre$y, z = connectors.pre$z,
                              ngl_id = connector.pre.segs, link_type = "presynaptic", partner_nodes = connectors.pre$partner_nodes)
   ### Get ngl IDs corresponding to potential postsynapses ###
-  connectors.post = catmaid::catmaid_get_connector_table(skids=putatively.connected.skids, direction = "outgoing",
-                                                       get_partner_nodes = TRUE,
-                                                       pid = pid, conn = conn, ...)
+  message("Fetching putatively connected postsynapses")
+  connectors.post = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
+    tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
+                                                  direction = "outgoing",
+                                                  get_partner_nodes = TRUE,
+                                                  pid = pid, conn = conn, ...),
+             error = function(e) NULL)))
+  connectors.post = connectors.post[apply(connectors.post,1,function(r) sum(is.na(r))==0),]
   connectors.post = connectors.post[!duplicated(connectors.post$connector_id),]
   connectors.post[is.na(connectors.post$partner_skid)&is.na(connectors.post$partner_nodes),"partner_nodes"] = 0
   connectors.post = subset(connectors.post,partner_nodes<10&partner_nodes>0)
+  connectors.post.nodes = data.frame()
   for(i in 1:nrow(connectors.post)){
-    catmaid_connector_nodes(connector_id = df[i,"connector_id"],node = df[i,"link_type"],pid=pid,conn=conn,...)
+    node.df = catmaid_connector_nodes(connector_id = df[i,"connector_id"],node = df[i,"link_type"],pid=pid,conn=conn,...)
+    node.df = merge(node.df,connectors.post[i,])
+    connectors.post.nodes = rbind(connectors.post.nodes,node.df)
   }
-  connector.post.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.post))
-  df.post.connectors = data.frame(connector_id = connectors.post$connector_id, connector.skid = connectors.post$skid,
-                             x = connectors.post$x, y = connectors.post$y, z = connectors.post$z,
-                             ngl_id = connector.post.segs, link_type = "postsynaptic", partner_nodes = connectors.post$partner_nodes)
+  message("Assigning FAFB segmented volumes to postsynapse node locations")
+  connector.post.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.post.nodes))
+  df.post.connectors = data.frame(connector_id = connectors.post.nodes$connector_id, connector.skid = connectors.post.nodes$skid,
+                             x = connectors.post.nodes$x, y = connectors.post.nodes$y, z = connectors.post.nodes$z,
+                             ngl_id = connector.post.segs, link_type = "postsynaptic", partner_nodes = connectors.post.nodes$partner_nodes)
   df.connectors = rbind(df.pre.connectors,df.post.connectors)
   df.connectors = subset(df.connectors,ngl_id!=0)
   ### Get ngl IDs corresponding to the skeletons ###
@@ -1016,7 +1031,8 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
           if(length(possible.merges)){
             message("making joins")
             for(todo in unique(possible.merges$downstream.node)){
-              TODO.possible = subset(possible.merges,downstream.node==todo&upstream.node!=todo)
+              TODO.possible = subset(possible.merges,downstream.node==todo)
+              TODO.possible = subset(TODO.possible,upstream.skid!=new.skid)
               downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
               merger = catmaid::catmaid_get_treenodes_detail(tnids = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
               merger.neuron = catmaid::catmaid_get_neuronnames(as.character(merger$skid), pid = pid, conn = conn, ...)
@@ -1026,7 +1042,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
               catmaid_url = paste0(catmaid_url, "&yp=", TODO.possible[1,"Y"])
               catmaid_url = paste0(catmaid_url, "&xp=", TODO.possible[1,"X"])
               catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-              catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", skid)
+              catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", new.skid)
               catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
               message("See merge site in CATMAID: ", catmaid_url)
               catmaid_join_skeletons(from_treenode_id = TODO.possible[1,"downstream.node"], to_treenode_id = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
@@ -1072,3 +1088,4 @@ catmaid_get_server<-function(conn=NULL,...){
   }
   conn$server
 }
+
