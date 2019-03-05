@@ -304,6 +304,7 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
   }
   possible.merges = possible.merges[,setdiff(colnames(possible.merges),"Parent")]
   colnames(possible.merges) = c("upstream.node","label","X","Y","Z","W","upstream.skid","downstream.node","downstream.skid")
+  possible.merges = subset(possible.merges,upstream.skid!=new.skid)
   possible.merges
 }
 
@@ -940,6 +941,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
           possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                        min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
                                      error = function(e) message("Error finding join sites, aborting join"))
+          possible.merges = subset(possible.merges,upstream.skid!=new.skid)
             if(length(possible.merges)){
               message("Choose join sites interactively: ")
               tryCatch(catmaid_interactive_join(possible.merges=possible.merges, downstream.neurons = new.neuron, brain = brain, pid = pid, conn = conn, ...),
@@ -1028,11 +1030,11 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
           possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                                min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
                                      error = function(e) message("Error finding join sites, aborting join"))
+          possible.merges = subset(possible.merges,upstream.skid!=new.skid)
           if(length(possible.merges)){
             message("making joins")
             for(todo in unique(possible.merges$downstream.node)){
               TODO.possible = subset(possible.merges,downstream.node==todo)
-              TODO.possible = subset(TODO.possible,upstream.skid!=new.skid)
               downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
               merger = catmaid::catmaid_get_treenodes_detail(tnids = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
               merger.neuron = catmaid::catmaid_get_neuronnames(as.character(merger$skid), pid = pid, conn = conn, ...)
@@ -1088,4 +1090,3 @@ catmaid_get_server<-function(conn=NULL,...){
   }
   conn$server
 }
-
