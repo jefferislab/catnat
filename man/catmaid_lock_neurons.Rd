@@ -12,6 +12,14 @@ catmaid_unlock_neurons(skids, pid = 1, conn = NULL, ...)
 catmaid_lock_neurons(skids, pid = 1, conn = NULL, ...)
 
 catmaid_unlock_neurons(skids, pid = 1, conn = NULL, ...)
+
+catmaid_lock_neurons(skids, pid = 1, conn = NULL, ...)
+
+catmaid_unlock_neurons(skids, pid = 1, conn = NULL, ...)
+
+catmaid_lock_neurons(skids, pid = 1, conn = NULL, ...)
+
+catmaid_unlock_neurons(skids, pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{skids}{the skeleton IDs neurons you wish to lock / unlock}
@@ -33,8 +41,32 @@ catmaid_unlock_neurons(skids, pid = 1, conn = NULL, ...)
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{skids}{the skeleton IDs neurons you wish to lock / unlock}
+
+\item{server}{the CATMAID server from which to delete the neuron identified by skid}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{skids}{the skeleton IDs neurons you wish to lock / unlock}
+
+\item{server}{the CATMAID server from which to delete the neuron identified by skid}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
+Lock or unlock a CATMAID neuron reconstruction by adding or removing a 'locked' annotation to a set of skeleton IDs (skids). A locked neuron cannot be edited until it is unlocked.
+
+Lock or unlock a CATMAID neuron reconstruction by adding or removing a 'locked' annotation to a set of skeleton IDs (skids). A locked neuron cannot be edited until it is unlocked.
+
 Lock or unlock a CATMAID neuron reconstruction by adding or removing a 'locked' annotation to a set of skeleton IDs (skids). A locked neuron cannot be edited until it is unlocked.
 
 Lock or unlock a CATMAID neuron reconstruction by adding or removing a 'locked' annotation to a set of skeleton IDs (skids). A locked neuron cannot be edited until it is unlocked.

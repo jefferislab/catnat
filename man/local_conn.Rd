@@ -7,13 +7,25 @@
 local_conn()
 
 local_conn()
+
+local_conn()
+
+local_conn()
 }
 \arguments{
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 }
 \description{
+connect to a local CATMAID server running on you machine using Docker (see ?catmaid::catmaid_login, and https://catmaid.readthedocs.io/en/stable/docker.html)
+
+connect to a local CATMAID server running on you machine using Docker (see ?catmaid::catmaid_login, and https://catmaid.readthedocs.io/en/stable/docker.html)
+
 connect to a local CATMAID server running on you machine using Docker (see ?catmaid::catmaid_login, and https://catmaid.readthedocs.io/en/stable/docker.html)
 
 connect to a local CATMAID server running on you machine using Docker (see ?catmaid::catmaid_login, and https://catmaid.readthedocs.io/en/stable/docker.html)

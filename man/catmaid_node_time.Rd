@@ -9,6 +9,12 @@ catmaid_node_time(id, time = c("creation_time", "edition_time"),
 
 catmaid_node_time(id, time = c("creation_time", "edition_time"),
   pid = 1, conn = NULL, ...)
+
+catmaid_node_time(id, time = c("creation_time", "edition_time"),
+  pid = 1, conn = NULL, ...)
+
+catmaid_node_time(id, time = c("creation_time", "edition_time"),
+  pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{id}{a treenode or connector ID}
@@ -34,8 +40,36 @@ catmaid_node_time(id, time = c("creation_time", "edition_time"),
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_set_labels}
+
+\item{id}{a treenode or connector ID}
+
+\item{connector_id}{the connector ID to/from which a link is to be made}
+
+\item{time}{whether to return the creation_time or edition_time}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_set_labels}
+
+\item{id}{a treenode or connector ID}
+
+\item{connector_id}{the connector ID to/from which a link is to be made}
+
+\item{time}{whether to return the creation_time or edition_time}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_set_labels}
 }
 \description{
+Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
+
+Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for makign 'state' arguments to be passed to other functions that edit data on a CATMAID server.
+
 Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
 
 Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for makign 'state' arguments to be passed to other functions that edit data on a CATMAID server.

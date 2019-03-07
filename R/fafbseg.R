@@ -62,11 +62,23 @@ fafb_seg <- function(FUN, ...){
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
   FUN(conn=conn, ...)
 }
+
+#' Log into the v14-seg CATMAID instance for FAFB v14 Adult flybrain segmented skeletonisations
+#'
+#' @description Log into the v14-seg CATMAID instance for FAFB v14 Adult flybrain segmented skeletonisations from Peter Li at Google
+#' @param pid project id. Defaults to 1
+#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
+#' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
-#' @rdname fafb_seg
+#' @rdname fafb_seg_conn
 fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
   if(is.null(conn)){
     conn = catmaid::catmaid_login()
+
+  }
+  if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
+    warning("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
+    warning("See ?catmaid_login")
   }
   conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
   conn

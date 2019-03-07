@@ -18,8 +18,78 @@ catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL,
 catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
   duplication.range.nm = 10, downsample = 1, fafbseg = FALSE,
   pid = 1, conn = NULL, ...)
+
+catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL,
+  ...)
+
+catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
+  duplication.range.nm = 10, downsample = 1, fafbseg = FALSE,
+  pid = 1, conn = NULL, ...)
+
+catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL,
+  ...)
+
+catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
+  duplication.range.nm = 10, downsample = 1, fafbseg = FALSE,
+  pid = 1, conn = NULL, ...)
 }
 \arguments{
+\item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}
+
+\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{neuron}{the neuron object you are thinking about uploading}
+
+\item{skid}{the skeleton ID that corresponds to neuron}
+
+\item{tolerance}{how many potentially duplictated nodes you will tolerate. If NULL, skeleton IDs for potentially duplictated neurons are returned.}
+
+\item{duplication.range.nm}{determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 10 nm}
+
+\item{downsample}{if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up}
+
+\item{fafbseg}{whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible duplication to skeletons within the search range and within the cognate auto-segmented volume}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}
+
+\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{neuron}{the neuron object you are thinking about uploading}
+
+\item{skid}{the skeleton ID that corresponds to neuron}
+
+\item{tolerance}{how many potentially duplictated nodes you will tolerate. If NULL, skeleton IDs for potentially duplictated neurons are returned.}
+
+\item{duplication.range.nm}{determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 10 nm}
+
+\item{downsample}{if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up}
+
+\item{fafbseg}{whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible duplication to skeletons within the search range and within the cognate auto-segmented volume}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
 \item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}
 
 \item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)}
@@ -82,8 +152,22 @@ and overlapping.skids, a list of skeleton IDs for potentially overlapping neuron
 
 If tolerance is NULL, then a list, with entires duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
 and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
+
+If tolerance is NULL, then a list, with entires duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
+and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
+
+If tolerance is NULL, then a list, with entires duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
+and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
 }
 \description{
+Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
+
+Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
+
+Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
+
+Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
+
 Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
 
 Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.

@@ -5,7 +5,9 @@
 \alias{fafbseg_update_node_radii}
 \title{Update radius information for tree nodes in a CATMAID instance}
 \usage{
-catmaid_update_radius(tnids, radii = -1, pid = 1, conn = NULL, ...)
+catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
+
+catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
 
 fafbseg_update_node_radii(x, max.dist = 5000, pid = 1, conn = NULL,
   ...)
@@ -25,6 +27,16 @@ fafbseg_update_node_radii(x, max.dist = 5000, pid = 1, conn = NULL,
 
 \item{max.dist}{the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.}
 
+\item{tnids}{the treenode ids to edit}
+
+\item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
+
 \item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector}
 
 \item{pid}{project id. Defaults to 1}
@@ -34,6 +46,8 @@ fafbseg_update_node_radii(x, max.dist = 5000, pid = 1, conn = NULL,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
+Update radius information for tree nodes in a CATMAID instancekids). A locked neuron cannot be edited until it is unlocked.
+
 Update radius information for tree nodes in a CATMAID instancekids). A locked neuron cannot be edited until it is unlocked.
 
 Update radius information for skeletons in a CATMAID instance using Peter Li's segmentation of FAFB-v14. Brainmaps API access required

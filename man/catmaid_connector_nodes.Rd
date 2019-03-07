@@ -9,6 +9,12 @@ catmaid_connector_nodes(connector_id, node = c("presynaptic",
 
 catmaid_connector_nodes(connector_id, node = c("presynaptic",
   "postsynaptic"), pid = 1, conn = conn, ...)
+
+catmaid_connector_nodes(connector_id, node = c("presynaptic",
+  "postsynaptic"), pid = 1, conn = conn, ...)
+
+catmaid_connector_nodes(connector_id, node = c("presynaptic",
+  "postsynaptic"), pid = 1, conn = conn, ...)
 }
 \arguments{
 \item{connector_id}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
@@ -30,8 +36,32 @@ catmaid_connector_nodes(connector_id, node = c("presynaptic",
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
+
+\item{connector_id}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
+
+\item{node}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
+
+\item{connector_id}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
+
+\item{node}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
 }
 \description{
+Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
+
+Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
+
 Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
 
 Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
