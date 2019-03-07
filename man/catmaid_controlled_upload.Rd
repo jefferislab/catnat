@@ -11,6 +11,14 @@ catmaid_controlled_upload(x, tolerance = 0.15,
   lock = TRUE, fafbseg = FALSE, downsample = 2, min_nodes = 2,
   brain = NULL, return.uploaded.skids = TRUE, duplication.range.nm,
   pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...)
+
+catmaid_controlled_upload(x, tolerance = 0.15,
+  name = "v14-seg neuron upload", annotations = "v14-seg upload",
+  avoid = "v14", include.tags = TRUE, include.connectors = TRUE,
+  search.range.nm = 1000, join = FALSE, join.tag = "TODO",
+  lock = TRUE, fafbseg = FALSE, downsample = 2, min_nodes = 2,
+  brain = NULL, return.uploaded.skids = TRUE, duplication.range.nm,
+  pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...)
 }
 \arguments{
 \item{x}{either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server}
@@ -54,8 +62,53 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 \item{...}{methods passed to catmaid::catmaid_fetch #' @examples}
 
 \item{max.upload}{the maximum number of files that the function will allow you to upload at once}
+
+\item{x}{either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server}
+
+\item{tolerance}{how many potentially duplictated nodes you will tolerate}
+
+\item{name}{whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.}
+
+\item{annotations}{a character vector of annotations, to be added to all of the uploaded neurons}
+
+\item{include.tags}{whether of not to transfer each neuron's tags to its newly uploaded cognate}
+
+\item{include.connectors}{whether of not to transfer each neuron's connectors to its newly uploaded cognate}
+
+\item{join}{whether or not to attempt to join each uploaded neuron to neurons within the new CATMAID instance, based on the placement of join.tags specified using the next argument}
+
+\item{join.tag}{a single character specifying a tag that has been used to signify a potential merge point}
+
+\item{lock}{if TRUE, neurons in the CATMAID instance specified by conn2 (i.e. the environment from which you are uploading) will be 'locked' so other users cannot edit them (via addition of a 'locked' annotation)}
+
+\item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
+
+\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
+
+\item{duplication.range.nm}{the radius around each node of a skeleton you are looking to upload, in which to search for other CATMAID skeletons that might represent a duplication of the same neuron}
+
+\item{fafbseg}{whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible merges to neurons within the search range and within the cognate auto-segmented volume}
+
+\item{downsample}{if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up}
+
+\item{brain}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
+
+\item{pid}{project id for conn. Defaults to 1}
+
+\item{pid2}{project id for conn2. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{conn2}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{max.upload}{the maximum number of files that the function will allow you to upload at once}
+
+\item{...}{methods passed to catmaid::catmaid_fetch #' @examples}
 }
 \description{
+Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
+Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
+
 Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
 Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 }
@@ -70,8 +123,20 @@ uploaded = catmaid_controlled_upload(x = "name:ASB Tester", join = TRUE, name = 
 search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", brain = elmr::FAFB14)
 # Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.
 # Oops, did you make a mistake in uploading this neuron?
-delete.skids = catmaid::catmaid_skids("annotation:ASB Tester from v14-seg")
-catmaid_delete_neurons(delete.skids)
+catmaid_delete_neurons("annotation:ASB Tester from v14-seg")
+# Be careful wen deleting, especially if you have merged your fragment during the interactive join.
+# Phew.
+# This function, first, gets the neurons we want from the v14-seg CATMAID instance
+# Then it checks that we have not already uploaded to v14-seg using the annotations you specify with the avoid argument
+# Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.
+# Be aware that the interactive join will often suggest the same neuron multiple times at different join sites.
+# The join sites are indicated by spheres - you may need to zoom in in order to see them.
+# If lock = TRUE, the neurons we just uploaded will be locked, to lessen the chance someone else will connect stuff to them and want to upload them AGAIN later...
+uploaded = catmaid_controlled_upload(x = "name:ASB Tester", join = TRUE, name = "ASB Tester from v14-seg", duplication.range.nm = 10,
+search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", brain = elmr::FAFB14)
+# Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.
+# Oops, did you make a mistake in uploading this neuron?
+catmaid_delete_neurons("annotation:ASB Tester from v14-seg")
 # Be careful wen deleting, especially if you have merged your fragment during the interactive join.
 # Phew.
 }

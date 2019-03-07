@@ -1,0 +1,42 @@
+---
+title: "edit_catmaid"
+author: "Alexander Bates"
+date: "07/03/2019"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{edit_catmaid}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+We can use the CATMAID API to make edits to CATMAID. We can also use 3D volumetric segmentation to inform how we should make edits to CATMAID neurons, or how we sample up/donwstream of them.
+
+In this vignette we'll have a look at `catnat`'s functions for working with Greg Jefferis' package `fafbseg`, and its use of the brainmaps API to access to a 3D segmentation of FAFB v14 (the female adult fly brain version 14, Bock lab) from Peter Li at Google.
+
+This is useful for several reasons - primarily 1) to help sample a neuron's synaptic partners, 2) to retrieve a volumetric recosntruction of a neuron, starting with a (probably manually) traced skeleton (fundementally a 2D line object embedded in 3D space) and 3) import neurons, along with their synapse and tag data, into a live CATMAID instance from another source (say where we have used data from a new segmentation) and join imported skeletons to extant neurons.
+
+In this example, we are going to assume that you want to import new tracing made from concatenating auto-segmented skeletonisations from the CATMAID instance https://neuropil.janelia.org/tracing/fafb/v14-seg/ to the 'primary' live CATMAID instance 'https://neuropil.janelia.org/tracing/fafb/v14-seg/'.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

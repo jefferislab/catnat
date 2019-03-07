@@ -7,6 +7,10 @@
 catmaid_link_connectors(treenode_id, connector_id,
   link_type = c("presynaptic", "postsynaptic"), verbose = TRUE,
   pid = 1, conn = NULL, ...)
+
+catmaid_link_connectors(treenode_id, connector_id,
+  link_type = c("presynaptic", "postsynaptic"), verbose = TRUE,
+  pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{treenode_id}{the treenode ID to/from which a link is to be made}
@@ -24,7 +28,25 @@ catmaid_link_connectors(treenode_id, connector_id,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 
 \item{from_type}{whether the from_id is a connector or a treenode. to_type will be set to the other type from from_id}
+
+\item{treenode_id}{the treenode ID to/from which a link is to be made}
+
+\item{connector_id}{the connector ID to/from which a link is to be made}
+
+\item{from_type}{whether the from_id is a connector or a treenode. to_type will be set to the other type from from_id}
+
+\item{link_type}{whether the link is presynaptic or postsynaptic}
+
+\item{verbose}{whether or not to report if a link is successfully made}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
+Add links between connectors and treenodes to designate pre- and postsynaptic connections in CATMAID
+
 Add links between connectors and treenodes to designate pre- and postsynaptic connections in CATMAID
 }

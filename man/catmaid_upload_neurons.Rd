@@ -8,6 +8,11 @@ catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
   annotations = NULL, include.tags = TRUE, include.connectors = TRUE,
   search.range.nm = 0, return.new.skids = FALSE, pid = 1,
   conn = NULL, max.upload = 10, ...)
+
+catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
+  annotations = NULL, include.tags = TRUE, include.connectors = TRUE,
+  search.range.nm = 0, return.new.skids = FALSE, pid = 1,
+  conn = NULL, max.upload = 10, ...)
 }
 \arguments{
 \item{swc}{a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).}
@@ -29,8 +34,31 @@ catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
 \item{max.upload}{the maximum number of files that the function will allow you to upload at once}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{swc}{a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).}
+
+\item{name}{whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.}
+
+\item{annotations}{a character vector of annotations, to be added to all of the uploaded neurons}
+
+\item{return.new.skids}{if TRUE, the new skids created in the CATMAID instance specificed by conn, are returned}
+
+\item{include.tags}{whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its tags to its newly uploaded cognate}
+
+\item{include.connectors}{whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its connectors to its newly uploaded cognate}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{max.upload}{the maximum number of files that the function will allow you to upload at once}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
+Uploads neurons to CATMAID, names them and annotates them.
+Please use with caution, as you could be heavily adding to a live tracing environment.
+
 Uploads neurons to CATMAID, names them and annotates them.
 Please use with caution, as you could be heavily adding to a live tracing environment.
 }

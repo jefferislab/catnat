@@ -5,6 +5,8 @@
 \title{Get the CATMAID neuron ID that corresponds to the skeleton ID}
 \usage{
 catmaid_get_neuronid(skids, pid = 1, conn = NULL, ...)
+
+catmaid_get_neuronid(skids, pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{skids}{a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid}
@@ -14,7 +16,17 @@ catmaid_get_neuronid(skids, pid = 1, conn = NULL, ...)
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
+
+\item{skids}{a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
+Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
+
 Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
 }
