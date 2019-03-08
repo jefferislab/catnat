@@ -139,7 +139,7 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 #' @param ws the individual google worksheet or path to .csv file to update
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Load the neurons for which we want to create sampling sheets
 #' wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
 #' # Assign their cell types to these neurons
