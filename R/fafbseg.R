@@ -123,15 +123,23 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @param ... methods passed to catmaid_get_connector_table
 #' @export
 #' @rdname set_segmentation_location
-fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, ...) {
+fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
   require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
-    connected=catmaid::catmaid_get_connectors_between(post_skids = skids, ...)
-    connected = connected[,c("connector_id", "pre_node_x", "pre_node_y", "pre_node_z")]
+    connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid = 1, conn = NULL,...)
+    if(length(skids)>15){
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(post_skids = skid, pid = 1, conn = NULL,...)))
+    }
+    connected = connected[, c("connector_id", "pre_node_x",
+                              "pre_node_y", "pre_node_z")]
   }else{
-    connected=catmaid::catmaid_get_connectors_between(pre_skids = skids, ...)
-    connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
+    connected=catmaid::catmaid_get_connectors_between(pre_skids = skids, pid = 1, conn = NULL,...)
+    if(length(skids)>15){
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(pre_skids = skid, pid = 1, conn = NULL,...)))
+    }
+    connected = connected[, c("connector_id", "post_node_x",
+                              "post_node_y", "post_node_z")]
   }
   colnames(connected) = c("connector_id","X","Y","Z")
   if(!is.null(volume)){
@@ -141,14 +149,14 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
       connector_ids = connected[,"connector_id"]
     }
   }
-  known = catmaid::catmaid_get_connector_table(skids, direction = direction,get_partner_names = TRUE, get_partner_nodes = TRUE)
+  known = catmaid::catmaid_get_connector_table(skids, direction = direction,get_partner_names = TRUE, get_partner_nodes = TRUE, pid = pid, conn = conn, ...)
   known = known[match(connected$connector_id,known$connector_id),]
   df = cbind(known,connected[,-1])
   if(!is.null(connector_ids)){
     df = subset(df,connector_id%in%connector_ids)
   }
   df[is.na(df$X),c("X","Y","Z")] = df[is.na(df$X),c("x","y","z")] # In the cases where there are no pre nodes
-  df$segment = fafbseg::brainmaps_xyz2id(df[,c('X','Y', 'Z')])
+  df$ngl_id = fafbseg::brainmaps_xyz2id(df[,c('X','Y', 'Z')])
   df
 }
 
@@ -167,7 +175,9 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @param add.links add links to CATMAID in our tracing list
 #' @param treat.skids.separately create hitlist, with hits pooled for all skids given (FALSE, default) or per skid given (TRUE)
 #' @param unique if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column
-#' @param ... methods passed to catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons
+#' @param pid project id. Defaults to 1
+#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
+#' @param ... methods passed to catmaid::catmaid_fetch, catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons
 #' @details fafb_frags_ids returns Neuroglancer IDs for FAFB segments up or downstream of the specified FAFB CATMAID skeleton IDs.
 #' fafb_frags_skeletons reads neurons from Neuroglancer IDs or calls fafb_frags_ids, using either saved skeletons, Neuroglancer brainmaps access or CATMAID access.
 #' fafb_seg_hitlist generates a ranked hitlist of fragments from the given skids, either up or downstream.
@@ -179,9 +189,15 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, ...)
+    if(length(skids)>15){
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(post_skids = skid, ...)))
+    }
     connected = connected[,c("connector_id", "pre_node_x", "pre_node_y", "pre_node_z")]
   }else{
     connected=catmaid::catmaid_get_connectors_between(pre_skids = skids, ...)
+    if(length(skids)>15){
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(pre_skids = skid, ...)))
+    }
     connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
   }
   if(!is.null(connector_ids)){
@@ -216,8 +232,8 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
     rs= fafbseg::read_segments2(uids,  OmitFailures = TRUE, ...)
   }
   tt=table(ids)
-  conndf=data.frame(segment=as.numeric(names(tt)), hits=unname(unclass(tt)))
-  m=merge(rs[,], conndf, by='segment', sort = FALSE)
+  conndf=data.frame(ngl_id=as.numeric(names(tt)), hits=unname(unclass(tt)))
+  m=merge(rs[,], conndf, by='ngl_id', sort = FALSE)
   rs[,]=m
   rs
 }
@@ -259,14 +275,14 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
       df$FAFB.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
       df$FAFBseg.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/")
     }
-    df$segment[df$segment==0] = paste0(df$segment[df$segment==0],"_",1:sum(df$segment==0))
-    hits = table(df$segment)
+    df$ngl_id[df$ngl_id==0] = paste0(df$ngl_id[df$ngl_id==0],"_",1:sum(df$ngl_id==0))
+    hits = table(df$ngl_id)
     hits["0"] = NA
-    df$hits = hits[as.character(df$segment)]
+    df$hits = hits[as.character(df$ngl_id)]
     df = df[order(df$hits, decreasing = TRUE),]
     if(unique){
-      df = df[!duplicated(df$segment),]
-      df$entry = "example_connection_to_segment"
+      df = df[!duplicated(df$ngl_id),]
+      df$entry = "example_connection_to_ngl_id"
     }
   }
   df

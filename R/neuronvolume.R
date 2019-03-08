@@ -25,13 +25,14 @@
 #' @return a 'neuronvolume' object, with the same structure as a neuron object (see the nat package), but which contains a mesh3D object for the neuron and other volume related data as a list at neuron$volume
 #' @export
 #' @rdname fafb_segs_stitch_volumes
-fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelSize = 50, downsample.factor = 12,
+fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSize = 50, downsample.factor = 12,
                                      soma = TRUE, node.match = 4, smooth = FALSE, resample.neuron = TRUE, resample.volume = FALSE,
                                      smooth.type=c("taubin", "laplace", "HClaplace", "fujiLaplace","angWeight", "surfPreserveLaplace"),
                                      lambda = 0.5, mu = -0.53, delta = 0.1, conn = NULL, ...){
   require(Rvcg)
   require(pbapply)
   require(geometry)
+  require(Morpho)
   smooth.type = match.arg(smooth.type)
   downsample_vol <- function(vol,voxelSize = 50, ...){
     v = Rvcg::vcgUniformRemesh(vol, voxelSize = voxelSize, offset = 0, discretize = FALSE,
@@ -137,26 +138,27 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = FALSE, voxelS
   ### RADIUS ESTIMATION ###
   message("Estimating node radii")
   neuron$d$radius = NA
-  pb <- utils::txtProgressBar(min = 0, max = length(downvolumes), style = 3)
-  for(i in 1:length(downvolumes)){
+  pb <- utils::txtProgressBar(min = 0, max = length(downvolumes),
+                              style = 3)
+  for (i in 1:length(downvolumes)) {
     dv = downvolumes[[i]]
-    p = tryCatch(nat::pointsinside(neuron.points,surf=dv),error = function(e) FALSE)
-    neuron$d$in.segment = (neuron$d$in.segment+p)>0
+    p = tryCatch(nat::pointsinside(neuron.points, surf = dv),
+                 error = function(e) FALSE)
+    neuron$d$in.segment = (neuron$d$in.segment + p) > 0
     neuron$d$volume[p] = i
-    dv= nat::xyzmatrix(dv)
-    if(sum(p)>0){
-      query = neuron.points[p,]
-      if(sum(p)==1){query=matrix(neuron.points[p,],ncol=3)}
-      near = nabor::knn(query=query,data=dv,
-                        k=ifelse(300>nrow(dv),nrow(dv),300),radius=5000) # 5 micron search area
-      r = apply(near$nn.dists,1,mean)
+    dv = nat::xyzmatrix(dv)
+    if (sum(p) > 0) {
+      query = neuron.points[p, ]
+      if (sum(p) == 1) {
+        query = matrix(neuron.points[p, ], ncol = 3)
+      }
+      near = nabor::knn(query = query, data = dv, k = ifelse(300 >
+                                                               nrow(dv), nrow(dv), 300), radius = 5000)
+      r = apply(near$nn.dists, 1, mean)
       r[is.infinite(r)] = 5000
       neuron$d$radius[p] = r
     }
     utils::setTxtProgressBar(pb, i)
-  }
-  if(!map){
-    unmapped = sum(!neuron$d$in.segment)/nrow(neuron$d)
   }
   close(pb)
   ### INTERPLATE OVER UNMAPPED SEGMENTS ###
@@ -498,13 +500,16 @@ neuronvolume3d <- function(neuronvolume,
 #' @param x the treenode ids to edit
 #' @param radii a vector the same length as tnids, giving the new radius for each treenode id in that vector
 #' @param max.dist the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.
+#' @param method whather to use raycast (slower, more accurate) or the nearest point on the bounding mesh, to estimate node radius
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
 #' @rdname catmaid_update_radius
-fafbseg_update_node_radii <- function(x, max.dist = 5000, pid = 1, conn = NULL, ...){
+fafbseg_update_node_radii <- function(x, max.dist = 2000, method = c("nearest.mesh.point","ray.cast"),
+                                      pid = 1, conn = NULL, ...){
   require(fafbseg)
+  method = match.arg(method)
   if(!is.neuronlist(x)){
     message("Reading neurons from ", catmaid_get_server(conn))
     neurons = catmaid::read.neurons.catmaid(x, OmitFailures = TRUE, pid=pid,conn=conn, ...)
@@ -560,22 +565,53 @@ fafbseg_get_volumes <- function(nglids){
 }
 
 # Hidden
-neuronvolume_get_radius <- function(neuron, volumes, max.dist = 5000){
+neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c("nearest.mesh.point","ray.cast")){
+  method = match.arg(method)
+  require(Morpho)
+  require(Rvcg)
   message("Estimating node radii")
   neuron.points = nat::xyzmatrix(neuron)
   neuron$d$radius =  NA
   pb <- utils::txtProgressBar(min = 0, max = length(volumes), style = 3)
   for(i in 1:length(volumes)){
-    dv = volumes[[i]]
-    p = tryCatch(nat::pointsinside(neuron.points,surf=dv),error = function(e) FALSE)
-    dv= nat::xyzmatrix(dv)
+    v = volumes[[i]]
+    p = tryCatch(nat::pointsinside(neuron.points,surf=v),error = function(e) FALSE)
+    dv= nat::xyzmatrix(v)
     if(sum(p)>0){
-      query = neuron.points[p,]
-      if(sum(p)==1){query=matrix(neuron.points[p,],ncol=3)}
-      near = nabor::knn(query=query,data=dv,
-                        k=ifelse(300>nrow(dv),nrow(dv),300),radius=max.dist) # 5 micron search area
-      r = apply(near$nn.dists,1,mean)
-      r[is.infinite(r)] = max.dist
+      if(method=="ray.cast"){
+        query = neuron.points[p,]
+        if(sum(p)==1){query=matrix(neuron.points[p,],ncol=3)}
+        near = dv[nabor::knn(query=query,data=dv,
+                             k=1,radius=max.dist)$nn.idx,]
+        query.parent = subset(neuron$d,PointNo%in%neuron$d$Parent[p])
+        query.parent = nat::xyzmatrix(query.parent[match(neuron$d$Parent[p],query.parent$PointNo),])
+        query.vectors = query - query.parent
+        near.vectors = near - query.parent
+        tangent = do.call(rbind,lapply(1:nrow(query.vectors), function(q)
+          Morpho::crossProduct(c(query.vectors[q,]),c(near.vectors[q,]))))
+        intersect <- lapply(1:nrow(query.vectors), function(t)
+          Morpho::meshPlaneIntersect(v,query[t,],near[t,],tangent[t,]))
+        r = c()
+        for(j in 1:nrow(query)){
+          int = intersect[[j]]
+          nearest = nabor::knn(query=matrix(query[j,],ncol=3),data=int,
+                               k=nrow(int),radius=max.dist)$nn.idx
+          nearest = nearest[nearest!=0]
+          int = int[nearest,]
+          if(length(int)){
+            rays = Rvcg::setRays(coords = do.call("rbind", replicate(nrow(int), query[j,], simplify = FALSE)),
+                                 dirs = int-query[j,])
+            raycast = Rvcg::vcgRaySearch(x=rays, mesh = v, mintol = 0, maxtol = 1e+15, mindist = FALSE,threads = 1)
+            r = c(r,median(raycast$distance))
+          }else{
+            r  = c(r, max.dist)
+          }
+        }
+      }else{
+        query = neuron.points[p,]
+        clost = Rvcg::vcgClost(x = query,mesh = v)
+        r  = c(r, clost$quality)
+      }
       neuron$d$radius[p] = r
     }
     utils::setTxtProgressBar(pb, i)
