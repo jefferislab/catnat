@@ -8,7 +8,8 @@
 set_segmentation_location(path)
 
 fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
-  connector_ids = connector_ids, volume = NULL, ...)
+  connector_ids = connector_ids, volume = NULL, pid = 1,
+  conn = NULL, ...)
 }
 \arguments{
 \item{path}{path to FAFB segmentation skeleton .zip files}

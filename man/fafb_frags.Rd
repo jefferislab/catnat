@@ -31,7 +31,7 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 
 \item{volume}{volume to which to restrict connector locations}
 
-\item{...}{methods passed to catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons}
+\item{...}{methods passed to catmaid::catmaid_fetch, catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons}
 
 \item{ids}{ids for FAFB segmentations to be read. If skids are given, fafb_frags_ids is called and ids is overlooked.}
 
@@ -42,6 +42,10 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 \item{add.links}{add links to CATMAID in our tracing list}
 
 \item{unique}{if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column}
+
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 }
 \description{
 Fetch skeleton ids or read skeletons from the FAFV Google Segmentation by Peter Li.

@@ -9,7 +9,8 @@ catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
 
 catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
 
-fafbseg_update_node_radii(x, max.dist = 5000, pid = 1, conn = NULL,
+fafbseg_update_node_radii(x, max.dist = 2000,
+  method = c("nearest.mesh.point", "ray.cast"), pid = 1, conn = NULL,
   ...)
 }
 \arguments{
@@ -26,6 +27,8 @@ fafbseg_update_node_radii(x, max.dist = 5000, pid = 1, conn = NULL,
 \item{x}{the treenode ids to edit}
 
 \item{max.dist}{the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.}
+
+\item{method}{whather to use raycast (slower, more accurate) or the nearest point on the bounding mesh, to estimate node radius}
 
 \item{tnids}{the treenode ids to edit}
 

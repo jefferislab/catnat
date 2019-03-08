@@ -7,10 +7,6 @@
 fafbseg_join_connectors_in_ngl_volumes(x, putatively.connected.skids,
   connector.range.nm = 1000, node.match = 5, pid = 1, conn = NULL,
   ...)
-
-fafbseg_join_connectors_in_ngl_volumes(x, putatively.connected.skids,
-  connector.range.nm = 1000, node.match = 5, pid = 1, conn = NULL,
-  ...)
 }
 \arguments{
 \item{x}{a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids}
@@ -26,23 +22,7 @@ fafbseg_join_connectors_in_ngl_volumes(x, putatively.connected.skids,
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
-
-\item{x}{a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids}
-
-\item{putatively.connected.skids}{the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered}
-
-\item{connector.range.nm}{the range in nm within which to search for a treenode ID to attach the connector}
-
-\item{node.match}{number of nodes a neuron from x must have within a brainmaps 3D volume, for the volume to be considered to belong to this neuron}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
 }
 \description{
-Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
-
 Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
 }

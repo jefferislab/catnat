@@ -5,7 +5,7 @@
 \alias{neuronvolume3d}
 \title{Get neuron volumes and stitch them into a cohesive neuron, or neuronal compartment}
 \usage{
-fafb_segs_stitch_volumes(neuron, volumes = NULL, map = FALSE,
+fafb_segs_stitch_volumes(neuron, volumes = NULL, map = TRUE,
   voxelSize = 50, downsample.factor = 12, soma = TRUE,
   node.match = 4, smooth = FALSE, resample.neuron = TRUE,
   resample.volume = FALSE, smooth.type = c("taubin", "laplace",

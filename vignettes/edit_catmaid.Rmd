@@ -99,15 +99,25 @@ write.csv2(x = tl.outgoing,file = "/Users/abates/projects/centrifugal/data/traci
 We can also pull volumes from the brainmaps API in order to create volumetric neurons. Let's try it. It can take some time, so let's choose a smaller neuron than a2sc to look at, a favourite from Dolan et al. 2017, PD2a1#1.
 
 ```{r neuronvolume, eval=F, echo=T}
+# Fetch completely traced neurons from CATMAID
 neuron = read.neurons.catmaid("1299700")
-neuronvolume = fafb_segs_stitch_volumes(neuron = neuron, map = TRUE)
+
+# Split into axon, dendrite, primary neurite and primary dendrite automatically
+neuron.flow = flow.centrality(neuron, polypre= FALSE, mode = "centrifugal", split = "distance")
+
+# We can have a look at this split neuron
+nopen3d()
+seesplit3d(neuron.flow, soma = 1500, radius = 100, WithConnectors = TRUE)
+
+# Pull many segmented subvolumes from tha brainmaps API and stitch into one cohesive neuron
+neuronvolume = fafb_segs_stitch_volumes(neuron = neuron.flow, map = TRUE)
 ```
 
 This might be useful for analysis stuff. It's also pretty, let's look at it split into its different components:
 
 ```{r neuronvolume3d, eval=F, echo=T}
 nopen3d()
-neuronvolume3d(neuronvolume)
+neuronvolume3d(neuronvolume, split = "split", type = "volume")
 ```
 
 We can also push the radius information to the manually traced CATMAID skeleton in `v14`, which might aid visualisation and tracing. To do this, we can use the neuronvolume we just created, which will be quicker, or just give the function an annotation to work with. In the latter instance, working from nothing this is faster but less acruate, as radii are calculated for nodes within each brainmaps volume separately, whereas `fafb_segs_stitch_volumes` makes a single cohesive volume, i.e. a node in the former case may be near a mesh boundary that only exists because the segmentation failed.
