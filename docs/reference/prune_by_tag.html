@@ -126,15 +126,15 @@
 
 <span class='co'># S3 method for neuron</span>
 <span class='fu'>prune_by_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"SCHLEGEL_LH"</span>,
-  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for catmaidneuron</span>
 <span class='fu'>prune_by_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"SCHLEGEL_LH"</span>,
-  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for neuronlist</span>
 <span class='fu'>prune_by_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"SCHLEGEL_LH"</span>,
-  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>remove.upstream</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,6 +142,10 @@
     <tr>
       <th>x</th>
       <td><p>a <code>neuron</code> or <code>neuronlist</code> object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments, passed to <code>nlapply</code> or eventually to <code><a href='prune_vertices.catmaidneuron.html'>prune_vertices</a></code></p></td>
     </tr>
     <tr>
       <th>tag</th>
