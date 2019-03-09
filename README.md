@@ -1,4 +1,5 @@
 [![Travis-CI Build Status](https://api.travis-ci.org/alexanderbates/catnat.svg?branch=master)](https://travis-ci.org/alexanderbates/catnat)
+[![Docs](https://img.shields.io/badge/docs-100%25-brightgreen.svg)](http://jefferislab.github.io/catnat/reference/)
 
 # catnat
 R Package for use with [rcatmaid](https://github.com/jefferis/rcatmaid) and [nat](https://github.com/jefferis/rcatmaid). **catnat** provides some higher level analysis function for, for example, clustering synapses within a neuron's tree structure, clustering together neurons by synapse position in 3D space and splitting a neuron into different compartments (e.g. axon-dendrite-primary neurite) and visualising these splits and clusters. The packages remains heavily in development.
