@@ -1,12 +1,12 @@
 ---
-  title: "edit_catmaid"
+title: "edit_catmaid"
 author: "Alexander Bates"
 date: "07/03/2019"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{edit_catmaid}
-%\VignetteEngine{knitr::rmarkdown}
-\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
   
 ```{r setup, include=FALSE, eval=F, echo=T}
