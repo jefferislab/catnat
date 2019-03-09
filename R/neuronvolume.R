@@ -31,7 +31,6 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
                                      lambda = 0.5, mu = -0.53, delta = 0.1, conn = NULL, ...){
   require(Rvcg)
   require(pbapply)
-  require(geometry)
   require(Morpho)
   smooth.type = match.arg(smooth.type)
   downsample_vol <- function(vol,voxelSize = 50, ...){

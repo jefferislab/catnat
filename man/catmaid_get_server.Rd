@@ -5,28 +5,10 @@
 \title{Get CATMAID server}
 \usage{
 catmaid_get_server(conn = NULL, ...)
-
-catmaid_get_server(conn = NULL, ...)
-
-catmaid_get_server(conn = NULL, ...)
-
-catmaid_get_server(conn = NULL, ...)
 }
 \arguments{
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 }
 \description{
-shows the URL for a connection object (see ?catmaid::catmaid_login)
-
-shows the URL for a connection object (see ?catmaid::catmaid_login)
-
-shows the URL for a connection object (see ?catmaid::catmaid_login)
-
 shows the URL for a connection object (see ?catmaid::catmaid_login)
 }

@@ -133,7 +133,6 @@ catmaid_annotate_partners<-function(partners,pid=1,conn=NULL,...){
   if(is.vector(partners)){
     if (length(partners)!=2){
       message("Too many skids supplied")
-      break
     }else{
       an = paste0("paired with #",partners[1])
       catmaid_set_annotations_for_skeletons(partners[2],annotations = an,pid=pid,conn=conn)

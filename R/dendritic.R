@@ -1,5 +1,15 @@
 # Increase sigma, increase randomness ofgrowth direction
-dendritic.morphogenisis <- function(start = c(173.038, 76.40729, 70.57396), root = c(212.2850, 54.08630, 50.54488), sigma = 0.25, inertia.with.microtubules = 1, inertia.without.microtubules = 0.5, root.tropism = 1, self.repulsion = 5, growth.rate = 1, boundary.repulsion = 10, root.tropism.decay = 1e-2, self.repulsion.decay = 1e-2, growth.rate.decay = 1e-2, boundary.repulsion.decay = 1, microtubule.termination = 0.001, microtubule.branch.probability = 0.1, no.microtubule.branch.probability = 0.2, microtubule.inheritance = 0.3, intersection.proximity = 0.1, mean.bifurcations.without.microtubules = 10, sd.bifurcations.without.microtubules = 5, mean.geodesic.length.without.microtubules = 15, sd.geodesic.length.without.microtubules = 10, cable.length.mean = 1500, cable.length.sd = 100, cable.length.microtubules.mean = 1500, cable.length.microtubules.sd = 100, arbourisation.zone = subset(FCWBNP.surf,"LH_R"), boundary.shape = FCWBNP.surf, resample.boundary.shape = FALSE, visualise = FALSE) {
+dendritic.morphogenisis <- function(start = c(173.038, 76.40729, 70.57396), root = c(212.2850, 54.08630, 50.54488),
+                                    sigma = 0.25, inertia.with.microtubules = 1, inertia.without.microtubules = 0.5,
+                                    root.tropism = 1, self.repulsion = 5, growth.rate = 1, boundary.repulsion = 10,
+                                    root.tropism.decay = 1e-2, self.repulsion.decay = 1e-2, growth.rate.decay = 1e-2,
+                                    boundary.repulsion.decay = 1, microtubule.termination = 0.001, microtubule.branch.probability = 0.1,
+                                    no.microtubule.branch.probability = 0.2, microtubule.inheritance = 0.3, intersection.proximity = 0.1,
+                                    mean.bifurcations.without.microtubules = 10, sd.bifurcations.without.microtubules = 5,
+                                    mean.geodesic.length.without.microtubules = 15, sd.geodesic.length.without.microtubules = 10,
+                                    cable.length.mean = 1500, cable.length.sd = 100, cable.length.microtubules.mean = 1500,
+                                    cable.length.microtubules.sd = 100, arbourisation.zone = subset(FCWBNP.surf,"LH_R"),
+                                    boundary.shape = FCWBNP.surf, resample.boundary.shape = FALSE, visualise = FALSE) {
   # Are we going to see where we are going?
   if(visualise){
     #if(!is.null(boundary.shape)){plot3d(boundary.shape,alpha=0.3,col="pink",add=TRUE)}
@@ -201,8 +211,8 @@ dendritic.morphogenisis <- function(start = c(173.038, 76.40729, 70.57396), root
 }
 
 
-dendritic.morphogenisis.neuronlist<-function(n=10, names = paste0("simulatd-dendrite-",1:n), start = c(173.038, 76.40729, 70.57396), root = c(212.2850, 54.08630, 50.54488), sigma = 0.25, inertia.with.microtubules = 1, inertia.without.microtubules = 0.5, root.tropism = 1, self.repulsion = 5, growth.rate = 1, boundary.repulsion = 1, root.tropism.decay = 1e-2, self.repulsion.decay = 1e-2, growth.rate.decay = 1e-2, boundary.repulsion.decay = 100, max.cable = 100, branch.probability = 0.1, microtubule.branch.probability = 0.1, intersection.proximity = 0.1, average.bifurcations.without.microtubules = 5, sd.bifurcations.without.microtubules = 4, average.geodesic.length.without.microtubules = 20, sd.geodesic.length.without.microtubules = 5, max.cable.length = 1500, arbourisation.zone = subset(FCWBNP.surf,"LH_R"), boundary.shape = FCWBNP.surf, resample.boundary.shape = FALSE, visualise = FALSE){
-  nl = nlapply(names, function(x) dendritic.morphogenisis(start = start, root = root, sigma = sigma, inertia.with.microtubules = inertia.with.microtubules, inertia.without.microtubules = inertia.without.microtubules, root.tropism = root.tropism, self.repulsion = self.repulsion, growth.rate = growth.rate, boundary.repulsion = boundary.repulsion, root.tropism.decay = root.tropism.decay, self.repulsion.decay = self.repulsion.decay, growth.rate.decay = growth.rate.decay, boundary.repulsion.decay = boundary.repulsion.decay, max.cable = max.cable, branch.probability = branch.probability, microtubule.branch.probability = microtubule.branch.probability, intersection.proximity = intersection.proximity, average.bifurcations.without.microtubules = average.bifurcations.without.microtubules, sd.bifurcations.without.microtubules = sd.bifurcations.without.microtubules, average.geodesic.length.without.microtubules = average.geodesic.length.without.microtubules, sd.geodesic.length.without.microtubules = sd.geodesic.length.without.microtubules, max.cable.length = max.cable.length, arbourisation.zone = arbourisation.zone, boundary.shape = boundary.shape, resample.boundary.shape = resample.boundary.shape, visualise = visualise) )
+dendritic.morphogenisis.neuronlist<-function(...){
+  nl = nlapply(names, function(x) dendritic.morphogenisis(...))
   attr(nl,"df") = match.call()[-1:4]
   nl
 }

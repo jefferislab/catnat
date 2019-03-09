@@ -7,8 +7,6 @@
 \usage{
 catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
 
-catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
-
 fafbseg_update_node_radii(x, max.dist = 2000,
   method = c("nearest.mesh.point", "ray.cast"), pid = 1, conn = NULL,
   ...)
@@ -16,7 +14,7 @@ fafbseg_update_node_radii(x, max.dist = 2000,
 \arguments{
 \item{tnids}{the treenode ids to edit}
 
-\item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector. If set to 0, then the radii are all set to -1, which is the CATMAID default.}
+\item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector}
 
 \item{pid}{project id. Defaults to 1}
 
@@ -28,17 +26,7 @@ fafbseg_update_node_radii(x, max.dist = 2000,
 
 \item{max.dist}{the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.}
 
-\item{method}{whather to use raycast (slower, more accurate) or the nearest point on the bounding mesh, to estimate node radius}
-
-\item{tnids}{the treenode ids to edit}
-
-\item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
+\item{method}{whather to use raycast (casts 10 rays perpendicular to the path of the neuron for each point, slower but more accurate) or the nearest point on the bounding mesh, to estimate node radius}
 
 \item{radii}{a vector the same length as tnids, giving the new radius for each treenode id in that vector}
 
@@ -49,8 +37,6 @@ fafbseg_update_node_radii(x, max.dist = 2000,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
-Update radius information for tree nodes in a CATMAID instancekids). A locked neuron cannot be edited until it is unlocked.
-
 Update radius information for tree nodes in a CATMAID instancekids). A locked neuron cannot be edited until it is unlocked.
 
 Update radius information for skeletons in a CATMAID instance using Peter Li's segmentation of FAFB-v14. Brainmaps API access required

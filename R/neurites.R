@@ -16,31 +16,32 @@ neurites <-function(x, fragment = c("axons","dendrites","primary dendrite","prim
 neurites.neuron <- function(x, fragment, ...){
   if (is.null(x$d$flow.cent)) {
     warning("No flow centrality calculated, dropping neuron")
-    break
-  }
-  dendrites.v = subset(rownames(x$d), x$d$compartment ==  "dendrite")
-  axon.v = subset(rownames(x$d), x$d$compartment == "axon")
-  nulls.v = subset(rownames(x$d), x$d$compartment == "null")
-  p.d.v = subset(rownames(x$d), x$d$compartment == "primary dendrite")
-  p.n.v = subset(rownames(x$d), x$d$compartment == "primary neurite")
-  if (fragment == "dendrites"){
-    tree = nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v,nulls.v, p.d.v, p.n.v)))
-    tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
-  }
-  else if (fragment == "axons"){
-    tree = nat::prune_vertices(x, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v, p.n.v)))
-    tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
-  }
-  else if (fragment == "nulls"){
-    tree = nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
-  }
-  else if (fragment == "primary dendrite"){
-    tree = prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.n.v)))
-    tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
-  }
-  else if (fragment == "primary neurite"){
-    tree = prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.d.v)))
-    tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
+    tree = NULL
+  }else{
+    dendrites.v = subset(rownames(x$d), x$d$compartment ==  "dendrite")
+    axon.v = subset(rownames(x$d), x$d$compartment == "axon")
+    nulls.v = subset(rownames(x$d), x$d$compartment == "null")
+    p.d.v = subset(rownames(x$d), x$d$compartment == "primary dendrite")
+    p.n.v = subset(rownames(x$d), x$d$compartment == "primary neurite")
+    if (fragment == "dendrites"){
+      tree = nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v,nulls.v, p.d.v, p.n.v)))
+      tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
+    }
+    else if (fragment == "axons"){
+      tree = nat::prune_vertices(x, verticestoprune = as.integer(c(nulls.v, dendrites.v, p.d.v, p.n.v)))
+      tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
+    }
+    else if (fragment == "nulls"){
+      tree = nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v)))
+    }
+    else if (fragment == "primary dendrite"){
+      tree = prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.n.v)))
+      tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
+    }
+    else if (fragment == "primary neurite"){
+      tree = prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, nulls.v, p.d.v)))
+      tree$connectors = x$connectors[x$connectors$treenode_id%in%tree$d$PointNo,]
+    }
   }
   tree
 }
@@ -78,8 +79,8 @@ arbour.clusters.neuron <- function(x, ...){
     clusters = unique(x$d$compartment)
     entropies = x$d$cluster.entropy[!duplicated(x$d$flow.cent)]
   }else{
+    clusters = entropies= NULL
     warning("No clustering calculated, dropping neuron")
-    break
   }
   arbours = neuronlist()
   for (c in 1:length(clusters)){

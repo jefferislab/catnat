@@ -4,7 +4,8 @@
 \alias{fafbseg_join_connectors_in_ngl_volumes}
 \title{Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume}
 \usage{
-fafbseg_join_connectors_in_ngl_volumes(x, putatively.connected.skids,
+fafbseg_join_connectors_in_ngl_volumes(x, direction = c("presynapses",
+  "postsynapses", "both"), putatively.connected.skids,
   connector.range.nm = 1000, node.match = 5, pid = 1, conn = NULL,
   ...)
 }
@@ -22,6 +23,9 @@ fafbseg_join_connectors_in_ngl_volumes(x, putatively.connected.skids,
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail}
+}
+\value{
+makes joins in the specified CATMAID instance, but also returns a list of URLs for the locations at which joins have been made
 }
 \description{
 Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume

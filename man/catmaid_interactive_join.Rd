@@ -6,15 +6,6 @@
 \usage{
 catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
   brain = NULL, pid = 1, conn = conn, ...)
-
-catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
-  brain = NULL, pid = 1, conn = conn, ...)
-
-catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
-  brain = NULL, pid = 1, conn = conn, ...)
-
-catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
-  brain = NULL, pid = 1, conn = conn, ...)
 }
 \arguments{
 \item{possible.merges}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
@@ -32,61 +23,7 @@ catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
 \item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
 
 \item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
-
-\item{possible.merges}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
-
-\item{downstream.neurons}{neurons (typically smaller, new tracings) to be joined into other (typically larger) neurons, which will be pulled from CATMAID. If NULL, the downstream neurons are also pulled from CATMAID.}
-
-\item{brain}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
-
-\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
-
-\item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{possible.merges}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
-
-\item{downstream.neurons}{neurons (typically smaller, new tracings) to be joined into other (typically larger) neurons, which will be pulled from CATMAID. If NULL, the downstream neurons are also pulled from CATMAID.}
-
-\item{brain}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
-
-\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
-
-\item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{possible.merges}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}
-
-\item{downstream.neurons}{neurons (typically smaller, new tracings) to be joined into other (typically larger) neurons, which will be pulled from CATMAID. If NULL, the downstream neurons are also pulled from CATMAID.}
-
-\item{brain}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
-
-\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
-
-\item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
-Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
-
-Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
-
-Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
-
 Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.
 }

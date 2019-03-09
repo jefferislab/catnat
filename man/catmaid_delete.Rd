@@ -14,33 +14,6 @@ catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
 
 catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
   brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
-
-catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
-
-catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
-
-catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
-
-catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
-
-catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
-
-catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
-
-catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
-
-catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
-
-catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{skid}{the skeleton ID for a single neuron you want to delete}
@@ -64,95 +37,8 @@ Really should only be set to FALSE if you are deleting from your own CATMAID ins
 \item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
 
 \item{delete_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
-
-\item{skid}{the skeleton ID for a single neuron you want to delete}
-
-\item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
-
-\item{delete_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
-
-\item{delete_connectors}{if TRUE, connectors attached to the deleted skeleton, and no other skeleton (even if it is a single node) are also deleted}
-
-\item{plot}{whether or not the plot the neuron you are considering deleting, before deciding to end it}
-
-\item{brain}{the brain you want to plot alongside the neuron you are considering deleting.}
-
-\item{max.nodes}{the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
-Really should only be set to FALSE if you are deleting from your own CATMAID instance}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{skid}{the skeleton ID for a single neuron you want to delete}
-
-\item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
-
-\item{delete_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
-
-\item{delete_connectors}{if TRUE, connectors attached to the deleted skeleton, and no other skeleton (even if it is a single node) are also deleted}
-
-\item{plot}{whether or not the plot the neuron you are considering deleting, before deciding to end it}
-
-\item{brain}{the brain you want to plot alongside the neuron you are considering deleting.}
-
-\item{max.nodes}{the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
-Really should only be set to FALSE if you are deleting from your own CATMAID instance}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{skid}{the skeleton ID for a single neuron you want to delete}
-
-\item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
-
-\item{delete_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
-
-\item{delete_connectors}{if TRUE, connectors attached to the deleted skeleton, and no other skeleton (even if it is a single node) are also deleted}
-
-\item{plot}{whether or not the plot the neuron you are considering deleting, before deciding to end it}
-
-\item{brain}{the brain you want to plot alongside the neuron you are considering deleting.}
-
-\item{max.nodes}{the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
-Really should only be set to FALSE if you are deleting from your own CATMAID instance}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
-Delete a single neuron from a given CATMAID instance.
-Deletes a neuron if and only if two things are the case: 1. The user
-owns all treenodes of the skeleton modeling the neuron in question and
-2. The neuron is not annotated by other users.
-Use with extreme caution as you may be significantly affecting others' work.
-You will first be shown the neuron you want to delete and who has worked on it, and then asked whether or not you want to continue.
-
-Delete a single neuron from a given CATMAID instance.
-Deletes a neuron if and only if two things are the case: 1. The user
-owns all treenodes of the skeleton modeling the neuron in question and
-2. The neuron is not annotated by other users.
-Use with extreme caution as you may be significantly affecting others' work.
-You will first be shown the neuron you want to delete and who has worked on it, and then asked whether or not you want to continue.
-
-Delete a single neuron from a given CATMAID instance.
-Deletes a neuron if and only if two things are the case: 1. The user
-owns all treenodes of the skeleton modeling the neuron in question and
-2. The neuron is not annotated by other users.
-Use with extreme caution as you may be significantly affecting others' work.
-You will first be shown the neuron you want to delete and who has worked on it, and then asked whether or not you want to continue.
-
 Delete a single neuron from a given CATMAID instance.
 Deletes a neuron if and only if two things are the case: 1. The user
 owns all treenodes of the skeleton modeling the neuron in question and

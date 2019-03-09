@@ -529,11 +529,13 @@ catmaid_connector_nodes <- function(connector_id, node = c("presynaptic","postsy
 #' @export
 #' @rdname fafbseg_join_connectors_in_ngl_volumes
 fafbseg_join_connectors_in_ngl_volumes <- function(x,
+                                                   direction = c("presynapses","postsynapses", "both"),
                                                    putatively.connected.skids,
                                                    connector.range.nm = 1000,
                                                    node.match=5,
                                                    pid=1,conn = NULL, ...){
   require(fafbseg)
+  direction = match.arg(direction)
   putatively.connected.skids = catmaid::catmaid_skids(x = putatively.connected.skids,pid=pid,conn=conn,...)
   if(!nat::is.neuronlist(x)){
     message("Reading neurons from ", catmaid_get_server(conn))
@@ -543,49 +545,59 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
   }
   total.joins = c()
   ### Get ngl IDs corresponding to potential presynapses ###
-  message("Fetching putatively connected presynapses")
-  connectors.pre = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
-    tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
-                                                  direction = "incoming",
-                                                  get_partner_nodes = TRUE,
-                                                  pid = pid, conn = conn, ...),
-             error = function(e) NULL)))
-  connectors.pre = connectors.pre[apply(connectors.pre,1,function(r) sum(is.na(r))==0),]
-  connectors.pre = connectors.pre[!duplicated(connectors.pre$connector_id),]
-  connectors.pre[is.na(connectors.pre$partner_skid)&is.na(connectors.pre$partner_nodes),"partner_nodes"] = 0
-  connectors.pre = subset(connectors.pre,partner_nodes<10)
-  message("Assigning FAFB segmented volumes to connector locations")
-  connector.pre.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.pre))
-  df.pre.connectors = data.frame(connector_id = connectors.pre$connector_id, connector.skid = connectors.pre$skid,
-                                 x = connectors.pre$x, y = connectors.pre$y, z = connectors.pre$z,
-                                 ngl_id = connector.pre.segs, link_type = "presynaptic", partner_nodes = connectors.pre$partner_nodes)
-  ### Get ngl IDs corresponding to potential postsynapses ###
-  message("Fetching putatively connected postsynapses")
-  connectors.post = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
-    tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
-                                                  direction = "outgoing",
-                                                  get_partner_nodes = TRUE,
-                                                  pid = pid, conn = conn, ...),
-             error = function(e) NULL)))
-  connectors.post = connectors.post[apply(connectors.post,1,function(r) sum(is.na(r))==0),]
-  connectors.post = connectors.post[!duplicated(connectors.post$connector_id),]
-  connectors.post[is.na(connectors.post$partner_skid)&is.na(connectors.post$partner_nodes),"partner_nodes"] = 0
-  connectors.post = subset(connectors.post,partner_nodes<10&partner_nodes>0)
-  connectors.post.nodes = data.frame()
-  pb <- utils::txtProgressBar(min = 0, max = nrow(connectors.post), style = 3)
-  for(i in 1:nrow(connectors.post)){
-    node.df = catmaid_connector_nodes(connector_id = connectors.post[i,"connector_id"],node = "postsynaptic",pid=pid,conn=conn,...)
-    node.df = merge(node.df[,c("connector_id","x","y","z")],connectors.post[i,setdiff(colnames(connectors.post),c("x","y","z"))])
-    connectors.post.nodes = rbind(connectors.post.nodes,node.df)
-    utils::setTxtProgressBar(pb, i)
+  if(direction%in%c("presynapses","both")){
+    message("Fetching putatively connected presynapses")
+    connectors.pre = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
+      tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
+                                                    direction = "incoming",
+                                                    get_partner_nodes = TRUE,
+                                                    pid = pid, conn = conn, ...),
+               error = function(e) NULL)))
+    connectors.pre = connectors.pre[apply(connectors.pre,1,function(r) sum(is.na(r))==0),]
+    connectors.pre = connectors.pre[!duplicated(connectors.pre$connector_id),]
+    connectors.pre[is.na(connectors.pre$partner_skid)&is.na(connectors.pre$partner_nodes),"partner_nodes"] = 0
+    connectors.pre = subset(connectors.pre,partner_nodes<10)
+    message("Assigning FAFB segmented volumes to connector locations")
+    connector.pre.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.pre))
+    df.pre.connectors = data.frame(connector_id = connectors.pre$connector_id, connector.skid = connectors.pre$skid,
+                                   x = connectors.pre$x, y = connectors.pre$y, z = connectors.pre$z,
+                                   ngl_id = connector.pre.segs, link_type = "presynaptic", partner_nodes = connectors.pre$partner_nodes)
   }
-  close(pb)
-  connector.post.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.post.nodes))
-  df.post.connectors = data.frame(connector_id = connectors.post.nodes$connector_id, connector.skid = connectors.post.nodes$skid,
-                                  x = connectors.post.nodes$x, y = connectors.post.nodes$y, z = connectors.post.nodes$z,
-                                  ngl_id = connector.post.segs, link_type = "postsynaptic", partner_nodes = connectors.post.nodes$partner_nodes)
+  ### Get ngl IDs corresponding to potential postsynapses ###
+  if(direction%in%c("postsynapses","both")){
+    message("Fetching putatively connected postsynapses")
+    connectors.post = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
+      tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
+                                                    direction = "outgoing",
+                                                    get_partner_nodes = TRUE,
+                                                    pid = pid, conn = conn, ...),
+               error = function(e) NULL)))
+    connectors.post = connectors.post[apply(connectors.post,1,function(r) sum(is.na(r))==0),]
+    connectors.post = connectors.post[!duplicated(connectors.post$connector_id),]
+    connectors.post[is.na(connectors.post$partner_skid)&is.na(connectors.post$partner_nodes),"partner_nodes"] = 0
+    connectors.post = subset(connectors.post,partner_nodes<10&partner_nodes>0)
+    connectors.post.nodes = data.frame()
+    pb <- utils::txtProgressBar(min = 0, max = nrow(connectors.post), style = 3)
+    for(i in 1:nrow(connectors.post)){
+      node.df = catmaid_connector_nodes(connector_id = connectors.post[i,"connector_id"],node = "postsynaptic",pid=pid,conn=conn,...)
+      node.df = merge(node.df[,c("connector_id","x","y","z")],connectors.post[i,setdiff(colnames(connectors.post),c("x","y","z"))])
+      connectors.post.nodes = rbind(connectors.post.nodes,node.df)
+      utils::setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    connector.post.segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(connectors.post.nodes))
+    df.post.connectors = data.frame(connector_id = connectors.post.nodes$connector_id, connector.skid = connectors.post.nodes$skid,
+                                    x = connectors.post.nodes$x, y = connectors.post.nodes$y, z = connectors.post.nodes$z,
+                                    ngl_id = connector.post.segs, link_type = "postsynaptic", partner_nodes = connectors.post.nodes$partner_nodes)
+  }
   ### Assign to volumes
-  df.connectors = rbind(df.pre.connectors,df.post.connectors)
+  if(direction=="both"){
+    df.connectors = rbind(df.pre.connectors,df.post.connectors)
+  }else if(direction%in%c("presynapses","both")){
+    df.connectors = df.pre.connectors
+  }else if(direction%in%c("postsynapses","both")){
+    df.connectors = df.post.connectors
+  }
   df.connectors = subset(df.connectors,ngl_id!=0)
   ### Get ngl IDs corresponding to the skeletons ###
   message("Finding the 3D segments that correspond to ", length(neurons), " neurons:")
@@ -991,16 +1003,16 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
       }
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
-    }
-    if(length(already.there)){
-      warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      if(length(already.there)){
+        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      }
     }
   }else{
     neurons = x
   }
   if(is.character(name)){
     if(length(name)==1&length(neurons)>1){
-      names = paste0(name,"_",seq_along(swc))
+      names = paste0(name,"_",seq_along(neurons))
     } else if (length(name)!=length(neurons)){
       stop(paste0('The names argument mut be a vector or length 1, to be applied to all neurons
                   or a vector the same length as the number of neurons specified by x'))
@@ -1062,7 +1074,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
         nat::npop3d()
       }
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid)),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         search.range.nm=10, return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -1112,18 +1124,21 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
     neurons = catmaid::read.neurons.catmaid(x, OmitFailures = TRUE, pid=pid2,conn=conn2, ...)
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
     if("annotation"%in%colnames(anns)){
-      already.there = subset(anns,annotation%in%avoid)$skid
+      if(include.potential.duplicates){
+        avoiding =c(avoid,"duplicated")
+      }
+      already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
-    }
-    if(length(already.there)){
-      warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", paste(avoid, collapse = " "))
+      if(length(already.there)){
+        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      }
     }
   }else{
     neurons = x
   }
   if(is.character(name)){
     if(length(name)==1&length(neurons)>1){
-      names = paste0(name,"_",seq_along(swc))
+      names = paste0(name,"_",seq_along(neurons))
     } else if (length(name)!=length(neurons)){
       stop(paste0('The names argument mut be a vector or length 1, to be applied to all neurons
                   or a vector the same length as the number of neurons specified by x'))
@@ -1154,7 +1169,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
               Upload for neuron ", i, " aborted (tolerance: ",tolerance,").")
     }else{
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations, paste0("v14-seg: ",old.skid)),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         search.range.nm=10, return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -1388,6 +1403,14 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #                                        search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
 #                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
 #                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+
+# x ="annotation:ASB downseg"; tolerance = 0.15; name = "v14-seg neuron upload ASB";
+#                                        annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
+#                                        include.tags = TRUE; include.connectors = FALSE; downsample = 1;
+#                                        search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
+#                                        fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;
+#                                        pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn()
+
 
 #'
 #' ### ASP-g project
