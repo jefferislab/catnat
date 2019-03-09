@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Alexander Bates" />
+
+<meta name="date" content="2019-07-03" />
+
+<title>edit_catmaid</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">edit_catmaid</h1>
+<h4 class="author"><em>Alexander Bates</em></h4>
+<h4 class="date"><em>07/03/2019</em></h4>
+
+
+
+<p>We can use the CATMAID API to make edits to CATMAID. We can also use 3D volumetric segmentation to inform how we should make edits to CATMAID neurons, or how we sample up/donwstream of them.</p>
+<p>In this vignette we’ll have a look at <code>catnat</code>‘s functions for working with Greg Jefferis’ package <code>fafbseg</code>, and its use of the brainmaps API to access to a 3D segmentation of FAFB v14 (the female adult fly brain version 14, Bock lab) from Peter Li at Google.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># installation</span>
+if (!<span class="kw">require</span>(<span class="st">&quot;devtools&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+if (!<span class="kw">require</span>(<span class="st">&quot;catnat&quot;</span>)) devtools::<span class="kw">install_github</span>(<span class="st">&quot;alexanderbates/catnat&quot;</span>)
+if (!<span class="kw">require</span>(<span class="st">&quot;fafbseg&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;jefferis/fafbseg&quot;</span>)
+
+<span class="co"># Load catnat</span>
+<span class="kw">library</span>(catnat)
+<span class="kw">library</span>(fafbseg)</code></pre></div>
+<p>This is useful for several reasons - primarily 1) to help sample a neuron’s synaptic partners, 2) to retrieve a volumetric reconstruction of a neuron, starting with a (probably manually) traced skeleton (fundementally a 2D line object embedded in 3D space) and 3) import neurons, along with their synapse and tag data, into a live CATMAID instance from another source (say where we have used data from a new segmentation) and join imported skeletons to extant neurons.</p>
+<p>In this example, we are going to assume that you want to import new tracing made from concatenating auto-segmented skeletonisations from the CATMAID instance <a href="https://neuropil.janelia.org/tracing/fafb/v14-seg/" class="uri">https://neuropil.janelia.org/tracing/fafb/v14-seg/</a> to the ‘primary’ live CATMAID instance ‘<a href="https://neuropil.janelia.org/tracing/fafb/v14-seg/" class="uri">https://neuropil.janelia.org/tracing/fafb/v14-seg/</a>’.</p>
+<div id="making-a-sampling-sheet-for-finding-strongly-connected-partners" class="section level2">
+<h2>1) Making a sampling sheet for finding strongly connected partners</h2>
+<p>First, let’s read some neurons from which we want to sample upstream and downstream I’m interested at looking at the connectivity of MBON a2sc in the lateral horn (LH). There are two members of this cell type, one per hemisphere. Let’s get them from CATMAID.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Login to CATMAID</span>
+<span class="co"># see ?catmaid::catmaid_login() for details</span>
+
+<span class="co"># Read some interesting neurons from CATMAID</span>
+a2sc =<span class="st"> </span><span class="kw">read.neurons.catmaid</span>(<span class="st">&quot;name:MBON a2sc&quot;</span>)
+
+<span class="co"># Let's see what we hsve</span>
+<span class="kw">print</span>(a2sc[,])</code></pre></div>
+<p>Now we can seek to generate a ‘tracing sheet’ that gives us back ‘free’ () upstream connectors or downstream connections, but rather than performing a random sample, we have a ranked list. They are ranked using the FAFB v14 segmentation from Peter Li at Google. Synapses are ranked higher if they connect to an auto-traced fragment that also coressponds to other synapses. The returned object will give synapse locations and their connecotr IDs, as well as the <code>ngl_segment</code>, the ‘Neuroglancer segment’ read from the brainmaps API. For now, you must have authentication to use this, and you will be prompted for it when you start using functions that rely on the package <code>fafbseg</code>, like this one.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate tracing sheet</span>
+tl.incoming =<span class="st"> </span><span class="kw">fafb_seg_tracing_list</span>(<span class="dt">skids =</span> <span class="kw">names</span>(a2sc),<span class="dt">connector_ids =</span> <span class="ot">NULL</span>, <span class="dt">direction =</span> <span class="st">&quot;incoming&quot;</span>, <span class="dt">unique =</span> <span class="ot">FALSE</span>)
+tl.outgoing=<span class="st"> </span><span class="kw">fafb_seg_tracing_list</span>(<span class="dt">skids =</span> <span class="kw">names</span>(a2sc),<span class="dt">connector_ids =</span> <span class="ot">NULL</span>, <span class="dt">direction =</span> <span class="st">&quot;outgoing&quot;</span>, <span class="dt">unique =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>Now because it takes a long time to trace, I am only interested in looking at the connectivity of the right-side MBON. However, I have generated a tracing sheet using both members of the cell type, i..e both MBOn a2sc Right and Left. This is useful, because they likely connect with the same neuron, and since the auto-segmented fragments are small, using multiple members of a cell type helps to rank our synapses better. But let’s subset for just those that also conenct with MBON a2sc Right.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate tracing sheet</span>
+tl.incoming =<span class="st"> </span><span class="kw">subset</span>(tl.incoming,skid==<span class="kw">names</span>(a2sc)[<span class="dv">1</span>])
+tl.outgoing =<span class="st"> </span><span class="kw">subset</span>(tl.outgoing,skid==<span class="kw">names</span>(a2sc)[<span class="dv">1</span>])</code></pre></div>
+<p>So now if you want you can take these tracing data frames and go straight to CATMAID <code>v14</code> (<a href="https://neuropil.janelia.org/tracing/fafb/v14/" class="uri">https://neuropil.janelia.org/tracing/fafb/v14/</a>), and start working! Just folow the URLs under <code>FAFB.link</code>. However, we can subset the data frame further so that we do not have to look at so many synapses - because we now know which synapses share the same <code>ngl_segment</code>, we can just look at one synapse per segment. If manually tacing, this assumed you’ll flesh out enough to get the other synapses, this is especially useful if tracing in the <code>v14-seg</code> CATMAID instance (<a href="https://neuropil.janelia.org/tracing/fafb/v14-seg/" class="uri">https://neuropil.janelia.org/tracing/fafb/v14-seg/</a>) as you already get a little chunk of traced neuron. Let’s assume you are using you are using this aproach from now on.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate tracing sheet</span>
+tl.incoming =<span class="st"> </span>tl.incoming[!<span class="kw">duplicated</span>(tl.incoming$ngl_id),]
+tl.outgoing =<span class="st"> </span>tl.outgoing[!<span class="kw">duplicated</span>(tl.outgoing$ngl_id),]</code></pre></div>
+<p>I am mainly interested in connectivity in the LH. Let’s assign a brain area to each of points in these data frames, and choose just the ones in the right LH.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Assign points to neuropils</span>
+pin.in =<span class="st"> </span><span class="kw">points_in_neuropil</span>(<span class="dt">x=</span>tl.incoming[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;z&quot;</span>)],<span class="dt">brain =</span> elmr::FAFB14NP.surf, <span class="dt">alpha =</span> <span class="dv">30000</span>)
+pin.out =<span class="st"> </span><span class="kw">points_in_neuropil</span>(<span class="dt">x=</span>tl.outgoing[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;z&quot;</span>)],<span class="dt">brain =</span> elmr::FAFB14NP.surf, <span class="dt">alpha =</span> <span class="dv">30000</span>)
+
+<span class="co"># Add to data frame</span>
+tl.incoming$neuropil =<span class="st"> </span>pin.in$neuropil
+tl.outgoing$neuropil =<span class="st"> </span>pin.out$neuropil
+
+<span class="co"># And now if you want, you can subset</span>
+tl.incoming =<span class="st"> </span><span class="kw">subset</span>(tl.incoming, neuropil==<span class="st">&quot;LH_R&quot;</span>)
+tl.outgoing =<span class="st"> </span><span class="kw">subset</span>(tl.outgoing, neuropil==<span class="st">&quot;LH_R&quot;</span>)</code></pre></div>
+<p>You can now save the .csv file (see <code>?write.csv</code>, or save to a google drive using the <code>googlesheets</code> package, but this can be slow for large data frames).</p>
+</div>
+<div id="creating-volumetric-neurons-from-and-updating-radii-information-for-skeletons-in-catmaid-using-auto-segmentation-data" class="section level2">
+<h2>2) Creating volumetric neurons from, and updating radii information for, skeletons in CATMAID using auto-segmentation data</h2>
+<p>We can also pull volumes from the brainmaps API in order to create volumetric neurons. Let’s try it. It can take some time, so let’s choose a smaller neuron than a2sc to look at, a favourite from Dolan et al. 2017, PD2a1#1.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">neuron =<span class="st"> </span><span class="kw">read.neurons.catmaid</span>(<span class="st">&quot;1299700&quot;</span>)
+neuronvolume =<span class="st"> </span><span class="kw">fafb_segs_stitch_volumes</span>(<span class="dt">neuron =</span> neuron, <span class="dt">map =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>This might be useful for analysis stuff. It’s also pretty, let’s look at it split into its different components:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nopen3d</span>()
+<span class="kw">neuronvolume3d</span>(neuronvolume)</code></pre></div>
+<p>We can also push the radius information to the manually traced CATMAID skeleton in <code>v14</code>, which might aid visualisation and tracing. To do this, we can use the neuronvolume we just created, which will be quicker, or just give the function an annotation to work with. In the latter instance, working from nothing this is faster but less acruate, as radii are calculated for nodes within each brainmaps volume separately, whereas <code>fafb_segs_stitch_volumes</code> makes a single cohesive volume, i.e. a node in the former case may be near a mesh boundary that only exists because the segmentation failed.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This updates CATMAID. In this example, it updates the fafbseg `v14-seg` envrionment neuron.</span>
+<span class="kw">fafbseg_update_node_radii</span>(<span class="dt">x =</span> neuron, <span class="dt">conn =</span> <span class="kw">fafb_seg_conn</span>(), <span class="dt">method =</span> <span class="st">&quot;nearest.mesh.point&quot;</span>)
+<span class="co"># This is rather slow, but you could run it overnight for a bunch of neurons of interest if you wanted</span>
+
+<span class="co"># If you made a mistake, you can return all radii to -1 (default ) by</span>
+<span class="kw">catmaid_update_radius</span>(<span class="dt">tnids =</span> neuron[[<span class="dv">1</span>]]$d$PointNo, <span class="dt">radii =</span> -<span class="dv">1</span>)</code></pre></div>
+</div>
+<div id="importing-neurons-from-one-catmaid-instance-to-another-retaining-connectors-and-adding-in-new-connectors" class="section level2">
+<h2>3) Importing neurons from one CATMAID instance to another, retaining connectors and adding in new connectors</h2>
+<p>Okay, now let’s say you have done some tracing in a CATMAID instance and you want to import it into another instance. In this example, we will assume that you have been following the <code>FAFBseg.link</code> column in our tracing sheet and tracing in there. You want to uplod your skeletons with their connector and tag information, connect them to the synapses you were tracign from in the tracign sheet we generated, and also join your new skeletons up to manually traced neurons in the ‘main’ collaborative <code>v14</code> instance.</p>
+<p>It’s important to do a few things while tracing in the <code>v14-seg</code> instance:</p>
+<ul>
+<li>STOP tracing in <code>v14-seg</code> when you come up against a manually traced neuron. Split off any overlapping cable.</li>
+<li>Annotate all the neurons you want to upload with the same annotation (or consetllation of annotations)</li>
+<li>Leave a specific tag (e.g. “TODO”) at leaf nodes where you want to join your <code>v14-seg</code> skeleton up to a manually traced neuron once ported to ‘v14’. Place ths leaf node as close to the manual skeleton as possible.</li>
+<li>Be aware that the importign whill take connetors with your neuron, but in <code>v14-seg</code> it will create new connectors, that will not retain any other connectivity information other than theur relationship with the imported skeleton.</li>
+</ul>
+<p>There are function to do the import and joining automatically without user interaction (<code>catmaid_uncontrolled_upload</code>), however, it is STRONGLY recommended that you use <code>catmaid_controlled_upload</code> which will walk you through the changes you are making to CATMAID so you can be sure you do not make a mistake. The process is roughly:</p>
+<ul>
+<li>Skeletons are chosen based on an annotation/name/skeleton IDs that you give</li>
+<li>These skeletons are checked for annotations that label them as already imported. These are specified by the <code>avoid</code> argument.</li>
+<li>The space around every node in each <code>v14-seg</code> skeleton is queried (in a bounding box of <code>duplication.range.nm</code> nm) to see if there are any other neurons. If there are, that node is counted as ‘duplicated’. This is better refined by using fafbseg = TRUE, in which case duplication is based on the existence of other skeletons in the same neuroglancer voumes via the brainmaps API (must have access). This can be a slow process, and is made faster (but less accurate) by downsampling the neuron using higher values of <code>downsample</code>.</li>
+<li>You are shown the neuron and the skeletons that overlap it the most, and asked if you want to continue the upload. If <code>tolerance</code> is set to a value, and the level of dupliction is above the <code>tolerance</code> proportion, the skeleton will not be uploaded.</li>
+<li>Once uploaded, connectors are transfered (if <code>include.connectors = FALSE</code>) and tags (if <code>include.tags = FALSE</code>).</li>
+<li>The newly uploaded neurons will be given the names and annotations specified with <code>name</code> and <code>annotation</code>.</li>
+<li>If <code>lock=TRUE</code> the old neurons in <code>v14-seg</code> will also be locked, to prevent others adding to it and maybe accidentally wanting to upload it.</li>
+<li>If <code>join=TRUE</code> you will now cycle through potential join sites to manual neurons in <code>v14-seg</code>, found by looking in a radius of <code>search.range.nm</code> around the neuron’s leade ndoes that contain <code>join.tag</code>. If <code>fafbseg=TRUE</code> this works better, as only neurons in the same neuroglancer volume are considered. You can choose to make joins or not interactively.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">uploaded =<span class="st"> </span><span class="kw">catmaid_controlled_upload</span>(<span class="dt">x =</span> <span class="st">&quot;name:ASB Tester&quot;</span>,<span class="dt">name =</span> <span class="st">&quot;ASB Tester from v14-seg&quot;</span>,
+                                     <span class="dt">search.range.nm =</span> <span class="dv">1000</span>, <span class="dt">annotations =</span> <span class="st">&quot;ASB Test v14-seg Upload&quot;</span>, 
+                                     <span class="dt">fafbseg =</span> <span class="ot">TRUE</span>,  <span class="dt">join =</span> <span class="ot">TRUE</span>, join,<span class="dt">tag =</span> <span class="st">&quot;TODO&quot;</span>,
+                                     <span class="dt">brain =</span> elmr::FAFB14, <span class="dt">lock =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Now that you have uploaded your neuron, you might want to automatically conenct it to stuff. We can do this using extant neurons and Peter Li’s segmentation</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fafbseg_join_connectors_in_ngl_volumes</span>(<span class="st">&quot;annotation:ASB Test v14-seg Upload&quot;</span>,
+                                       <span class="dt">putatively.connected.skids=</span><span class="st">&quot;annotation:WTPN2017_AL_PN&quot;</span>)</code></pre></div>
+<p>And done! Pretty handy yeh.</p>
+</div>
+<div id="deleting-neurons" class="section level2">
+<h2>4) Deleting neurons</h2>
+<p>You may accidentally upload something you did not mean to. Or you may only have a slighty overlap between your uploaded neuron and an original neuron, and choose to cut it out manually in CATMAID. You now want to delete that neuron. If you have control access over all of its nodes (typically these are just node that you yourself have added or imported) you may delete a neuron.</p>
+<p>You can be careful about it and do this interactively:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">catmaid_delete_neurons</span>(<span class="st">&quot;annotation:ASB Test v14-seg Upload&quot;</span>)</code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,14 +1,14 @@
 ---
-  title: "edit_catmaid"
+title: "edit_catmaid"
 author: "Alexander Bates"
 date: "07/03/2019"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{edit_catmaid}
-%\VignetteEngine{knitr::rmarkdown}
-\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
-  
+
 ```{r setup, include=FALSE, eval=F, echo=T}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -99,32 +99,22 @@ write.csv2(x = tl.outgoing,file = "/Users/abates/projects/centrifugal/data/traci
 We can also pull volumes from the brainmaps API in order to create volumetric neurons. Let's try it. It can take some time, so let's choose a smaller neuron than a2sc to look at, a favourite from Dolan et al. 2017, PD2a1#1.
 
 ```{r neuronvolume, eval=F, echo=T}
-# Fetch completely traced neurons from CATMAID
 neuron = read.neurons.catmaid("1299700")
-
-# Split into axon, dendrite, primary neurite and primary dendrite automatically
-neuron.flow = flow.centrality(neuron, polypre= FALSE, mode = "centrifugal", split = "distance")
-
-# We can have a look at this split neuron
-nopen3d()
-seesplit3d(neuron.flow, soma = 1500, radius = 100, WithConnectors = TRUE)
-
-# Pull many segmented subvolumes from tha brainmaps API and stitch into one cohesive neuron
-neuronvolume = fafb_segs_stitch_volumes(neuron = neuron.flow, map = TRUE)
+neuronvolume = fafb_segs_stitch_volumes(neuron = neuron, map = TRUE)
 ```
 
 This might be useful for analysis stuff. It's also pretty, let's look at it split into its different components:
-  
-  ```{r neuronvolume3d, eval=F, echo=T}
+
+```{r neuronvolume3d, eval=F, echo=T}
 nopen3d()
-neuronvolume3d(neuronvolume, split = "split", type = "volume")
+neuronvolume3d(neuronvolume)
 ```
 
 We can also push the radius information to the manually traced CATMAID skeleton in `v14`, which might aid visualisation and tracing. To do this, we can use the neuronvolume we just created, which will be quicker, or just give the function an annotation to work with. In the latter instance, working from nothing this is faster but less acruate, as radii are calculated for nodes within each brainmaps volume separately, whereas `fafb_segs_stitch_volumes` makes a single cohesive volume, i.e. a node in the former case may be near a mesh boundary that only exists because the segmentation failed.
 
 ```{r update.radii, eval=F, echo=T}
-# This updates CATMAID. In this example, it updates the fafbseg `v14-seg` envrionment neuron, specified using the conn argument.
-fafbseg_update_node_radii(x = neuron, conn = fafb_seg_conn(), method = "ray.cast")
+# This updates CATMAID. In this example, it updates the fafbseg `v14-seg` envrionment neuron.
+fafbseg_update_node_radii(x = neuron, conn = fafb_seg_conn(), method = "nearest.mesh.point")
 # This is rather slow, but you could run it overnight for a bunch of neurons of interest if you wanted
 
 # If you made a mistake, you can return all radii to -1 (default ) by
@@ -136,15 +126,15 @@ catmaid_update_radius(tnids = neuron[[1]]$d$PointNo, radii = -1)
 Okay, now let's say you have done some tracing in a CATMAID instance and you want to import it into another instance. In this example, we will assume that you have been following the `FAFBseg.link` column in our tracing sheet and tracing in there. You want to uplod your skeletons with their connector and tag information, connect them to the synapses you were tracign from in the tracign sheet we generated, and also join your new skeletons up to manually traced neurons in the 'main' collaborative `v14` instance.
 
 It's important to do a few things while tracing in the `v14-seg` instance:
-  
-  - STOP tracing in `v14-seg` when you come up against a manually traced neuron. Split off any overlapping cable.
+
+- STOP tracing in `v14-seg` when you come up against a manually traced neuron. Split off any overlapping cable.
 - Annotate all the neurons you want to upload with the same annotation (or consetllation of annotations)
 - Leave a specific tag (e.g. "TODO") at leaf nodes where you want to join your `v14-seg` skeleton up to a manually traced neuron once ported to 'v14'. Place ths leaf node as close to the manual skeleton as possible.
 - Be aware that the importign whill take connetors with your neuron, but in `v14-seg` it will create new connectors, that will not retain any other connectivity information other than theur relationship with the imported skeleton.
 
 There are function to do the import and joining automatically without user interaction (`catmaid_uncontrolled_upload`), however, it is STRONGLY recommended that you use `catmaid_controlled_upload` which will walk you through the changes you are making to CATMAID so you can be sure you do not make a mistake. The process is roughly:
-  
-  - Skeletons are chosen based on an annotation/name/skeleton IDs that you give
+
+- Skeletons are chosen based on an annotation/name/skeleton IDs that you give
 - These skeletons are checked for annotations that label them as already imported. These are specified by the `avoid` argument.
 - The space around every node in each `v14-seg` skeleton is queried (in a bounding box of `duplication.range.nm` nm) to see if there are any other neurons. If there are, that node is counted as 'duplicated'. This is better refined by using fafbseg = TRUE, in which case duplication is based on the existence of other skeletons in the same neuroglancer voumes via the brainmaps API (must have access). This can be a slow process, and is made faster (but less accurate) by downsampling the neuron using higher values of `downsample`.
 - You are shown the neuron and the skeletons that overlap it the most, and asked if you want to continue the upload. If `tolerance` is set to a value, and the level of dupliction is above the `tolerance` proportion, the skeleton will not be uploaded.
@@ -154,24 +144,17 @@ There are function to do the import and joining automatically without user inter
 - If `join=TRUE` you will now cycle through potential join sites to manual neurons in `v14-seg`, found by looking in a radius of `search.range.nm` around the neuron's leade ndoes that contain `join.tag`. If `fafbseg=TRUE` this works better, as only neurons in the same neuroglancer volume are considered. You can choose to make joins or not interactively.
 
 ```{r controlled.upload.to.CATMAID, eval=F, echo=T}
-# This example annotation may not work, depending on the current state of CATMAID v14-seg. Try with your own small test neuron first, to trial this function
 uploaded = catmaid_controlled_upload(x = "name:ASB Tester",name = "ASB Tester from v14-seg",
-search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", 
-fafbseg = TRUE,  join = TRUE, join,tag = "TODO",
-brain = elmr::FAFB14, lock = TRUE)
+                                     search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", 
+                                     fafbseg = TRUE,  join = TRUE, join,tag = "TODO",
+                                     brain = elmr::FAFB14, lock = TRUE)
 ```
 
 Now that you have uploaded your neuron, you might want to automatically conenct it to stuff. We can do this using extant neurons and Peter Li's segmentation
 
 ```{r auto.attach.connectors, eval=F, echo=T}
-# WTPN2017_AL_PN refers to all olfactory projection neurons from the antennal lobe
 fafbseg_join_connectors_in_ngl_volumes("annotation:ASB Test v14-seg Upload",
                                        putatively.connected.skids="annotation:WTPN2017_AL_PN")
-```
-
-If you want to, you can then transfer names and annotations back in `v14-seg` so you cvan easily identify these neurons when you go back to tracing in that environment
-```{r transfer.names}
-catmaid_interactive_name_transfer("annotation:ASB Test v14-seg Upload", conn = fafb_seg_conn(), conn2 = NULL)
 ```
 
 And done! Pretty handy yeh.
@@ -181,7 +164,9 @@ And done! Pretty handy yeh.
 You may accidentally upload something you did not mean to. Or you may only have a slighty overlap between your uploaded neuron and an original neuron, and choose to cut it out manually in CATMAID. You now want to delete that neuron. If you have control access over all of its nodes (typically these are just node that you yourself have added or imported) you may delete a neuron. 
 
 You can be careful about it and do this interactively:
-  
+
 ```{r batch.delete, eval=F, echo=T}
 catmaid_delete_neurons("annotation:ASB Test v14-seg Upload")
 ```
+
+
