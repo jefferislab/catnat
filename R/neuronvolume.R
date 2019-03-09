@@ -497,12 +497,8 @@ neuronvolume3d <- function(neuronvolume,
 #'
 #' @description  Update radius information for skeletons in a CATMAID instance using Peter Li's segmentation of FAFB-v14. Brainmaps API access required
 #' @param x the treenode ids to edit
-#' @param radii a vector the same length as tnids, giving the new radius for each treenode id in that vector
 #' @param max.dist the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.
 #' @param method whather to use raycast (casts 10 rays perpendicular to the path of the neuron for each point, slower but more accurate) or the nearest point on the bounding mesh, to estimate node radius
-#' @param pid project id. Defaults to 1
-#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
 #' @rdname catmaid_update_radius
 fafbseg_update_node_radii <- function(x, max.dist = 2000, method = c("nearest.mesh.point","ray.cast"),

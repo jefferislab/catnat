@@ -22,8 +22,6 @@ catmaid_link_connectors(treenode_id, connector_id,
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{from_type}{whether the from_id is a connector or a treenode. to_type will be set to the other type from from_id}
 }
 \description{
 Add links between connectors and treenodes to designate pre- and postsynaptic connections in CATMAID

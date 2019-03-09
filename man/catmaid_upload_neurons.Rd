@@ -6,8 +6,8 @@
 \usage{
 catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
   annotations = NULL, include.tags = TRUE, include.connectors = TRUE,
-  search.range.nm = 0, return.new.skids = FALSE, pid = 1,
-  conn = NULL, max.upload = 10, ...)
+  return.new.skids = FALSE, pid = 1, conn = NULL, max.upload = 10,
+  ...)
 }
 \arguments{
 \item{swc}{a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).}

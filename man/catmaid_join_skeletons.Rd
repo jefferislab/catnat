@@ -10,13 +10,13 @@ catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
 \arguments{
 \item{from_treenode_id}{the treenode ID of the downstream neuron}
 
+\item{to_treenode_id}{the treenode ID of the upstream neuron}
+
 \item{pid}{project id. Defaults to 1}
 
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{from_treenode_id}{the treenode ID of the upstream neuron}
 }
 \description{
 Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
