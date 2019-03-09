@@ -1012,7 +1012,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
   }
   if(is.character(name)){
     if(length(name)==1&length(neurons)>1){
-      names = paste0(name,"_",seq_along(swc))
+      names = paste0(name,"_",seq_along(neurons))
     } else if (length(name)!=length(neurons)){
       stop(paste0('The names argument mut be a vector or length 1, to be applied to all neurons
                   or a vector the same length as the number of neurons specified by x'))
@@ -1135,7 +1135,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
   }
   if(is.character(name)){
     if(length(name)==1&length(neurons)>1){
-      names = paste0(name,"_",seq_along(swc))
+      names = paste0(name,"_",seq_along(neurons))
     } else if (length(name)!=length(neurons)){
       stop(paste0('The names argument mut be a vector or length 1, to be applied to all neurons
                   or a vector the same length as the number of neurons specified by x'))
@@ -1400,6 +1400,14 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #                                        search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
 #                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
 #                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+
+x ="annotation:ASB downseg"; tolerance = 0.15; name = "v14-seg neuron upload ASB";
+                                       annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
+                                       include.tags = TRUE; include.connectors = FALSE; downsample = 1;
+                                       search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
+                                       fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;
+                                       pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn()
+
 
 #'
 #' ### ASP-g project

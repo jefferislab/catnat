@@ -5,8 +5,8 @@ date: "07/03/2019"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{edit_catmaid}
-%\VignetteEngine{knitr::rmarkdown}
-\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
   
 ```{r setup, include=FALSE, eval=F, echo=T}
@@ -170,8 +170,8 @@ fafbseg_join_connectors_in_ngl_volumes("annotation:ASB Test v14-seg Upload",
 ```
 
 If you want to, you can then transfer names and annotations back in `v14-seg` so you cvan easily identify these neurons when you go back to tracing in that environment
-```{r transfer.names}
-catmaid_interactive_name_transfer("annotation:ASB Test v14-seg Upload", conn = fafb_seg_conn(), conn2 = NULL)
+```{r transfer.names, eval=F, echo=T}
+catmaid_interactive_name_transfer(x="annotation:ASB Test v14-seg Upload", conn = fafb_seg_conn(), conn2 = NULL)
 ```
 
 And done! Pretty handy yeh.
