@@ -6,15 +6,6 @@
 \usage{
 catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
   conn = NULL, ...)
-
-catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
-  conn = NULL, ...)
-
-catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
-  conn = NULL, ...)
-
-catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
-  conn = NULL, ...)
 }
 \arguments{
 \item{from_treenode_id}{the treenode ID of the downstream neuron}
@@ -26,43 +17,7 @@ catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 
 \item{from_treenode_id}{the treenode ID of the upstream neuron}
-
-\item{from_treenode_id}{the treenode ID of the downstream neuron}
-
-\item{from_treenode_id}{the treenode ID of the upstream neuron}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{from_treenode_id}{the treenode ID of the downstream neuron}
-
-\item{from_treenode_id}{the treenode ID of the upstream neuron}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{from_treenode_id}{the treenode ID of the downstream neuron}
-
-\item{from_treenode_id}{the treenode ID of the upstream neuron}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
-
-\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-
 Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
 }

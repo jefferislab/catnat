@@ -165,33 +165,33 @@ seebroken3d = function(neuron, WithConnectors = T, WithNodes = F, soma.size = 10
   if(is.neuronlist(neuron)){neuron=neuron[[1]]}
   if(is.null(neuron$cluster.segregation.index)){
     warning("No synapse clustering calculated, dropping neuron")
-    break
-  }
-  clusters = unique(neuron$d$cluster)
-  count = length(clusters)
-  col = rainbow(count)
-  #dend.col = colorRampPalette(colors = c("skyblue", "darkblue"))(count)
-  #mixed.col = colorRampPalette(colors = c("purple", "violetred"))(count)
-  #axon.col = colorRampPalette(colors = c("orange", "red4"))(count)
-  for (c in 1:length(clusters)){
-    cluster = clusters[[c]]
-    soma = F
-    cluster.v = subset(rownames(neuron$d), neuron$d$cluster == cluster)
-    if(length(cluster.v)<2){next}
-    cluster.g = nat::prune_vertices(neuron, verticestoprune = rownames(neuron$d)[!rownames(neuron$d)%in%cluster.v])
-    #p.in = 100*cluster.g$d$pre/(cluster.g$d$pre+cluster.g$d$post)# colour by proportion of input synapses
-    # col = colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))(100)
-    #rgl::plot3d(cluster.g, col = col[p.in], WithNodes = WithNodes, soma = soma)
-    #if(grepl("dendrite",cluster)){col = dend.col} # Colour by compartment assignation
-    #if(grepl("mixed",cluster)){col = mixed.col}
-    #if(grepl("axon",cluster)){col = axon.col}
-    if (neuron$StartPoint%in%cluster.v){soma = soma.size}
-    if(nrow(xyzmatrix(cluster.g))>1){
-      rgl::plot3d(cluster.g, col = col[c], WithNodes = WithNodes, soma = soma)
+  }else{
+    clusters = unique(neuron$d$cluster)
+    count = length(clusters)
+    col = rainbow(count)
+    #dend.col = colorRampPalette(colors = c("skyblue", "darkblue"))(count)
+    #mixed.col = colorRampPalette(colors = c("purple", "violetred"))(count)
+    #axon.col = colorRampPalette(colors = c("orange", "red4"))(count)
+    for (c in 1:length(clusters)){
+      cluster = clusters[[c]]
+      soma = F
+      cluster.v = subset(rownames(neuron$d), neuron$d$cluster == cluster)
+      if(length(cluster.v)<2){next}
+      cluster.g = nat::prune_vertices(neuron, verticestoprune = rownames(neuron$d)[!rownames(neuron$d)%in%cluster.v])
+      #p.in = 100*cluster.g$d$pre/(cluster.g$d$pre+cluster.g$d$post)# colour by proportion of input synapses
+      # col = colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))(100)
+      #rgl::plot3d(cluster.g, col = col[p.in], WithNodes = WithNodes, soma = soma)
+      #if(grepl("dendrite",cluster)){col = dend.col} # Colour by compartment assignation
+      #if(grepl("mixed",cluster)){col = mixed.col}
+      #if(grepl("axon",cluster)){col = axon.col}
+      if (neuron$StartPoint%in%cluster.v){soma = soma.size}
+      if(nrow(xyzmatrix(cluster.g))>1){
+        rgl::plot3d(cluster.g, col = col[c], WithNodes = WithNodes, soma = soma)
+      }
     }
-  }
-  if (WithConnectors == T){
-    rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')
-    rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')
+    if (WithConnectors == T){
+      rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$post>0), col = 'cyan')
+      rgl::points3d(subset(xyzmatrix(neuron$d),neuron$d$pre>0), col = 'red')
+    }
   }
 }
