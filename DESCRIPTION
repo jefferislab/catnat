@@ -3,8 +3,8 @@ Type: Package
 Title: Analyse neuronal morphology and connectivity (extends catmaid and nat)
 Version: 0.1
 Authors@R: c(
-    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre")),
-    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"))
+    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1195-0445")),
+    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-0587-9355"))
     )
 Description: A selection of functions for analysis of neuronal morphology and
     connectivity created for use alongside the nat and catmaid packages. Many
