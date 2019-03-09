@@ -19,6 +19,8 @@ manually_assign_axon_dendrite(x, ...)
 \item{x}{a neuron/neuronlist object}
 
 \item{...}{additional arguments passed to methods}
+
+\item{soma}{whether or not to plot a soma, and at what radius. Argument for plot3d.neuron}
 }
 \value{
 The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d

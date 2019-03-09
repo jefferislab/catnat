@@ -33,8 +33,6 @@ fafbseg_transfer_connectors(new.neuron, old.neuron, offset = FALSE,
 \item{...}{methods passed to catmaid::catmaid_set_labels}
 
 \item{links}{whether or not to link transferred connectors  to post-pre synaptic sites on the neuron identified with the new.neuron argument}
-
-\item{max.upload}{the maximum number of files that the function will allow you to upload at once}
 }
 \description{
 Functions to enable the mapping of connectors and tags between cognate FAFB v14 and v14-seg neurons, to help enable neuronal reconstruction using the partial auto-segmentation in v14-seg space

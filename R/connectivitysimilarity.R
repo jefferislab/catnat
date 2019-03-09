@@ -7,6 +7,8 @@
 #' @param c1 determines how negatively we want to punish a case such as the one above. Default C1 is chosen so that 1 and 5 are weakly dissimilar.
 #' @param c2 determines the point where the similarity of the two numbers switches from negative to positive. Default C2 is chosen so that 10 and 100 synapses are weakly similar.
 #' @param normalise perform a min-max normalisation on the similarity scores as in Schlegel et al. 2015
+#' @param diag for connectivity_similarity_distance. Logical value indicating whether the diagonal of the distance matrix should be printed by print.dist.
+#' @param upper for connectivity_similarity_distance. ogical value indicating whether the upper triangle of the distance matrix should be printed by print.dist.
 #' @references Jarrell TA, Wang Y, Bloniarz AE, Brittin CA, Xu M, Thomson JN, Albertson DG, Hall DH, Emmons SW (2012) The connectome of a decision-making neural network. Science (80- ) 337: 437–444.
 #' @export
 #' @rdname connectivity_similarity

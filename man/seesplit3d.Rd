@@ -21,6 +21,8 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green",
 
 \item{col}{colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.}
 
+\item{splitnode}{if TRUE, a magenta sphere is placed at the location of the axon-dendrite split. Possible a putative action potential initiation site?}
+
 \item{WithConnectors}{whether ot plot the anatomical location of pre (red) and post (cyan) synapses.}
 
 \item{WithNodes}{whether to plot branch points}

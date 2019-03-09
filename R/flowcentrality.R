@@ -14,7 +14,7 @@
 #'   dendrite'. Defaults to considering nodes of 0.9*maximal flow centrality.
 #'   Assigning to NULL will prevent generating this compartment.
 #' @param bending.flow we may need to add the 'bending flow' to all the branchpoints if looking at centripetal flow centrality
-#' @param bending.flow the algorithm will assign two main neurite compartments, which as per SWC format will be indicates as either axon (Label =2)
+#' @param split the algorithm will assign two main neurite compartments, which as per SWC format will be indicates as either axon (Label =2)
 #' or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 #' This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 #' or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").
@@ -291,6 +291,7 @@ flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripe
 #'
 #' @param someneuronlist a neuronlist or neuron object that has been modified by flow.centrality
 #' @param col colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.
+#' @param splitnode if TRUE, a magenta sphere is placed at the location of the axon-dendrite split. Possible a putative action potential initiation site?
 #' @param WithConnectors whether ot plot the anatomical location of pre (red) and post (cyan) synapses.
 #' @param soma whether to plot a soma, and what the radius should be
 #' @param WithNodes whether to plot branch points

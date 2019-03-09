@@ -70,10 +70,6 @@ need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, 
 \item{synapse.radius}{radius information passed to rgl:spheres3d}
 
 \item{cols}{colours for different parts of the neuron}
-
-\item{volumes}{a list of mesh3d objects, retrieved using fafbseg::read_brainmaps_meshes}
-
-\item{...}{methods passed to Rvcg functions: vcgUniformRemesh, vcgSmooth, vcgClost}
 }
 \value{
 a 'neuronvolume' object, with the same structure as a neuron object (see the nat package), but which contains a mesh3D object for the neuron and other volume related data as a list at neuron$volume

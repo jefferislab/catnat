@@ -122,6 +122,7 @@ prune_online.neuronlist <- function(x, ...){
 #' @description Manually assign the dendrite and axon to neurons / a neuron
 #'
 #' @param x a neuron/neuronlist object
+#' @param soma whether or not to plot a soma, and at what radius. Argument for plot3d.neuron
 #' @param ... additional arguments passed to methods
 #' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
 #' @export

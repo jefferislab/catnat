@@ -385,14 +385,12 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
 #'
 #' @description Visualise neuron meshes or point clouds, retrieved and downsampled from the Google brainmaps segmentation by Peter Li.
 #' @param neuronvolume an object of class neuronvolume, as returned by catnat::fafb_segs_stitch_volumes
-#' @param volumes a list of mesh3d objects, retrieved using fafbseg::read_brainmaps_meshes
 #' @param type whether to plot meshes of a point cloud
 #' @param split whether to plot the whole neuron or some subset of it
 #' @param alpha mesh transparency
 #' @param synapse.radius radius information passed to rgl:spheres3d
 #' @param cols colours for different parts of the neuron
 #' @param WithConnectors whether or not to plot synaptic connectors using spheres3D()
-#' @param ... methods passed to Rvcg functions: vcgUniformRemesh, vcgSmooth, vcgClost
 #' @export
 #' @rdname fafb_segs_stitch_volumes
 neuronvolume3d <- function(neuronvolume,

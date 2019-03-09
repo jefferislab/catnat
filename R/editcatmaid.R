@@ -87,11 +87,10 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
 #' @param pid2 project id for conn2. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param conn2 CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param max.upload the maximum number of files that the function will allow you to upload at once
 #' @param ... methods passed to catmaid::catmaid_set_labels
 #' @export
 #' @rdname fafbseg_transfer
-fafbseg_transfer_tags<- function(new.neuron, old.neuron, offset = TRUE, search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...){
+fafbseg_transfer_tags <- function(new.neuron, old.neuron, offset = TRUE, search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...){
   if(!nat::is.neuron(new.neuron)){
     new.neuron = catmaid::read.neuron.catmaid(new.neuron, pid = pid, conn = conn, ...)
   }
@@ -523,6 +522,7 @@ catmaid_connector_nodes <- function(connector_id, node = c("presynaptic","postsy
 #'
 #' @description Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
 #' @param x a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids
+#' @param direction whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.
 #' @param putatively.connected.skids the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered
 #' @param connector.range.nm the range in nm within which to search for a treenode ID to attach the connector
 #' @param node.match number of nodes a neuron from x must have within a brainmaps 3D volume, for the volume to be considered to belong to this neuron
@@ -1245,7 +1245,6 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
 #' Connect to a local CATMAID server
 #'
 #' @description connect to a local CATMAID server running on you machine using Docker (see ?catmaid::catmaid_login, and https://catmaid.readthedocs.io/en/stable/docker.html)
-#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @export
 #' @rdname local_conn
 local_conn <- function(){
