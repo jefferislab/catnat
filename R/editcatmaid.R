@@ -1003,9 +1003,9 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
       }
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
-    }
-    if(length(already.there)){
-      warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      if(length(already.there)){
+        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      }
     }
   }else{
     neurons = x
@@ -1074,7 +1074,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
         nat::npop3d()
       }
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid)),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         search.range.nm=10, return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -1124,11 +1124,14 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
     neurons = catmaid::read.neurons.catmaid(x, OmitFailures = TRUE, pid=pid2,conn=conn2, ...)
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
     if("annotation"%in%colnames(anns)){
-      already.there = subset(anns,annotation%in%avoid)$skid
+      if(include.potential.duplicates){
+        avoiding =c(avoid,"duplicated")
+      }
+      already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
-    }
-    if(length(already.there)){
-      warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", paste(avoid, collapse = " "))
+      if(length(already.there)){
+        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+      }
     }
   }else{
     neurons = x
@@ -1166,7 +1169,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
               Upload for neuron ", i, " aborted (tolerance: ",tolerance,").")
     }else{
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations, paste0("v14-seg: ",old.skid), avoid),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations, paste0("v14-seg: ",old.skid)),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         search.range.nm=10, return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -1401,12 +1404,12 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
 #                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
 
-x ="annotation:ASB downseg"; tolerance = 0.15; name = "v14-seg neuron upload ASB";
-                                       annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
-                                       include.tags = TRUE; include.connectors = FALSE; downsample = 1;
-                                       search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
-                                       fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;
-                                       pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn()
+# x ="annotation:ASB downseg"; tolerance = 0.15; name = "v14-seg neuron upload ASB";
+#                                        annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
+#                                        include.tags = TRUE; include.connectors = FALSE; downsample = 1;
+#                                        search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
+#                                        fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;
+#                                        pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn()
 
 
 #'
