@@ -79,7 +79,6 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 #' @description manually cycle through and assign a label to points in a neuron to mark out axonic, dednritic and mixed/uncertain cable
 #'
 #' @param someneuronlist a neuron/neuronlist object
-#' @param resample the unit lengths to which neurons should be resampled
 #' @param brain brain template to plot alongside neuron?
 #' @param ... additional arguments passed to methods
 #'

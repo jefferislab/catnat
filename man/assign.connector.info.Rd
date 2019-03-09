@@ -8,14 +8,14 @@
 \usage{
 assign.connector.info(x, ...)
 
-\method{assign.connector.info}{neuron}(x)
+\method{assign.connector.info}{neuron}(x, ...)
 
 \method{assign.connector.info}{neuronlist}(x, ...)
 }
 \arguments{
 \item{x}{a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root}
 
-\item{...}{Additional arguments passed to nlapply}
+\item{...}{Currrently ignored}
 }
 \description{
 Give connector data in a CATMAID neuron the same attributes as

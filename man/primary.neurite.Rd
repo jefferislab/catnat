@@ -27,11 +27,11 @@ starting.neurite(x, k, ...)
 
 \item{resample}{The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.}
 
+\item{keep.pnt}{whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead}
+
 \item{...}{additional arguments passed to methods}
 
 \item{k}{the number of nodes from the soma to include}
-
-\item{kee.pnt}{whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead}
 }
 \value{
 A neuron pruned to its primary dendrite

@@ -41,7 +41,7 @@ as well as other meta information to inform tracing. Different worksheets contai
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 }
 \examples{
-\donttest{
+\dontrun{
 # Load the neurons for which we want to create sampling sheets
 wedpns.chosen = read.neurons.catmaid("annotation:^WED-PN Complete PDP$")
 # Assign their cell types to these neurons

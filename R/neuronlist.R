@@ -63,7 +63,7 @@ assignside <- function(someneuronlist, ...){
 #' @param x a neuron or neuronlist object
 #' @param resample The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
 #' @param k the number of nodes from the soma to include
-#' @param kee.pnt whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead
+#' @param keep.pnt whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuron pruned to its primary dendrite
