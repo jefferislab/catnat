@@ -191,13 +191,13 @@ manually_assign_axon_dendrite.neuronlist<-function(x, ...){
 #'   axon and dendrite
 #'
 #' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
-#' @param ... Additional arguments passed to nlapply
+#' @param ... Currrently ignored
 #' @export
 #' @rdname assign.connector.info
 assign.connector.info <-function(x, ...) UseMethod("assign.connector.info")
 #' @export
 #' @rdname assign.connector.info
-assign.connector.info.neuron<-function(x){
+assign.connector.info.neuron<-function(x, ...){
   relevant.points = subset(x$d, PointNo%in%x$connectors$treenode_id)
   x$connectors = cbind(x$connectors,relevant.points[match(x$connectors$treenode_id,relevant.points$PointNo),colnames(relevant.points)[!colnames(relevant.points)%in%c("PointNo", "Label", "X", "Y", "Z", "W", "Parent")]])
   x
@@ -250,12 +250,13 @@ prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, ne
 #' @param x a \code{neuron} or \code{neuronlist} object
 #' @param tag a tag that has been assigned in CATMAID
 #' @param remove.upstream Logical when \code{TRUE} points downstream of the tag(s) are removed, if true, points upstream are removed
+#' @param ... Additional arguments, passed to \code{\link{nlapply}} or eventually to \code{\link{prune_vertices}}
 #' @rdname prune_by_tag
 #' @export
 prune_by_tag <-function(x, ...) UseMethod("prune_by_tag")
 #' @rdname prune_by_tag
 #' @export
-prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
+prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...){
   p = unlist(x$tags[names(x$tags)%in%tag])
   if(is.null(p)){
     stop(paste0("Neuron does not have a tag in: ",tag))
@@ -264,11 +265,11 @@ prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
   n = nat::as.ngraph(x)
   leaves = nat::endpoints(x)
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, split.point, to = leaves, mode = "out")$vpath)))
-  nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream)
+  nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream, ...)
 }
 #' @rdname prune_by_tag
 #' @export
-prune_by_tag.catmaidneuron<- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
+prune_by_tag.catmaidneuron<- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...){
   p = unlist(x$tags[names(x$tags)%in%tag])
   if(is.null(p)){
     stop(paste0("Neuron does not have a tag in: ",tag))
@@ -277,7 +278,7 @@ prune_by_tag.catmaidneuron<- function(x, tag = "SCHLEGEL_LH", remove.upstream = 
   n = nat::as.ngraph(x)
   leaves = nat::endpoints(x)
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, split.point, to = leaves, mode = "out")$vpath)))
-  pruned = nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream)
+  pruned = nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
   y = pruned
@@ -287,7 +288,7 @@ prune_by_tag.catmaidneuron<- function(x, tag = "SCHLEGEL_LH", remove.upstream = 
 }
 #' @rdname prune_by_tag
 #' @export
-prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE){
+prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...){
   nlapply(x, tag = tag, prune_by_tag, remove.upstream = remove.upstream)
 }
 

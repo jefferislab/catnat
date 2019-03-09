@@ -30,11 +30,11 @@ in_neuropil(x, method = c("Cable", "PRE", "POST"),
 
 \method{in_neuropil}{neuron}(x, method = c("Cable", "PRE", "POST"),
   brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  min.endpoints = 1, alpha = alpha)
+  min.endpoints = 1, alpha = alpha, ...)
 
 \method{in_neuropil}{neuronlist}(x, method = c("Cable", "PRE", "POST"),
   brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  min.endpoints = 1, alpha = alpha)
+  min.endpoints = 1, alpha = alpha, ...)
 }
 \arguments{
 \item{x}{a set of neurons or, for points_in_neuropil a mxn matrix of 3D points}

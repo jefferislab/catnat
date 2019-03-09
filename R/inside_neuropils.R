@@ -49,7 +49,7 @@ in_neuropil<-function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha){
+in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha, ...){
   neuropil = subset(brain,neuropil)
   neuropil = alphashape3d::ashape3d(nat::xyzmatrix(neuropil),alpha=alpha)
   endings <- function(x){
@@ -79,6 +79,6 @@ in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.fl
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil.neuronlist <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha){
-  nat::nlapply(x, in_neuropil.neuron, brain=brain, neuropil=neuropil,min.endpoints=min.endpoints,alpha=alpha)
+in_neuropil.neuronlist <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha, ...){
+  nat::nlapply(x, in_neuropil.neuron, brain=brain, neuropil=neuropil,min.endpoints=min.endpoints,alpha=alpha,...)
 }

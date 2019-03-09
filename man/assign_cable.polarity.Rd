@@ -12,8 +12,6 @@ assign_cable.polarity(someneuronlist, brain = nat.flybrains::FCWB, ...)
 \item{brain}{brain template to plot alongside neuron?}
 
 \item{...}{additional arguments passed to methods}
-
-\item{resample}{the unit lengths to which neurons should be resampled}
 }
 \value{
 Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
