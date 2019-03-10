@@ -90,11 +90,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -112,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot neurons split up by flow centrality</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/flowcentrality.R'><code>R/flowcentrality.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/flowcentrality.R'><code>R/flowcentrality.R</code></a></small>
     <div class="hidden name"><code>seesplit3d.Rd</code></div>
     </div>
 
@@ -145,6 +148,10 @@
       <td><p>colours of sections. Defaults to orange or axons, green for primary dendrite, blue for dendrites and pink for nodes with no flow.</p></td>
     </tr>
     <tr>
+      <th>splitnode</th>
+      <td><p>if TRUE, a magenta sphere is placed at the location of the axon-dendrite split. Possible a putative action potential initiation site?</p></td>
+    </tr>
+    <tr>
       <th>WithConnectors</th>
       <td><p>whether ot plot the anatomical location of pre (red) and post (cyan) synapses.</p></td>
     </tr>
@@ -158,7 +165,7 @@
     </tr>
     <tr>
       <th>highflow</th>
-      <td><p>wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)</p></td>
+      <td><p>whether to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)</p></td>
     </tr>
     <tr>
       <th>lwd</th>

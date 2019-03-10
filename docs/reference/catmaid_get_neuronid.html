@@ -32,10 +32,7 @@
 
 <meta property="og:title" content="Get the CATMAID neuron ID that corresponds to the skeleton ID — catmaid_get_neuronid" />
 
-<meta property="og:description" content="Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
-Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
-Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
-Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron." />
+<meta property="og:description" content="Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,11 +90,14 @@ Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton I
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,78 +115,21 @@ Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton I
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get the CATMAID neuron ID that corresponds to the skeleton ID</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
     <div class="hidden name"><code>catmaid_get_neuronid.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.</p>
-<p>Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.</p>
-<p>Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.</p>
-<p>Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>catmaid_get_neuronid</span>(<span class='no'>skids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_get_neuronid</span>(<span class='no'>skids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_get_neuronid</span>(<span class='no'>skids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_get_neuronid</span>(<span class='no'>skids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>catmaid_get_neuronid</span>(<span class='no'>skids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>skids</th>
-      <td><p>a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid</p></td>
-    </tr>
-    <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
-    <tr>
-      <th>skids</th>
-      <td><p>a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid</p></td>
-    </tr>
-    <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
-    <tr>
-      <th>skids</th>
-      <td><p>a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid</p></td>
-    </tr>
-    <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
     <tr>
       <th>skids</th>
       <td><p>a vector of skeleton IDs or argument applicable to catmaid::catmaid_get_neuronid</p></td>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Functions for retrieving soma data — soma • catnat</title>
+<title>Interactively transfer names and annotations between neurons in two different CATMAID instances — catmaid_interactive_name_transfer • catnat</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Functions for retrieving soma data — soma" />
+<meta property="og:title" content="Interactively transfer names and annotations between neurons in two different CATMAID instances — catmaid_interactive_name_transfer" />
 
-<meta property="og:description" content="Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system" />
+<meta property="og:description" content="Interactively transfer names and annotations between neurons in two different CATMAID instances" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,65 +114,70 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Functions for retrieving soma data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/somas.R'><code>R/somas.R</code></a></small>
-    <div class="hidden name"><code>soma.Rd</code></div>
+    <h1>Interactively transfer names and annotations between neurons in two different CATMAID instances</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
+    <div class="hidden name"><code>catmaid_interactive_name_transfer.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system</p>
+    <p>Interactively transfer names and annotations between neurons in two different CATMAID instances</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='fu'>somapos</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>somapos</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>somapos</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>catmaid_interactive_name_transfer</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"name:ASB CHECK"</span>,
+  <span class='kw'>transfer.annotations</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>additional.annotations</span> <span class='kw'>=</span> <span class='st'>"ASB CHECK"</span>,
+  <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>fafbseg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>duplication.range.nm</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid2</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn2</span> <span class='kw'>=</span> <span class='fu'><a href='fafb_seg_conn.html'>fafb_seg_conn</a></span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a neuron or neuronlist object</p></td>
+      <td><p>a neuron object, or the skeleton ID of a neuron in v14 space</p></td>
+    </tr>
+    <tr>
+      <th>transfer.annotations</th>
+      <td><p>whether or not to also transfer annotations</p></td>
+    </tr>
+    <tr>
+      <th>additional.annotations</th>
+      <td><p>an additional annotation to add to the neurons specified by x</p></td>
+    </tr>
+    <tr>
+      <th>downsample</th>
+      <td><p>if downsample &gt; 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up</p></td>
+    </tr>
+    <tr>
+      <th>fafbseg</th>
+      <td><p>whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible duplication to skeletons within the search range and within the cognate auto-segmented volume</p></td>
+    </tr>
+    <tr>
+      <th>duplication.range.nm</th>
+      <td><p>determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 1 nm</p></td>
+    </tr>
+    <tr>
+      <th>pid</th>
+      <td><p>project id for conn. Defaults to 1</p></td>
+    </tr>
+    <tr>
+      <th>conn</th>
+      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
+    </tr>
+    <tr>
+      <th>pid2</th>
+      <td><p>project id for conn2. Defaults to 1</p></td>
+    </tr>
+    <tr>
+      <th>conn2</th>
+      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to methods</p></td>
+      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Either the soma's 3D coordinates (soma) its id number (somaid) or its position in the neuron's skeleton (somapos)</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>CATMAID access required. Data collected and described in cited publication.</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.</p>
     
 
   </div>
@@ -180,13 +185,7 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#references">References</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

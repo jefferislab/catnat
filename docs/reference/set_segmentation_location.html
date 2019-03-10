@@ -32,8 +32,7 @@
 
 <meta property="og:title" content="Calculate a connectivity similarity score between two connectivity profiles — set_segmentation_location" />
 
-<meta property="og:description" content="Set the local path to the location where you have .zip files of FAFB segmented skeletons
-Set the local path to the location where you have .zip files of FAFB segmented skeletons" />
+<meta property="og:description" content="Set the local path to the location where you have .zip files of FAFB segmented skeletons" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -91,11 +90,14 @@ Set the local path to the location where you have .zip files of FAFB segmented s
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -113,22 +115,17 @@ Set the local path to the location where you have .zip files of FAFB segmented s
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate a connectivity similarity score between two connectivity profiles</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/fafbseg.R'><code>R/fafbseg.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/fafbseg.R'><code>R/fafbseg.R</code></a></small>
     <div class="hidden name"><code>set_segmentation_location.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Set the local path to the location where you have .zip files of FAFB segmented skeletons</p>
-<p>Set the local path to the location where you have .zip files of FAFB segmented skeletons</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>set_segmentation_location</span>(<span class='no'>path</span>)
-
-<span class='fu'>fafb_neuron_details</span>(<span class='no'>skids</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"incoming"</span>, <span class='st'>"outgoing"</span>),
-  <span class='kw'>connector_ids</span> <span class='kw'>=</span> <span class='no'>connector_ids</span>, <span class='kw'>volume</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>set_segmentation_location</span>(<span class='no'>path</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,22 +133,6 @@ Set the local path to the location where you have .zip files of FAFB segmented s
     <tr>
       <th>path</th>
       <td><p>path to FAFB segmentation skeleton .zip files</p></td>
-    </tr>
-    <tr>
-      <th>skids</th>
-      <td><p>neuron skeleton ids</p></td>
-    </tr>
-    <tr>
-      <th>direction</th>
-      <td><p>whether to fetch putative incoming or outgoing partners</p></td>
-    </tr>
-    <tr>
-      <th>volume</th>
-      <td><p>volume to which to restrict connector locations</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid_get_connector_table</p></td>
     </tr>
     </table>
     

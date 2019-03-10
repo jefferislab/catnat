@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Create or update a googlesheet of randomised tracing targets for a given neuron — create_tracing_samplesheet" />
 
-<meta property="og:description" content="Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containin randomised lists of synapses and CATMAID URLs to those synapses,
+<meta property="og:description" content="Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containing randomised lists of synapses and CATMAID URLs to those synapses,
 as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given." />
 <meta name="twitter:card" content="summary" />
@@ -92,11 +92,14 @@ dendritic compartments. Randomised pre synapse lists for both presynaptic connec
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -114,13 +117,13 @@ dendritic compartments. Randomised pre synapse lists for both presynaptic connec
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create or update a googlesheet of randomised tracing targets for a given neuron</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/googlesheets.R'><code>R/googlesheets.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/googlesheets.R'><code>R/googlesheets.R</code></a></small>
     <div class="hidden name"><code>create_tracing_samplesheet.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containin randomised lists of synapses and CATMAID URLs to those synapses,
+    <p>Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containing randomised lists of synapses and CATMAID URLs to those synapses,
 as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.</p>
     
@@ -151,7 +154,7 @@ dendritic compartments. Randomised pre synapse lists for both presynaptic connec
     </tr>
     <tr>
       <th>folder</th>
-      <td><p>location to save tracing sheets. Defaults to 'googleshet' which creates a tracign sheet in your ghome folder on googledrive. It can take a while to write a googelsheet. Alternatively, CSVs can be created in a local folder.</p></td>
+      <td><p>location to save tracing sheets. Defaults to 'googlesheet' which creates a tracing sheet in your home folder on googledrive. It can take a while to write a googlesheet. Alternatively, CSVs can be created in a local folder.</p></td>
     </tr>
     <tr>
       <th>skid</th>
@@ -167,7 +170,7 @@ dendritic compartments. Randomised pre synapse lists for both presynaptic connec
     </tr>
     <tr>
       <th>randomise</th>
-      <td><p>whether to ranomise the synapse sampling list (recommended). If false, the sheet ir organise by  strongest known synaptic parners</p></td>
+      <td><p>whether to randomise the synapse sampling list (recommended). If false, the sheet is organised by strongest known synaptic partners</p></td>
     </tr>
     <tr>
       <th>ws</th>

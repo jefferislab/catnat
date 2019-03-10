@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Functions for retrieving soma data — soma • catnat</title>
+<title>Find out what is already known about a neuron's connectivity profile and connected FAFB segments — fafb_neuron_details • catnat</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Functions for retrieving soma data — soma" />
+<meta property="og:title" content="Find out what is already known about a neuron's connectivity profile and connected FAFB segments — fafb_neuron_details" />
 
-<meta property="og:description" content="Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system" />
+<meta property="og:description" content="Set the local path to the location where you have .zip files of FAFB segmented skeletons" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,65 +114,49 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Functions for retrieving soma data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/somas.R'><code>R/somas.R</code></a></small>
-    <div class="hidden name"><code>soma.Rd</code></div>
+    <h1>Find out what is already known about a neuron's connectivity profile and connected FAFB segments</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/fafbseg.R'><code>R/fafbseg.R</code></a></small>
+    <div class="hidden name"><code>fafb_neuron_details.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system</p>
+    <p>Set the local path to the location where you have .zip files of FAFB segmented skeletons</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>soma</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>somaid</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='fu'>somapos</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuronlist</span>
-<span class='fu'>somapos</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for neuron</span>
-<span class='fu'>somapos</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>fafb_neuron_details</span>(<span class='no'>skids</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"incoming"</span>, <span class='st'>"outgoing"</span>),
+  <span class='kw'>connector_ids</span> <span class='kw'>=</span> <span class='no'>connector_ids</span>, <span class='kw'>volume</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>a neuron or neuronlist object</p></td>
+      <th>skids</th>
+      <td><p>neuron skeleton ids</p></td>
+    </tr>
+    <tr>
+      <th>direction</th>
+      <td><p>whether to fetch putative incoming or outgoing partners</p></td>
+    </tr>
+    <tr>
+      <th>volume</th>
+      <td><p>volume to which to restrict connector locations</p></td>
+    </tr>
+    <tr>
+      <th>pid</th>
+      <td><p>project id. Defaults to 1</p></td>
+    </tr>
+    <tr>
+      <th>conn</th>
+      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to methods</p></td>
+      <td><p>methods passed to catmaid_get_connector_table</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Either the soma's 3D coordinates (soma) its id number (somaid) or its position in the neuron's skeleton (somapos)</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>CATMAID access required. Data collected and described in cited publication.</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.</p>
     
 
   </div>
@@ -180,13 +164,7 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#references">References</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

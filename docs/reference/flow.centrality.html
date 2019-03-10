@@ -91,11 +91,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -113,7 +116,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determine dendritic/axonal by calculating flow centrality</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/flowcentrality.R'><code>R/flowcentrality.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/flowcentrality.R'><code>R/flowcentrality.R</code></a></small>
     <div class="hidden name"><code>flow.centrality.Rd</code></div>
     </div>
 
@@ -170,23 +173,23 @@ Assigning to NULL will prevent generating this compartment.</p></td>
       <td><p>we may need to add the 'bending flow' to all the branchpoints if looking at centripetal flow centrality</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments passed to methods.</p></td>
-    </tr>
-    <tr>
-      <th>bending.flow</th>
+      <th>split</th>
       <td><p>the algorithm will assign two main neurite compartments, which as per SWC format will be indicates as either axon (Label =2)
 or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments passed to methods.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the neuron or neuron list object inputted, with centipetal flow
-  centrality information added to neuron$d, a segregation idnex score and
-  estimation of neuronal type (intertneuron or PN) based on this score (&gt;0.05
+    <p>the neuron or neuron list object inputted, with centripetal flow
+  centrality information added to neuron$d, a segregation index score and
+  estimation of neuronal type (interneuron or PN) based on this score (&gt;0.05
   = PN).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -199,7 +202,7 @@ or the Euclidean distance of its first branch point from the primary branch poin
   arbor in 3d with differently colored regions. Second, to quantitatively
   estimate the cable distance between the axon terminals and dendritic arbor
   by measuring the amount of cable with the maximum centrifugal SFC value.
-  Third, to measure the cable length of the main den- dritic shafts using
+  Third, to measure the cable length of the main dendritic shafts using
   centripetal SFC, which applies only to insect neurons with at least one
   output syn- apse in their dendritic arbor. And fourth, to weigh the color
   of each skeleton node in a 3d view, providing a characteristic signature of

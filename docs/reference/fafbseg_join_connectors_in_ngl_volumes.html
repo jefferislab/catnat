@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume — fafbseg_join_connectors_in_ngl_volumes" />
 
-<meta property="og:description" content="Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume" />
+<meta property="og:description" content="Join free connectors (the up or downstream nodes of a connector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -90,11 +90,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -112,17 +115,18 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
     <div class="hidden name"><code>fafbseg_join_connectors_in_ngl_volumes.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume</p>
+    <p>Join free connectors (the up or downstream nodes of a connector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>fafbseg_join_connectors_in_ngl_volumes</span>(<span class='no'>x</span>, <span class='no'>putatively.connected.skids</span>,
+    <pre class="usage"><span class='fu'>fafbseg_join_connectors_in_ngl_volumes</span>(<span class='no'>x</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"presynapses"</span>,
+  <span class='st'>"postsynapses"</span>, <span class='st'>"both"</span>), <span class='no'>putatively.connected.skids</span>,
   <span class='kw'>connector.range.nm</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>node.match</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>...</span>)</pre>
     
@@ -132,6 +136,10 @@
     <tr>
       <th>x</th>
       <td><p>a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids</p></td>
+    </tr>
+    <tr>
+      <th>direction</th>
+      <td><p>whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.</p></td>
     </tr>
     <tr>
       <th>putatively.connected.skids</th>
@@ -159,13 +167,19 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>makes joins in the specified CATMAID instance, but also returns a list of URLs for the locations at which joins have been made</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>
