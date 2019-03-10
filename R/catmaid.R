@@ -14,12 +14,14 @@
 resample.catmaidneuron<-function(x, stepsize=1, ...){
   r=NextMethod(x)
   c = catmaid::connectors(x)
-  c$treenode_id = nabor::knn(
-    data = nat::xyzmatrix(r),
-    query = nat::xyzmatrix(c),
-    k = 1
-  )$nn.idx
-  r$connectors = c
+  if(!is.null(c)) {
+    c$treenode_id = nabor::knn(
+      data = nat::xyzmatrix(r),
+      query = nat::xyzmatrix(c),
+      k = 1
+    )$nn.idx
+    r$connectors = c
+  }
   r
 }
 
