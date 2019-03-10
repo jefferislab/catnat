@@ -70,7 +70,7 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @seealso \code{\link[nat]{prune}}
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
-  pruned = nat:::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
+  pruned = nat::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
                  return.indices = return.indices, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
@@ -307,7 +307,7 @@ prune_by_tag.neuronlist <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TR
 #' @importFrom nat prune_vertices
 #' @seealso \code{\link[nat]{prune_vertices}}
 prune_vertices.catmaidneuron <- function (x,verticestoprune, invert = FALSE,...){
-  pruned = nat:::prune_vertices(x,verticestoprune,invert = invert,...)
+  pruned = nat::prune_vertices(x,verticestoprune,invert = invert,...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
   y = pruned

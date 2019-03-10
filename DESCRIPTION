@@ -28,6 +28,9 @@ Suggests:
     ks,
     misc3d,
     lhns,
+    fafbseg,
+    pbapply,
+    reshape2,
     spelling
 VignetteBuilder: knitr
 Depends: R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
@@ -40,6 +43,7 @@ Remotes: kassambara/easyGgplot2,
     jefferislab/nat.templatebrains,
     jefferislab/nat.flybrains,
     jefferis/elmr,
-    jefferislab/lhns
+    jefferislab/lhns,
+    jefferis/fafbseg
 Encoding: UTF-8
 Language: en-GB

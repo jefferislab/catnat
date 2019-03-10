@@ -69,6 +69,9 @@ create_skeleton_from_nrrd <- function(files, connection.distance = 25, k = "all"
     # We need to grow our search aread to d.max and so merge these different skeletons
     dd = d # Minimal
     d = d + distance.steps # Maximal
+    if(!requireNamespace('reshape2', quietly = TRUE))
+      stop("Please install suggested reshape2 package")
+
     while(d<=connection.distance){
       # Get the indices within the search distance
       search = nears[[1]]

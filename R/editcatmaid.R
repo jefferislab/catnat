@@ -378,7 +378,8 @@ catmaid_find_likely_merge <- function(TODO, fafbseg = FALSE, min_nodes = 2, sear
     neuron.bbx = neuron.bbx[setdiff(names(neuron.bbx),skid)]
     message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
     if(fafbseg){
-      require(fafbseg)
+      if(!requireNamespace('fafbseg', quietly = TRUE))
+        stop("Please install suggested fafbseg package")
       message("Checking whether potential merges are within the same FAFB volumetric auto-traced segments")
       seg = tryCatch(fafbseg::brainmaps_xyz2id(todo[,c('X','Y', 'Z')]),error=function(e)NULL)
       seg = seg[seg!=0]
@@ -534,7 +535,8 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
                                                    connector.range.nm = 1000,
                                                    node.match=5,
                                                    pid=1,conn = NULL, ...){
-  require(fafbseg)
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction = match.arg(direction)
   putatively.connected.skids = catmaid::catmaid_skids(x = putatively.connected.skids,pid=pid,conn=conn,...)
   if(!nat::is.neuronlist(x)){
@@ -725,7 +727,8 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
     }
     close(pb)
     if(fafbseg){
-      require(fafbseg)
+      if(!requireNamespace('fafbseg', quietly = TRUE))
+        stop("Please install suggested fafbseg package")
       message("Checking whether potential duplicates are within the same FAFB volumetric auto-traced segments")
       similar.skids = unique(unlist(skids))
       similars = read.neurons.catmaid(similar.skids, OmitFailures = TRUE, pid = pid, conn = conn, ...)

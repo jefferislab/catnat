@@ -24,7 +24,6 @@ set_segmentation_location <- function(path){
 #' @export
 #' @rdname read.neurons.fafbseg
 read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
-  require(catmaid)
   if(google){
     x = paste0("name:",x)
     y = paste0("annotation:",x)
@@ -89,7 +88,6 @@ fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
 fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","local"), ...){
   read.from=match.arg(read.from)
   if(read.from=="CATMAID"){
-    require(catmaid)
     y = paste0("name:",x)
     conn = catmaid::catmaid_login()
     if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
@@ -124,7 +122,8 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @export
 #' @rdname set_segmentation_location
 fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
-  require(fafbseg)
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid = 1, conn = NULL,...)
@@ -185,7 +184,8 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @export
 #' @rdname fafb_frags
 fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, ...) {
-  require(fafbseg)
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, ...)
@@ -242,6 +242,8 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
 fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
                              connector_ids = NULL, treat.skids.separately = FALSE,...){
   direction=match.arg(direction)
+  if(!requireNamespace('reshape2', quietly = TRUE))
+    stop("Please install suggested reshape2 package")
   func <- function(skids = skids, direction = direction, connector_ids = connector_ids, ...){
     ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, ...)
     df = reshape2::melt(table(ids))
