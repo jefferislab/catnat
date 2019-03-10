@@ -43,7 +43,7 @@ First, let's read some neurons from which we want to sample upstream and downstr
 # Read some interesting neurons from CATMAID
 a2sc = read.neurons.catmaid("name:MBON a2sc")
 
-# Let's see what we hsve
+# Let's see what we have
 print(a2sc[,])
 ```
 
