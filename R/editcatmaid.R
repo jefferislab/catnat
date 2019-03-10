@@ -991,8 +991,9 @@ catmaid_convert_time <- function(utc){
 #' @param pid2 project id for conn2. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param conn2 CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param ... methods passed to catmaid::catmaid_fetch #' @examples
+#' @param ... methods passed to catmaid::catmaid_fetch
 #' @examples
+#' \dontrun{
 #' # This function, first, gets the neurons we want from the v14-seg CATMAID instance
 #' # Then it checks that we have not already uploaded to v14-seg using the annotations you specify with the avoid argument
 #' # Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.
@@ -1006,6 +1007,7 @@ catmaid_convert_time <- function(utc){
 #' catmaid_delete_neurons("annotation:ASB Tester from v14-seg")
 #' # Be careful wen deleting, especially if you have merged your fragment during the interactive join.
 #' # Phew.
+#' }
 #' @export
 #' @rdname catmaid_controlled_upload
 catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuron upload",

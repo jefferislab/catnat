@@ -59,13 +59,14 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 
 \item{conn2}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
-\item{...}{methods passed to catmaid::catmaid_fetch #' @examples}
+\item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
 Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
 Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 }
 \examples{
+\dontrun{
 # This function, first, gets the neurons we want from the v14-seg CATMAID instance
 # Then it checks that we have not already uploaded to v14-seg using the annotations you specify with the avoid argument
 # Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.
@@ -79,4 +80,5 @@ search.range.nm = 1000, annotations = "ASB Test v14-seg Upload", brain = elmr::F
 catmaid_delete_neurons("annotation:ASB Tester from v14-seg")
 # Be careful wen deleting, especially if you have merged your fragment during the interactive join.
 # Phew.
+}
 }
