@@ -30,5 +30,5 @@ fafbseg_join_connectors_in_ngl_volumes(x, direction = c("presynapses",
 makes joins in the specified CATMAID instance, but also returns a list of URLs for the locations at which joins have been made
 }
 \description{
-Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
+Join free connectors (the up or downstream nodes of a connector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
 }

@@ -15,7 +15,7 @@ assign.connector.info(x, ...)
 \arguments{
 \item{x}{a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root}
 
-\item{...}{Currrently ignored}
+\item{...}{Currently ignored}
 }
 \description{
 Give connector data in a CATMAID neuron the same attributes as

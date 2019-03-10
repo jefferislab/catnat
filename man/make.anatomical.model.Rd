@@ -2,7 +2,7 @@
 % Please edit documentation in R/modelmaking.R
 \name{make.anatomical.model}
 \alias{make.anatomical.model}
-\title{Generate a neuroanatomicla alpha shape from connector and/or tree node data}
+\title{Generate a neuroanatomical alpha shape from connector and/or tree node data}
 \usage{
 make.anatomical.model(someneuronlist, substrate = c("connectors",
   "cable", "both"), maxdistance = 10000, groupsize = 100,
@@ -17,7 +17,7 @@ make.anatomical.model(someneuronlist, substrate = c("connectors",
 
 \item{groupsize}{an integer number of nearest neighbours to find using nabor::knn()}
 
-\item{alpha}{a single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive}
+\item{alpha}{a single value or vector of values for α, fed to \code{alphashape3d::\link{ashape3d}}. Selection is subsequently interactive}
 
 \item{auto.selection}{whether to try and remove points based on interactively chosen values for 'groupsize' and 'maxdistance'}
 

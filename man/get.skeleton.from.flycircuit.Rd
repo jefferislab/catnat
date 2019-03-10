@@ -4,7 +4,7 @@
 \alias{get.skeleton.from.flycircuit}
 \alias{reroot.flycircuit.neuron}
 \alias{Chiang2FCWB}
-\title{Fetch Flycircuit neuron skeletons from the Tawian Flycircuit server}
+\title{Fetch FlyCircuit neuron skeletons from the Taiwan FlyCircuit server}
 \usage{
 get.skeleton.from.flycircuit(fcneurons, xform_version = 1, ...)
 
@@ -24,7 +24,7 @@ Chiang2FCWB(x, female = grepl("-F-", x), xform_version = 1)
 \item{female}{whether the neurons to be transformed are female (TRUE) or male (FALSE)}
 }
 \value{
-A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space
+A neuronlist of FlyCircuit neurons registered in the intersex FCWB brain space
 }
 \description{
 Assigns cell body side based in neuron name.

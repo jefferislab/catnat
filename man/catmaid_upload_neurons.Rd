@@ -20,7 +20,7 @@ catmaid_upload_neurons(swc = NULL, name = "neuron SWC upload",
 
 \item{include.connectors}{whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its connectors to its newly uploaded cognate}
 
-\item{return.new.skids}{if TRUE, the new skids created in the CATMAID instance specificed by conn, are returned}
+\item{return.new.skids}{if TRUE, the new skids created in the CATMAID instance specified by conn, are returned}
 
 \item{pid}{project id. Defaults to 1}
 

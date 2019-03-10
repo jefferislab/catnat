@@ -21,10 +21,10 @@ distance.from.first.branchpoint(x, ...)
 
 \item{...}{Additional arguments passed to nlapply}
 
-\item{graph.distance}{whether to calculate the graph distance (defualt)
+\item{graph.distance}{whether to calculate the graph distance (default)
 between nodes and the primary branchpoint, or the cable length}
 }
 \description{
-alculate geodesic distance from nodes to a neuron's primary,
+Calculate geodesic distance from nodes to a neuron's primary,
   axon-dendrite branchpoint
 }

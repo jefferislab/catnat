@@ -2,10 +2,10 @@
 #'
 #' @description Skeletonise a neuron in Fiji and then use this function to retrieve it as a skeleton
 #'
-#' @param files paths to saved .Nrrd files that have been skeletonsied in Fiji
+#' @param files paths to saved .Nrrd files that have been skeletonised in Fiji
 #' @param connection.distance maximal connection distance between points
 #' @param k value used in nearest neighbours search to identify close points and draw lines between them
-#' @param distance.steps each round of the algorithm connects the cosest points to the start point / leaf node, that are within the search range, starting at distance.steps and increasing by this amount to the maximal connection.distance
+#' @param distance.steps each round of the algorithm connects the closest points to the start point / leaf node, that are within the search range, starting at distance.steps and increasing by this amount to the maximal connection.distance
 #' @param ... additional arguments passed to methods.
 #'
 #' @return A neuronlist object
@@ -69,6 +69,9 @@ create_skeleton_from_nrrd <- function(files, connection.distance = 25, k = "all"
     # We need to grow our search aread to d.max and so merge these different skeletons
     dd = d # Minimal
     d = d + distance.steps # Maximal
+    if(!requireNamespace('reshape2', quietly = TRUE))
+      stop("Please install suggested reshape2 package")
+
     while(d<=connection.distance){
       # Get the indices within the search distance
       search = nears[[1]]

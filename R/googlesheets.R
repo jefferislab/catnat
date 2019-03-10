@@ -1,6 +1,6 @@
-#' Generate URLs to CATMAID conenctor location
+#' Generate URLs to CATMAID connector location
 #'
-#' @description   Generate URLs to CATMAID conenctor location
+#' @description   Generate URLs to CATMAID connector location
 #' @param df data frame that must contain a connector_id column, and x, y, z columns
 #' @param server CATMAID instance
 #' @export
@@ -125,17 +125,17 @@ unique.neurons.trace <- function(df, prepost = 1, polypre = FALSE){
 
 #' Create or update a googlesheet of randomised tracing targets for a given neuron
 #'
-#' @description Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containin randomised lists of synapses and CATMAID URLs to those synapses,
+#' @description Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containing randomised lists of synapses and CATMAID URLs to those synapses,
 #' as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 #' dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 #'
 #' @param neuron a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored. If axon.dendrite.split = TRUE, neuron should be passed through catnat::flow.centrality first in order to identify its axon and dendrite
 #' @param sheet_title title of the googlesheet to be created or updated
-#' @param folder location to save tracing sheets. Defaults to 'googleshet' which creates a tracign sheet in your ghome folder on googledrive. It can take a while to write a googelsheet. Alternatively, CSVs can be created in a local folder.
+#' @param folder location to save tracing sheets. Defaults to 'googlesheet' which creates a tracing sheet in your home folder on googledrive. It can take a while to write a googlesheet. Alternatively, CSVs can be created in a local folder.
 #' @param skid CATMAID skeleton ID for the neuron
 #' @param polypre if TRUE, then randomised worksheets for connections laid at the neuron's presynapses are generated
 #' @param axon.dendrite.split if TRUE and the neuron is labelled in its neuron$d data frame in SWC fashion, then separate worksheets for randomised synapse lists in axon and dendrite are generated
-#' @param randomise whether to ranomise the synapse sampling list (recommended). If false, the sheet ir organise by  strongest known synaptic parners
+#' @param randomise whether to randomise the synapse sampling list (recommended). If false, the sheet is organised by strongest known synaptic partners
 #' @param ws the individual google worksheet or path to .csv file to update
 #'
 #' @examples

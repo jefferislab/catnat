@@ -127,7 +127,7 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 
 #' Get data tracers' contributions to skeletons
 #'
-#' @description Get data tracers' contributions to ndoes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
+#' @description Get data tracers' contributions to nodes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
 #'
 #' @param x a neuronlist where the name of each neuron is its skeleton ID
 #' @param exclude.authors a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meet the threshold specified by arguments to suggest_authorship

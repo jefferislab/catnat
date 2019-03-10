@@ -10,7 +10,7 @@ catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL,
 \arguments{
 \item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}
 
-\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)}
+\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes nodes outside search area)}
 
 \item{pid}{project id. Defaults to 1}
 

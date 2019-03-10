@@ -90,11 +90,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -112,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Convert a 3D Kernel Density Estimate (package ks) into rgl mesh3d object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/kde.R'><code>R/kde.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/kde.R'><code>R/kde.R</code></a></small>
     <div class="hidden name"><code>as.mesh3d.kde.Rd</code></div>
     </div>
 
@@ -135,7 +138,7 @@
     </tr>
     <tr>
       <th>cont</th>
-      <td><p>The countour level to use</p></td>
+      <td><p>The contour level to use</p></td>
     </tr>
     <tr>
       <th>approx.cont</th>
@@ -165,7 +168,7 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>There are two conversion methods. The default uses the output of the
-  misc3d::countour3d function. This looks nice but seems to me to have a lot
+  misc3d::contour3d function. This looks nice but seems to me to have a lot
   of redundant triangles. The alternative uses the <code>alphashape3d</code>
   library which produces a simpler output. <b>But</b> you must provide a
   length parameter <code>ashape.alpha</code> which is passed to <code>alphashape3d</code></p>

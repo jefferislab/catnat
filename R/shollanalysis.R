@@ -1,9 +1,9 @@
 #' Sholl analysis on neuron skeletons
 #'
-#' @description Functions for sholl analysis of neuronal skeletons
+#' @description Functions for Sholl analysis of neuronal skeletons
 #'
 #' @param neuron a neuron object
-#' @param start the origin from which spheres are grown for the sholl analysis
+#' @param start the origin from which spheres are grown for the Sholl analysis
 #' @param starting.radius the radius of the first sphere. Defaults to the radius step
 #' @param ending.radius the radius of the last sphere. If NULL the distance to the furthest dendritic point from the start point is taken
 #' @param radius.step the change in radius between successive spheres. Defaults to one 100th of the radius of the ending sphere

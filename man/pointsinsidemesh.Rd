@@ -11,7 +11,7 @@ pointsinsidemesh(x, surf, rval = c("logical", "distance", "mesh3d"), ...)
 
 \item{surf}{A 3D shape, typically a mesh3d object}
 
-\item{rval}{Whetehr to return a logical, distances or a mesh3d object}
+\item{rval}{Whether to return a logical, distances or a mesh3d object}
 
 \item{...}{additional arguments passed to methods}
 }

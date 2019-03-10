@@ -32,10 +32,7 @@
 
 <meta property="og:title" content="Programmatically join CATMAID skeletons — catmaid_join_skeletons" />
 
-<meta property="og:description" content="Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments.
-Programmatically join CATMAID skeletons. Use with caution in live tracing environments." />
+<meta property="og:description" content="Programmatically join CATMAID skeletons. Use with caution in live tracing environments." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,11 +90,14 @@ Programmatically join CATMAID skeletons. Use with caution in live tracing enviro
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,29 +115,17 @@ Programmatically join CATMAID skeletons. Use with caution in live tracing enviro
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Programmatically join CATMAID skeletons</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
     <div class="hidden name"><code>catmaid_join_skeletons.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Programmatically join CATMAID skeletons. Use with caution in live tracing environments.</p>
-<p>Programmatically join CATMAID skeletons. Use with caution in live tracing environments.</p>
-<p>Programmatically join CATMAID skeletons. Use with caution in live tracing environments.</p>
-<p>Programmatically join CATMAID skeletons. Use with caution in live tracing environments.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>catmaid_join_skeletons</span>(<span class='no'>from_treenode_id</span>, <span class='no'>to_treenode_id</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_join_skeletons</span>(<span class='no'>from_treenode_id</span>, <span class='no'>to_treenode_id</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_join_skeletons</span>(<span class='no'>from_treenode_id</span>, <span class='no'>to_treenode_id</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>catmaid_join_skeletons</span>(<span class='no'>from_treenode_id</span>, <span class='no'>to_treenode_id</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -148,67 +136,7 @@ Programmatically join CATMAID skeletons. Use with caution in live tracing enviro
       <td><p>the treenode ID of the downstream neuron</p></td>
     </tr>
     <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the upstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the downstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the upstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the downstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the upstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>pid</th>
-      <td><p>project id. Defaults to 1</p></td>
-    </tr>
-    <tr>
-      <th>conn</th>
-      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
-      <td><p>the treenode ID of the downstream neuron</p></td>
-    </tr>
-    <tr>
-      <th>from_treenode_id</th>
+      <th>to_treenode_id</th>
       <td><p>the treenode ID of the upstream neuron</p></td>
     </tr>
     <tr>

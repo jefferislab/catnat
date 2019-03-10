@@ -14,7 +14,7 @@ fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
 \item{x}{typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.}
 
 \item{google}{if TRUE, we treat x as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
-if given as a character starting with 'name:' or 'anotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.}
+if given as a character starting with 'name:' or 'annotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.}
 
 \item{conn}{a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.}
 

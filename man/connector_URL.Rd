@@ -2,7 +2,7 @@
 % Please edit documentation in R/googlesheets.R
 \name{connector_URL}
 \alias{connector_URL}
-\title{Generate URLs to CATMAID conenctor location}
+\title{Generate URLs to CATMAID connector location}
 \usage{
 connector_URL(df,
   server = "https://neuropil.janelia.org/tracing/fafb/v14/")
@@ -13,5 +13,5 @@ connector_URL(df,
 \item{server}{CATMAID instance}
 }
 \description{
-Generate URLs to CATMAID conenctor location
+Generate URLs to CATMAID connector location
 }

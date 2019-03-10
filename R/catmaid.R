@@ -99,7 +99,7 @@ resample.catmaidneuronlist <- function(x,stepsize=1, ...) {
 
 #' Meta-annotate CATMAID annotations
 #'
-#' @description Meta-annotate a grops of CATMAID annotations
+#' @description Meta-annotate a group of CATMAID annotations
 #'
 #' @param annotations annotations to meta-annotate
 #' @param meta_annotations meta-annotation to add
@@ -172,7 +172,7 @@ reverse.name.side<-function(names){
 #'
 #' @description Use to update a large neuronlist quickly by pulling just certain neurons from CATMAID
 #'
-#' @param skids sekeleton IDs
+#' @param skids skeleton IDs
 #' @param someneuronlist a neuronlist object
 #' @param ... additional arguments passed to read.neurons.catmaid
 #'

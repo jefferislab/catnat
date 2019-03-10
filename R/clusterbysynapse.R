@@ -1,12 +1,12 @@
-#' Cluster neurons by pre- and postsynapse positons
+#' Cluster neurons by pre- and postsynapse positions
 #'
 #' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 #'
 #' @param someneuronlist a neuronlist or neuron object
 #' @param sigma determines what distances between two synapses are considered close (defaults to 1 um)
 #' @param omega synapse cluster radius. Defaults to sigma.
-#' @param symmetric whether to return a symmetric martrix (average of scores between two neurons in both directions)
-#' @param direction cluster neurons by presynapses (0), postysnapses (1) or both (2)
+#' @param symmetric whether to return a symmetric matrix (average of scores between two neurons in both directions)
+#' @param direction cluster neurons by presynapses (0), postsynapses (1) or both (2)
 #' @param ... additional arguments passed to methods.
 #'
 #' @return A matrix of similarity scores between inputted neurons, based on synapse positions.

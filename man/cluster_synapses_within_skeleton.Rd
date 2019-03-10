@@ -16,26 +16,26 @@ cluster_synapses_within_skeleton(x, polyadic = T, lambda = 30,
   lambda = 30, order = 150, e = c(0.3, 0.7), ...)
 }
 \arguments{
-\item{x}{a neuronlist or neuron object}
+\item{x}{a \code{\link{neuronlist}} or \code{\link{neuron}} object}
 
-\item{polyadic}{Whether to count presynapses as a single synapse or as the number of connections that prsynapse makes for the purpose of clustering. Defaults to true.}
+\item{polyadic}{Whether to count presynapses as a single synapse or as the number of connections that presynapse makes for the purpose of clustering. Defaults to true.}
 
 \item{lambda}{A bandwidth parameter that effectively determines the size of clusters}
 
 \item{order}{Helps determine cluster size. How many nodes to consider as being inside the neighbourhood at each step during gradient ascent.}
 
-\item{e}{The entropy value calculated between post and pre synapses in a cluster abvoe which we assign that cluster as part of a dendrite, and below which we assign as an axonic segment. In between these values we assign the cluster as mixed.}
+\item{e}{The entropy value calculated between post and pre synapses in a cluster above which we assign that cluster as part of a dendrite, and below which we assign as an axonic segment. In between these values we assign the cluster as mixed.}
 
 \item{...}{additional arguments passed to methods.}
 }
 \value{
-the neuron or neuron list object inputted, with centipetal flow
-  centrality information added to neuron$d, a segregation idnex score and
-  estimation of neuronal type (intertneuron or PN) based on this score (>0.05
+the neuron or neuron list object inputted, with centripetal flow
+  centrality information added to neuron$d, a segregation index score and
+  estimation of neuronal type (interneuron or PN) based on this score (>0.05
   = PN).
 }
 \description{
-implementation of the algorithm for clustering synapses from Schneider-Mizell et al. (2016). Note that the abrbour.cluster() function will retrieve these clusters as separate neuron objects in a neuronlist.
+implementation of the algorithm for clustering synapses from Schneider-Mizell et al. (2016). Note that the \code{\link{arbour.clusters}} function will retrieve these clusters as separate neuron objects in a \code{\link{neuronlist}}.
 }
 \details{
 From Schneider-Mizell et al. (2016): "This approach involves convolving synapse locations with a Gaussian kernel to estimate the density of synapses in space. A cluster is then the set of synapses for which, starting at their location, gradient ascent reaches the same density peak. However, loca- tions on one neuron that are close in space can be very far apart along the neuron. Here, instead of considering the density of a neuron’s synapses in 3d space, we use a similar procedure to estimate the density of synapses at every point on the arbor (following the cable) and define synapse clusters in the same manner. The only parameter in both approaches is the width of the Gaussian kernel, a physically meaningful parameter."

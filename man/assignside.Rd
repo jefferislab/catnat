@@ -12,7 +12,7 @@ assignside(someneuronlist, ...)
 \item{...}{additional arguments passed to methods}
 }
 \value{
-Someneuronlist with cell sidedness in the metadata
+someneuronlist with cell sidedness in the metadata
 }
 \description{
 Assigns cell body side based in neuron name.

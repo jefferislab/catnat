@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Assign identitiy to lateral horn neurons — assign_lh_neuron • catnat</title>
+<title>Assign identity to lateral horn neurons — assign_lh_neuron • catnat</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,11 +30,11 @@
 
 
 
-<meta property="og:title" content="Assign identitiy to lateral horn neurons — assign_lh_neuron" />
+<meta property="og:title" content="Assign identity to lateral horn neurons — assign_lh_neuron" />
 
-<meta property="og:description" content="Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
+<meta property="og:description" content="Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Frechter et al. 2018.
 Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
-unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root. This fucntion provides a good guess, however if it gets a neurons assignment
+unidentified tracts/anatomy group/cell types. Relies on NBLAST. Skeletons must have their somas as their root. This function provides a good guess, however if it gets a neurons assignment
 incorrect, that does not necessarily mean the neuron in question is not covered by the naming system." />
 <meta name="twitter:card" content="summary" />
 
@@ -93,11 +93,14 @@ incorrect, that does not necessarily mean the neuron in question is not covered 
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -114,16 +117,16 @@ incorrect, that does not necessarily mean the neuron in question is not covered 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Assign identitiy to lateral horn neurons</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/flycircuit.R'><code>R/flycircuit.R</code></a></small>
+    <h1>Assign identity to lateral horn neurons</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/flycircuit.R'><code>R/flycircuit.R</code></a></small>
     <div class="hidden name"><code>assign_lh_neuron.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
+    <p>Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Frechter et al. 2018.
 Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
-unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root. This fucntion provides a good guess, however if it gets a neurons assignment
+unidentified tracts/anatomy group/cell types. Relies on NBLAST. Skeletons must have their somas as their root. This function provides a good guess, however if it gets a neurons assignment
 incorrect, that does not necessarily mean the neuron in question is not covered by the naming system.</p>
     
     </div>
@@ -143,7 +146,7 @@ incorrect, that does not necessarily mean the neuron in question is not covered 
     </tr>
     <tr>
       <th>most.lhns</th>
-      <td><p>a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017, as do the two arguments below</p></td>
+      <td><p>a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the FlyCircuit neurons and dye-fills used in Frechter et al. 2018, as do the two arguments below</p></td>
     </tr>
     <tr>
       <th>most.lhns.dps</th>
@@ -151,7 +154,7 @@ incorrect, that does not necessarily mean the neuron in question is not covered 
     </tr>
     <tr>
       <th>most.lhns.pnts.dps</th>
-      <td><p>the primary neurite tracts to search against as a dotrpops object</p></td>
+      <td><p>the primary neurite tracts to search against as a <code>dotprops</code> object</p></td>
     </tr>
     <tr>
       <th>brain</th>

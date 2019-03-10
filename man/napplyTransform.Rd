@@ -4,7 +4,7 @@
 \alias{napplyTransform}
 \alias{napplyTransform.neuron}
 \alias{napplyTransform.neuronlist}
-\title{Apply a transform to a neruon/neuronlist}
+\title{Apply a transform to a neuron/neuronlist}
 \usage{
 napplyTransform(x, trafo, inverse = F, ...)
 
@@ -15,7 +15,7 @@ napplyTransform(x, trafo, inverse = F, ...)
 \arguments{
 \item{x}{a neuron/neuronlist object}
 
-\item{trafo}{A valid transformation for Morpho:applyTransform}
+\item{trafo}{A valid transformation for \code{Morpho::\link{applyTransform}}}
 
 \item{inverse}{whether to calculate the inverse of trafo}
 
@@ -25,5 +25,5 @@ napplyTransform(x, trafo, inverse = F, ...)
 Transformed neuron/neuronlist object
 }
 \description{
-Apply a transform to a neruon/neuronlist object using Morpho::applyTransform
+Apply a transform to a neuron/neuronlist object using Morpho::applyTransform
 }

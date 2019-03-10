@@ -11,8 +11,8 @@ map_fafbsegs_to_neuron(someneuronlist, node.match = 5,
 \item{someneuronlist}{a neuronlist or neuron object}
 
 \item{node.match}{how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
-These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
-5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segement.
+These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
+5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
 need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.}
 
 \item{return.unmatched}{defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.}

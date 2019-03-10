@@ -51,7 +51,7 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 \item{unique}{if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column}
 }
 \description{
-Fetch skeleton ids or read skeletons from the FAFV Google Segmentation by Peter Li.
+Fetch skeleton ids or read skeletons from the FAFb Google Segmentation by Peter Li.
 This is done by mapping the location of connector nodes in FAFB to the volumetric Google segmentations,
 and then their cognate skeletons. Relies on package fafbseg and brainmaps authentication, user list is curated.
 }
@@ -59,5 +59,5 @@ and then their cognate skeletons. Relies on package fafbseg and brainmaps authen
 fafb_frags_ids returns Neuroglancer IDs for FAFB segments up or downstream of the specified FAFB CATMAID skeleton IDs.
 fafb_frags_skeletons reads neurons from Neuroglancer IDs or calls fafb_frags_ids, using either saved skeletons, Neuroglancer brainmaps access or CATMAID access.
 fafb_seg_hitlist generates a ranked hitlist of fragments from the given skids, either up or downstream.
-fafb_seg_tracing_list goes a bit further and supplies emt information and links to FAFBv14 and the FAFBv14-segmentation instance.
+fafb_seg_tracing_list goes a bit further and supplies emt information and links to \code{FAFBv14} and the \code{FAFBv14} segmentation instance.
 }

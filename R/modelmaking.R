@@ -1,4 +1,4 @@
-#' Generate a neuroanatomicla alpha shape from connector and/or tree node data
+#' Generate a neuroanatomical alpha shape from connector and/or tree node data
 #'
 #' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 #'
@@ -8,7 +8,7 @@
 #' @param groupsize an integer number of nearest neighbours to find using nabor::knn()
 #' @param selection whether or not to interactively select values for maxdistance and groupsize.
 #' @param chosen.points whether to feed the function pre-chosen points. A matrix for 3D points
-#' @param alpha a single value or vector of values for α, fed to alpshaped3d::ashape3d(). Selection is subsequently interactive
+#' @param alpha a single value or vector of values for α, fed to \code{alphashape3d::\link{ashape3d}}. Selection is subsequently interactive
 #' @param auto.selection whether to try and remove points based on interactively chosen values for 'groupsize' and 'maxdistance'
 #' @param ... additional arguments passed to methods
 #'
@@ -214,7 +214,7 @@ spinny <- function(object, target){
 #'
 #' @param x 3D points
 #' @param surf A 3D shape, typically a mesh3d object
-#' @param rval Whetehr to return a logical, distances or a mesh3d object
+#' @param rval Whether to return a logical, distances or a mesh3d object
 #' @param ... additional arguments passed to methods
 #'
 #' @return A neuronlist
@@ -255,7 +255,7 @@ applyTransform.neuronlist <- function(someneuronlist, trafo, inverse = F){
 #' @param x k x 3 matrix or mesh3d
 #' @param icpiter Number of iterations to run
 #' @param subsample integer: use only a subset for icp matching
-#' @param pcAlign if TRUE, the icp will be preceeded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data
+#' @param pcAlign if TRUE, the icp will be preceded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data
 #' @param mirroraxis integer: which axis to mirror at
 #' @param initPC logical: if TRUE the data will be prealigned by its principal axes
 #' @param initCenter logical: if TRUE and initPC=FALSE, x will be translated to its centroid before mirroring

@@ -5,7 +5,7 @@
 #' @param swc a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).
 #' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
 #' @param annotations a character vector of annotations, to be added to all of the uploaded neurons
-#' @param return.new.skids if TRUE, the new skids created in the CATMAID instance specificed by conn, are returned
+#' @param return.new.skids if TRUE, the new skids created in the CATMAID instance specified by conn, are returned
 #' @param include.tags whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its tags to its newly uploaded cognate
 #' @param include.connectors whether of not, if swc is a CATMAID neuron/neuronlist, to transfer its connectors to its newly uploaded cognate
 #' @param pid project id. Defaults to 1
@@ -81,7 +81,7 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
 #' @param new.neuron a neuron object, or the skeleton ID of a neuron in v14 space
 #' @param old.neuron a neuron object, or the skeleton ID of a neuron in v14-seg space
 #' @param offset whether or not to expect a displacement in space between the new and old neurons. If so, search.range.nm is used to find the nearest nodes to which to assign tags/connectors, within the radius it specifies
-#' @param search.range.nm the maimum distance between points in the v14 and v14-seg skeleton, that is acceptable for the transfer ot tag/connector information. Not set to 0 be default to accept small variations in node position that might occur between the two tracing environments, due to tracer edit.s
+#' @param search.range.nm the maximum distance between points in the v14 and v14-seg skeleton, that is acceptable for the transfer ot tag/connector information. Not set to 0 be default to accept small variations in node position that might occur between the two tracing environments, due to tracer edit.s
 #' @param links whether or not to link transferred connectors  to post-pre synaptic sites on the neuron identified with the new.neuron argument
 #' @param pid project id for conn. Defaults to 1
 #' @param pid2 project id for conn2. Defaults to 1
@@ -318,7 +318,7 @@ catmaid_link_connectors <- function(treenode_id, connector_id,
 #' @param x a neuron or neuronlist object
 #' @param tag a single character specifying which tag to look for. Defaults to TODO
 #' @param only.leaves whether or not to only return leaf nodes with the specified tag
-#' @param url if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags
+#' @param url if TRUE (default) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags
 #' @param pid project id. Defaults to 1. For making the URL.
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details. For making the URL.
 #' @export
@@ -361,7 +361,7 @@ catmaid_get_tag.neuronlist <- function(x, tag = "TODO", url = FALSE, only.leaves
 #' @param TODO a data.frame, as returned by catmaid_get_tag with tag = "TODO" (or a different tag indicative of a merge point) and url = FALSE
 #' @param skid the skeleton ID of a neuron for which merges are to be found. If NULL, the skeleton ID is taken as the rowname of the TODO data frame
 #' @param fafbseg whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible merges to neurons within the search range and within the cognate auto-segmented volume
-#' @param search.range.nm the maimum distance from which to search from the TODO point tag to find potential mergers
+#' @param search.range.nm the maximum distance from which to search from the TODO point tag to find potential mergers
 #' @param min_nodes the minimum number of nodes a potential merger skeleton needs to have
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
@@ -382,6 +382,8 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
     neuron.bbx = neuron.bbx[setdiff(names(neuron.bbx),skid)]
     message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
     if(fafbseg){
+      if(!requireNamespace('fafbseg', quietly = TRUE))
+        stop("Please install suggested fafbseg package")
       message("Checking whether potential merges are within the same FAFB volumetric auto-traced segments")
       seg = tryCatch(fafbseg::brainmaps_xyz2id(todo[,c('X','Y', 'Z')]),error=function(e)NULL)
       seg = seg[seg!=0]
@@ -519,7 +521,7 @@ catmaid_connector_nodes <- function(connector_id, node = c("presynaptic","postsy
 
 #' Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume
 #'
-#' @description Join free connectors (the up or downstream nodes of a conector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
+#' @description Join free connectors (the up or downstream nodes of a connector are joined, but only where this point belongs to a skeleton of 1 node) in a CATMAID instance to skeletons if they share a Google Brainmaps volume
 #' @param x a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids
 #' @param direction whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.
 #' @param putatively.connected.skids the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered
@@ -538,6 +540,8 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
                                                    node.match=5,
                                                    pid=1,conn = NULL, ...){
   stop("Function currently in development. Please pull again later.")
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction = match.arg(direction)
   putatively.connected.skids = catmaid::catmaid_skids(x = putatively.connected.skids,pid=pid,conn=conn,...)
   if(!nat::is.neuronlist(x)){
@@ -645,7 +649,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
                    error = function(e) warning("treenode join ",tnid," to connector ", df[i,"connector_id"], "failed"))
         }
       }else if(df[i,"partner_nodes"]<10){
-        ## Make sure tnid2 is still not conencted to anything else!
+        ## Make sure tnid2 is still not connected to anything else!
         tnid2 = df[i,"partner_treenode_id"]
         tnid2.detail = catmaid::catmaid_get_treenodes_detail (tnids=tnid2, pid = pid, conn = conn, ...)
         n = catmaid::catmaid_get_node_count(tnid2.detail$skid, conn=conn, OmitFailures = FALSE,...)
@@ -686,7 +690,7 @@ catmaid_join_skeletons <- function(from_treenode_id, to_treenode_id, pid = 1, co
 #'
 #' @description  Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
 #' @param bbx the bounding box (a matrix of 2 rows and 3 columns) describing a search volume
-#' @param min_nodes the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)
+#' @param min_nodes the minimum number of nodes a neuron in the search area must have (includes nodes outside search area)
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch
@@ -712,15 +716,15 @@ catmaid_skeletons_in_bbx <- function(bbx, min_nodes = 2, pid = 1, conn = NULL, .
 #' @description  Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
 #' @param neuron the neuron object you are thinking about uploading
 #' @param skid the skeleton ID that corresponds to neuron
-#' @param tolerance how many potentially duplictated nodes you will tolerate. If NULL, skeleton IDs for potentially duplictated neurons are returned.
+#' @param tolerance how many potentially duplicated nodes you will tolerate. If NULL, skeleton IDs for potentially duplicated neurons are returned.
 #' @param duplication.range.nm determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 10 nm
 #' @param downsample if downsample > 1, a sample of number.of.points/downsample is taken from the neuron, and only these points are used to assess duplication. Speeds things up
 #' @param fafbseg whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible duplication to skeletons within the search range and within the cognate auto-segmented volume
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch
-#' @return If tolerance is NULL, then a list, with entires duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
-#' and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
+#' @return If tolerance is NULL, then a list, with entries duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
+#' and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSE is returned.
 #' @export
 #' @rdname catmaid_duplicated
 catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.range.nm = 20, downsample = 1,  fafbseg = FALSE, pid = 1, conn = NULL, ...){
@@ -742,6 +746,8 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
     }
     close(pb)
     if(fafbseg){
+      if(!requireNamespace('fafbseg', quietly = TRUE))
+        stop("Please install suggested fafbseg package")
       message("Checking whether potential duplicates are within the same FAFB volumetric auto-traced segments")
       similar.skids = unique(unlist(skids))
       similars = read.neurons.catmaid(similar.skids, OmitFailures = TRUE, pid = pid, conn = conn, ...)
@@ -768,7 +774,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
 #'
 #' @description  Delete a single neuron from a given CATMAID instance.
 #' Deletes a neuron if and only if two things are the case: 1. The user
-#' owns all treenodes of the skeleton modeling the neuron in question and
+#' owns all treenodes of the skeleton modelling the neuron in question and
 #' 2. The neuron is not annotated by other users.
 #' Use with extreme caution as you may be significantly affecting others' work.
 #' You will first be shown the neuron you want to delete and who has worked on it, and then asked whether or not you want to continue.
@@ -964,7 +970,7 @@ catmaid_convert_time <- function(utc){
 #' @description  Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
 #' Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 #' @param x either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server
-#' @param tolerance how many potentially duplictated nodes you will tolerate
+#' @param tolerance how many potentially duplicated nodes you will tolerate
 #' @param name whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.
 #' @param annotations a character vector of annotations, to be added to all of the uploaded neurons
 #' @param avoid a character vector. If a neuron contains an annotation specified by avoid, it will not be considered for upload
@@ -974,7 +980,7 @@ catmaid_convert_time <- function(utc){
 #' @param join.tag a single character specifying a tag that has been used to signify a potential merge point
 #' @param lock if TRUE, neurons in the CATMAID instance specified by conn2 (i.e. the environment from which you are uploading) will be 'locked' so other users cannot edit them (via addition of a 'locked' annotation)
 #' @param min_nodes the minimum number of nodes a potential merger skeleton needs to have
-#' @param search.range.nm the maimum distance from which to search from the TODO point tag to find potential mergers
+#' @param search.range.nm the maximum distance from which to search from the TODO point tag to find potential mergers
 #' @param duplication.range.nm the radius around each node of a skeleton you are looking to upload, in which to search for other CATMAID skeletons that might represent a duplication of the same neuron
 #' @param include.potential.duplicates whether or not to include skeletons from the instance specified by conn2, that have the annotation "duplicated"
 #' @param fafbseg whether or not to use fafbseg::read_brainmaps_meshes on the TODO tag locations and restrict possible merges to neurons within the search range and within the cognate auto-segmented volume
@@ -985,8 +991,9 @@ catmaid_convert_time <- function(utc){
 #' @param pid2 project id for conn2. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param conn2 CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param ... methods passed to catmaid::catmaid_fetch #' @examples
+#' @param ... methods passed to catmaid::catmaid_fetch
 #' @examples
+#' \dontrun{
 #' # This function, first, gets the neurons we want from the v14-seg CATMAID instance
 #' # Then it checks that we have not already uploaded to v14-seg using the annotations you specify with the avoid argument
 #' # Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.
@@ -1000,6 +1007,7 @@ catmaid_convert_time <- function(utc){
 #' catmaid_delete_neurons("annotation:ASB Tester from v14-seg")
 #' # Be careful wen deleting, especially if you have merged your fragment during the interactive join.
 #' # Phew.
+#' }
 #' @export
 #' @rdname catmaid_controlled_upload
 catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuron upload",
@@ -1389,7 +1397,7 @@ catmaid_batch_join <- function(x, fafbseg = TRUE, join.tag = "TODO", max_size = 
 
 #' Update radius information for tree nodes in a CATMAID instance
 #'
-#' @description  Update radius information for tree nodes in a CATMAID instancekids). A locked neuron cannot be edited until it is unlocked.
+#' @description  Update radius information for tree nodes in a CATMAID instance. A locked neuron cannot be edited until it is unlocked.
 #' @param tnids the treenode ids to edit
 #' @param radii a vector the same length as tnids, giving the new radius for each treenode id in that vector
 #' @param pid project id. Defaults to 1

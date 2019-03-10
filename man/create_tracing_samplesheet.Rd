@@ -23,7 +23,7 @@ update_tracing_samplesheets(sheet_title = "mystery_neuron",
 
 \item{sheet_title}{title of the googlesheet to be created or updated}
 
-\item{folder}{location to save tracing sheets. Defaults to 'googleshet' which creates a tracign sheet in your ghome folder on googledrive. It can take a while to write a googelsheet. Alternatively, CSVs can be created in a local folder.}
+\item{folder}{location to save tracing sheets. Defaults to 'googlesheet' which creates a tracing sheet in your home folder on googledrive. It can take a while to write a googlesheet. Alternatively, CSVs can be created in a local folder.}
 
 \item{skid}{CATMAID skeleton ID for the neuron}
 
@@ -31,12 +31,12 @@ update_tracing_samplesheets(sheet_title = "mystery_neuron",
 
 \item{axon.dendrite.split}{if TRUE and the neuron is labelled in its neuron$d data frame in SWC fashion, then separate worksheets for randomised synapse lists in axon and dendrite are generated}
 
-\item{randomise}{whether to ranomise the synapse sampling list (recommended). If false, the sheet ir organise by  strongest known synaptic parners}
+\item{randomise}{whether to randomise the synapse sampling list (recommended). If false, the sheet is organised by strongest known synaptic partners}
 
 \item{ws}{the individual google worksheet or path to .csv file to update}
 }
 \description{
-Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containin randomised lists of synapses and CATMAID URLs to those synapses,
+Creates or updates a googlesheet in your drive for a neuron. Worksheets in the googlesheet containing randomised lists of synapses and CATMAID URLs to those synapses,
 as well as other meta information to inform tracing. Different worksheets contain separate lists for pre and post synapses, in the whole neuron and in labelled axonic or
 dendritic compartments. Randomised pre synapse lists for both presynaptic connector objects for the given neuron and presynaptic connections can be given.
 }

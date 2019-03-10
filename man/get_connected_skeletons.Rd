@@ -10,7 +10,7 @@ get_connected_skeletons(someneuronlist, X = c(upper = 1e+08, lower = 0),
   prepost = NULL, soma = T, exclude.skids = NULL, ...)
 }
 \arguments{
-\item{someneuronlist}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coorinates can be accessed with nat::xyzmatrix()}
+\item{someneuronlist}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coordinates can be accessed with nat::xyzmatrix()}
 
 \item{X}{The upper and lower bounds for acceptable X coordinates}
 

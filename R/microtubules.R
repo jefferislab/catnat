@@ -154,12 +154,12 @@ assign_strahler.neuronlist<-function(x, ...){
 #' Calculate geodesic distance from nodes to a neuron's axon-dendrite
 #' branchpoint
 #'
-#' @description alculate geodesic distance from nodes to a neuron's primary,
+#' @description Calculate geodesic distance from nodes to a neuron's primary,
 #'   axon-dendrite branchpoint
 #'
 #' @param x a neuron/neuronlist object that has primary neurites marked (Label =
 #'   7) and soma as the root
-#' @param graph.distance whether to calculate the graph distance (defualt)
+#' @param graph.distance whether to calculate the graph distance (default)
 #'   between nodes and the primary branchpoint, or the cable length
 #' @param ... Additional arguments passed to nlapply
 #' @export

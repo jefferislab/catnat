@@ -24,5 +24,5 @@ synapsecolours.neuron(neuron, skids = NULL, col = "black",
 }
 \description{
 Plot a neuron with different coloured synapses depending on partners.
-Points indicate inputs synapses, and asterixes indicate output synapses.
+Points indicate inputs synapses, and asterisks indicate output synapses.
 }

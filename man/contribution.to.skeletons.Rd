@@ -20,5 +20,5 @@ synapse.contribution.to.skeletons(x, exclude.authors = NULL,
 \item{direction}{for synapse.contribution.to.skeletons, whether to look at upstream or downstream connections}
 }
 \description{
-Get data tracers' contributions to ndoes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
+Get data tracers' contributions to nodes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added
 }

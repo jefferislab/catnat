@@ -8,7 +8,7 @@ open_l1(x, s = rgl::select3d(), zoom = 1, open = interactive(),
   scalefac = 1, ...)
 }
 \arguments{
-\item{x}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coorinates can be accessed with nat::xyzmatrix()}
+\item{x}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coordinates can be accessed with nat::xyzmatrix()}
 
 \item{s}{selection method. Defaults to rgl selection window.}
 

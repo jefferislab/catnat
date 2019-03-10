@@ -25,7 +25,7 @@ starting.neurite(x, k, ...)
 \arguments{
 \item{x}{a neuron or neuronlist object}
 
-\item{resample}{The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.}
+\item{resample}{The new spacing with which to evenly resample each neuron. Can be set to F to prevent resampling.}
 
 \item{keep.pnt}{whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead}
 

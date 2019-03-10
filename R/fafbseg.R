@@ -17,7 +17,7 @@ set_segmentation_location <- function(path){
 #' or fafbseg::read_segments2 if from local .zip files
 #' @param x typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.
 #' @param google if TRUE, we treat x as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
-#' if given as a character starting with 'name:' or 'anotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.
+#' if given as a character starting with 'name:' or 'annotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.
 #' @param read.from from where to read FAFB segmented skeletons to generate node count data
 #' @param conn a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.
 #' @param ... methods passed to catmaid::read.neurons.catmaid
@@ -124,6 +124,8 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @export
 #' @rdname fafb_neuron_details
 fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid = 1, conn = NULL,...)
@@ -161,7 +163,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 
 #' Fetch the up or outgoing auto-traced FAFB fragments from a CATMAID FAFB neuron
 #'
-#' @description  Fetch skeleton ids or read skeletons from the FAFV Google Segmentation by Peter Li.
+#' @description  Fetch skeleton ids or read skeletons from the FAFb Google Segmentation by Peter Li.
 #' This is done by mapping the location of connector nodes in FAFB to the volumetric Google segmentations,
 #' and then their cognate skeletons. Relies on package fafbseg and brainmaps authentication, user list is curated.
 #' @param skids neuron skeleton ids
@@ -181,10 +183,12 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @details fafb_frags_ids returns Neuroglancer IDs for FAFB segments up or downstream of the specified FAFB CATMAID skeleton IDs.
 #' fafb_frags_skeletons reads neurons from Neuroglancer IDs or calls fafb_frags_ids, using either saved skeletons, Neuroglancer brainmaps access or CATMAID access.
 #' fafb_seg_hitlist generates a ranked hitlist of fragments from the given skids, either up or downstream.
-#' fafb_seg_tracing_list goes a bit further and supplies emt information and links to FAFBv14 and the FAFBv14-segmentation instance.
+#' fafb_seg_tracing_list goes a bit further and supplies emt information and links to \code{FAFBv14} and the \code{FAFBv14} segmentation instance.
 #' @export
 #' @rdname fafb_frags
 fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...) {
+  if(!requireNamespace('fafbseg', quietly = TRUE))
+    stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid=pid, conn = conn, ...)
@@ -243,6 +247,8 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
                              connector_ids = NULL, treat.skids.separately = FALSE,
                              pid=pid, conn = conn, ...){
   direction=match.arg(direction)
+  if(!requireNamespace('reshape2', quietly = TRUE))
+    stop("Please install suggested reshape2 package")
   func <- function(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...){
     ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...)
     df = reshape2::melt(table(ids))
@@ -295,8 +301,8 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' whether fragment is microtubule containing,  what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
 #' @param someneuronlist a neuronlist or neuron object
 #' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
-#' These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
-#' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segement.
+#' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
+#' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
 #' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
 #' @param return.unmatched defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.
 #' @param ... methods passed to fafbseg::brainmaps_xyz2id

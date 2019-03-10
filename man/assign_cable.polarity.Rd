@@ -14,8 +14,8 @@ assign_cable.polarity(someneuronlist, brain = nat.flybrains::FCWB, ...)
 \item{...}{additional arguments passed to methods}
 }
 \value{
-Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
+Neuronlist with polarity assignation marked in the \code{neuron$d} \code{dataframe} of each \code{\link{neuron}} object within that \code{\link{neuronlist}}
 }
 \description{
-manually cycle through and assign a label to points in a neuron to mark out axonic, dednritic and mixed/uncertain cable
+manually cycle through and assign a label to points in a neuron to mark out axonic, dendritic and mixed/uncertain cable
 }

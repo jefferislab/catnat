@@ -7,11 +7,11 @@
 average.tracts(cable, sigma = 6, mode = c(1, 2), stepsize = 1, ...)
 }
 \arguments{
-\item{cable}{somneuronlist object}
+\item{cable}{someneuronlist object}
 
 \item{sigma}{smoothing parameter given to nat::smooth_neuron, i.e. the standard deviation of the Gaussian smoothing kernel (which has the same spatial units as the object being smoothed)}
 
-\item{mode}{Either 1 or 2. Method 1 simply takes the best NBlast match and, for each of its nodes, finds the mean xyz coordinate for that node index in the cable group (soma has index 1), all resampled to the stepsize value.
+\item{mode}{Either 1 or 2. Method 1 simply takes the best NBLAST match and, for each of its nodes, finds the mean xyz coordinate for that node index in the cable group (soma has index 1), all resampled to the stepsize value.
 Method 2 is similar, but takes the closest node in each of the other neurons in the cable neuronlist rather than the nodes of the same index.}
 
 \item{stepsize}{the spacing to which cable should be resampled}
@@ -23,6 +23,6 @@ a single neuron object, the averaged tract, and containing values for standard d
 }
 \description{
 Function returns an 'average tract' when given a neuronlist of non-branching cable.
-The function uses NBlast to find the the neuron within the group that has the highest average similarity score with the rest of
+The function uses NBLAST to find the the neuron within the group that has the highest average similarity score with the rest of
 the given cable
 }

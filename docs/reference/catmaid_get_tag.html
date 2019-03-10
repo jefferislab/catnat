@@ -32,10 +32,7 @@
 
 <meta property="og:title" content="Find the location of specified tags for a CATMAID neuron — catmaid_get_tag" />
 
-<meta property="og:description" content="Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.
-Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.
-Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.
-Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags." />
+<meta property="og:description" content="Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,11 +90,14 @@ Find the location of tags in a CATMAID neuron, either as URLs to the location of
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexanderbates/catnat">
+  <a href="https://github.com/jefferislab/catnat">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,26 +115,18 @@ Find the location of tags in a CATMAID neuron, either as URLs to the location of
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Find the location of specified tags for a CATMAID neuron</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexanderbates/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jefferislab/catnat/blob/master/R/editcatmaid.R'><code>R/editcatmaid.R</code></a></small>
     <div class="hidden name"><code>catmaid_get_tag.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.</p>
-<p>Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.</p>
-<p>Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.</p>
-<p>Find the location of tags in a CATMAID neuron, either as URLs to the location of a TODO tag in CATMAID or as a data.frame reporting the location and skeleton treenode locations of specified tags.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>catmaid_get_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"TODO"</span>, <span class='kw'>url</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
-<span class='fu'>catmaid_get_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"TODO"</span>, <span class='kw'>url</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
-<span class='fu'>catmaid_get_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"TODO"</span>, <span class='kw'>url</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
-<span class='fu'>catmaid_get_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"TODO"</span>, <span class='kw'>url</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+    <pre class="usage"><span class='fu'>catmaid_get_tag</span>(<span class='no'>x</span>, <span class='kw'>tag</span> <span class='kw'>=</span> <span class='st'>"TODO"</span>, <span class='kw'>url</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>only.leaves</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,47 +137,23 @@ Find the location of tags in a CATMAID neuron, either as URLs to the location of
     </tr>
     <tr>
       <th>tag</th>
-      <td><p>a single character specifying which tag to look for. Defaults to TODO.</p></td>
+      <td><p>a single character specifying which tag to look for. Defaults to TODO</p></td>
     </tr>
     <tr>
       <th>url</th>
-      <td><p>if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags</p></td>
+      <td><p>if TRUE (default) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>a neuron or neuronlist object</p></td>
+      <th>only.leaves</th>
+      <td><p>whether or not to only return leaf nodes with the specified tag</p></td>
     </tr>
     <tr>
-      <th>tag</th>
-      <td><p>a single character specifying which tag to look for. Defaults to TODO.</p></td>
+      <th>conn</th>
+      <td><p>CATMAID connection object, see ?catmaid::catmaid_login for details. For making the URL.</p></td>
     </tr>
     <tr>
-      <th>url</th>
-      <td><p>if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>a neuron or neuronlist object</p></td>
-    </tr>
-    <tr>
-      <th>tag</th>
-      <td><p>a single character specifying which tag to look for. Defaults to TODO.</p></td>
-    </tr>
-    <tr>
-      <th>url</th>
-      <td><p>if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>a neuron or neuronlist object</p></td>
-    </tr>
-    <tr>
-      <th>tag</th>
-      <td><p>a single character specifying which tag to look for. Defaults to TODO.</p></td>
-    </tr>
-    <tr>
-      <th>url</th>
-      <td><p>if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags</p></td>
+      <th>pid</th>
+      <td><p>project id. Defaults to 1. For making the URL.</p></td>
     </tr>
     </table>
     

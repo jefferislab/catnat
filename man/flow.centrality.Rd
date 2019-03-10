@@ -45,9 +45,9 @@ or the Euclidean distance of its first branch point from the primary branch poin
 \item{...}{additional arguments passed to methods.}
 }
 \value{
-the neuron or neuron list object inputted, with centipetal flow
-  centrality information added to neuron$d, a segregation idnex score and
-  estimation of neuronal type (intertneuron or PN) based on this score (>0.05
+the neuron or neuron list object inputted, with centripetal flow
+  centrality information added to neuron$d, a segregation index score and
+  estimation of neuronal type (interneuron or PN) based on this score (>0.05
   = PN).
 }
 \description{
@@ -63,7 +63,7 @@ From Schneider-Mizell et al. (2016): "We use flow centrality for
   arbor in 3d with differently colored regions. Second, to quantitatively
   estimate the cable distance between the axon terminals and dendritic arbor
   by measuring the amount of cable with the maximum centrifugal SFC value.
-  Third, to measure the cable length of the main den- dritic shafts using
+  Third, to measure the cable length of the main dendritic shafts using
   centripetal SFC, which applies only to insect neurons with at least one
   output syn- apse in their dendritic arbor. And fourth, to weigh the color
   of each skeleton node in a 3d view, providing a characteristic signature of

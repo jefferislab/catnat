@@ -3,24 +3,40 @@ Type: Package
 Title: Analyse neuronal morphology and connectivity (extends catmaid and nat)
 Version: 0.1
 Authors@R: c(
-    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre")),
-    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"))
+    person("Alex", "Bates", email = "abates@mrc-lmb.cam.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1195-0445")),
+    person("Gregory", "Jefferis", email = "jefferis@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-0587-9355"))
     )
 Description: A selection of functions for analysis of neuronal morphology and
     connectivity created for use alongside the nat and catmaid packages. Many
     of the functions are driven by the need to analyse the results of annotation
     of 3D electron microscopy data from the `CATMAID` web application. This 
     package is largely an incubator for work by Alex Bates and is subject to 
-    frequent udpates.
+    frequent updates.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.1.1
-Suggests: knitr, rmarkdown, testthat, gplots, ggplot2, easyGgplot2, doMC, elmr, yaml, ks, misc3d, lhns
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat,
+    gplots,
+    ggplot2,
+    easyGgplot2,
+    doMC,
+    elmr,
+    yaml,
+    ks,
+    misc3d,
+    lhns,
+    fafbseg,
+    pbapply,
+    reshape2,
+    spelling
 VignetteBuilder: knitr
 Depends: R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
 Imports: Rvcg, nabor, Morpho, dplyr, nat.templatebrains, rgl, plyr, igraph, googlesheets, fafbseg, pbapply, reshape2
 URL: https://github.com/alexanderbates/catnat
-BugReports: https://github.com/alexanderbates/catnat/issues
+BugReports: https://github.com/jefferislab/catnat/issues
 Remotes: kassambara/easyGgplot2,
     jefferis/nat,
     jefferis/rcatmaid,
@@ -30,3 +46,4 @@ Remotes: kassambara/easyGgplot2,
     jefferislab/lhns,
     jefferis/fafbseg
 Encoding: UTF-8
+Language: en-GB

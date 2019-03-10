@@ -15,7 +15,7 @@ neuron.heatmap(data, ...)
 \arguments{
 \item{pre}{skeletons from which connections are to be included}
 
-\item{post}{skeletons to which connections from the pre group are to be incuded. Defaults to the pre group.}
+\item{post}{skeletons to which connections from the pre group are to be included. Defaults to the pre group.}
 
 \item{...}{additional arguments passed to methods.}
 
@@ -25,7 +25,7 @@ neuron.heatmap(data, ...)
 A connectivity matrix. The values are synaptic weights, row and column names are neuron names from CATMAID.
 }
 \description{
-Generate a conenctivity matrix from neuronlist skeleton data. Can also be used with fragmented neurons, i.e. those generated using the flow.centrality() and neurites() functions.
+Generate a connectivity matrix from neuronlist skeleton data. Can also be used with fragmented neurons, i.e. those generated using the flow.centrality() and neurites() functions.
 }
 \details{
 CATMAID access required.

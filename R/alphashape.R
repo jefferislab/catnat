@@ -61,7 +61,7 @@ transform3dalphashape = function (ashape, transformations, ...){
 #' @param ashape List of alphashape objects
 #' @param filename Path to and name of desired file. Should end in .vtk
 #' @param title Title of the .vtk file
-#' @param datatype Either floar or double
+#' @param datatype Either float or double
 #' @param ... additional arguments passed to methods
 #'
 #' @return A .vtk file saved to a given location
@@ -135,7 +135,8 @@ neurons.inside <- function(shape, db, min_nodes = 1) {
 ashape2mesh3d <- function(ashape, remove.interior.points = TRUE){
   triangles = ashape$triang[apply(ashape$triang, 1, function(x) {( any(as.numeric(x[9]) > 1))} ),][,1:3]
   if(remove.interior.points){
-    require(pbapply)
+    if(!requireNamespace('pbapply', quietly = TRUE))
+      stop("Please install suggested pbapply package")
     vertices = unique(as.vector(unique(triangles)))
     kept = 1:length(vertices)
     names(kept) = vertices
