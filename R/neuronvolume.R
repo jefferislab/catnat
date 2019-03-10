@@ -29,9 +29,6 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
                                      soma = TRUE, node.match = 4, smooth = FALSE, resample.neuron = TRUE, resample.volume = FALSE,
                                      smooth.type=c("taubin", "laplace", "HClaplace", "fujiLaplace","angWeight", "surfPreserveLaplace"),
                                      lambda = 0.5, mu = -0.53, delta = 0.1, conn = NULL, ...){
-  require(Rvcg)
-  require(pbapply)
-  require(Morpho)
   smooth.type = match.arg(smooth.type)
   downsample_vol <- function(vol,voxelSize = 50, ...){
     v = Rvcg::vcgUniformRemesh(vol, voxelSize = voxelSize, offset = 0, discretize = FALSE,
@@ -107,14 +104,14 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
     pb <- utils::txtProgressBar(min = 0, max = length(downvolumes), style = 3)
     for(i in 1:length(downvolumes)){
       dv = downvolumes[[i]]
-      p = nabor::knn(query=nat:::xyzmatrix(neuron$d[nat::rootpoints(neuron),]),data=nat::xyzmatrix(dv),k=1,radius=1000)
+      p = nabor::knn(query=nat::xyzmatrix(neuron$d[nat::rootpoints(neuron),]),data=nat::xyzmatrix(dv),k=1,radius=1000)
       find.soma = c(find.soma,p$nn.dists)
       utils::setTxtProgressBar(pb, i)
     }
     find.soma[is.infinite(find.soma)] = 0
     if(sum(find.soma)==0|sum(find.soma)>1){
       children = neuron$d$PointNo[neuron$d$Parent==nat::rootpoints(neuron)]
-      som.points = nat:::xyzmatrix(neuron$d[c(nat::rootpoints(neuron),children),])
+      som.points = nat::xyzmatrix(neuron$d[c(nat::rootpoints(neuron),children),])
       soma.dv = tryCatch(fafbseg::read_brainmaps_meshes(som.points), error = function(e) "soma read error")
     }else{
       soma.dv = downvolumes[[which.max(find.soma)]]
@@ -501,7 +498,6 @@ neuronvolume3d <- function(neuronvolume,
 #' @rdname catmaid_update_radius
 fafbseg_update_node_radii <- function(x, max.dist = 2000, method = c("nearest.mesh.point","ray.cast"),
                                       pid = 1, conn = NULL, ...){
-  require(fafbseg)
   method = match.arg(method)
   if(!is.neuronlist(x)){
     message("Reading neurons from ", catmaid_get_server(conn))
@@ -560,7 +556,6 @@ fafbseg_get_volumes <- function(nglids){
 # Hidden
 neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c("nearest.mesh.point","ray.cast")){
   method = match.arg(method)
-  require(Rvcg)
   message("Estimating node radii")
   neuron.points = nat::xyzmatrix(neuron)
   neuron$d$radius =  NA
@@ -571,7 +566,6 @@ neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c
     dv= nat::xyzmatrix(v)
     if(sum(p)>0){
       if(method=="ray.cast"){
-        require(Morpho)
         query = neuron.points[p,]
         if(sum(p)==1){query=matrix(neuron.points[p,],ncol=3)}
         near = dv[nabor::knn(query=query,data=dv,

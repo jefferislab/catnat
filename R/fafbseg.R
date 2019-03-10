@@ -24,7 +24,6 @@ set_segmentation_location <- function(path){
 #' @export
 #' @rdname read.neurons.fafbseg
 read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
-  require(catmaid)
   if(google){
     x = paste0("name:",x)
     y = paste0("annotation:",x)
@@ -89,7 +88,6 @@ fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
 fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","local"), ...){
   read.from=match.arg(read.from)
   if(read.from=="CATMAID"){
-    require(catmaid)
     y = paste0("name:",x)
     conn = catmaid::catmaid_login()
     if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
@@ -126,7 +124,6 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @export
 #' @rdname fafb_neuron_details
 fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
-  require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid = 1, conn = NULL,...)
@@ -188,7 +185,6 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @export
 #' @rdname fafb_frags
 fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...) {
-  require(fafbseg)
   direction=match.arg(direction)
   if(direction=="incoming"){
     connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid=pid, conn = conn, ...)
