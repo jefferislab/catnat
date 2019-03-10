@@ -60,11 +60,11 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
     tryCatch(catmaid::catmaid_rename_neuron(skids = res$skeleton_id, names = name[file], pid = pid, conn = conn, ...),error = function(e) warning("Could not name new neuron ",res$skeleton_id))
     message(paste0("Annotations and names set to new skeleton: ", res$skeleton_id))
     new.neuron = catmaid::read.neuron.catmaid(res$skeleton_id, pid = pid, conn = conn, ...)
-    if(include.tags&is.neuron(neurons[[file]])){
+    if(include.tags&nat::is.neuron(neurons[[file]])){
       fafbseg_transfer_tags(new.neuron = new.neuron, old.neuron = neurons[[file]],
                             pid = pid, conn = conn, search.range.nm = 0,...)
     }
-    if(include.connectors&is.neuron(neurons[[file]])){
+    if(include.connectors&nat::is.neuron(neurons[[file]])){
       fafbseg_transfer_connectors(new.neuron = new.neuron, old.neuron = neurons[[file]], links = TRUE,
                                   search.range.nm = 0, pid = pid, conn = conn, ...)
     }
@@ -753,7 +753,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
       s = tryCatch(fafbseg::find_merged_segments(seg),error=function(e)seg)
       s = s[s!=0]
       vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error"))
-      in.vol = tryCatch(sapply(similars,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
+      in.vol = tryCatch(sapply(similars,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(similar.skids)))
       similar.skids = similar.skids[in.vol]
       skids = lapply(skids,function(s) s[s%in%similar.skids])
       duplicated = sapply(skids, function(s) length(s)>0)
@@ -885,7 +885,7 @@ catmaid_delete_connectors <- function(connector_ids, pid = pid, conn = conn, ...
       path = sprintf("/%d/connector/delete", pid)
       res = catmaid::catmaid_fetch(path, body = post_data, include_headers = F,
                                    simplifyVector = T, conn = conn,...)
-      invisible(catmaid:::catmaid_error_check(res2))
+      invisible(catmaid:::catmaid_error_check(res))
       if(is.null(res$error)){
         message(res$message)
       }else{
@@ -942,14 +942,14 @@ catmaid_get_neuronid <- function(skids, pid = 1, conn = NULL, ...){
 #' @export
 #' @rdname catmaid_lock_neurons
 catmaid_lock_neurons <- function(skids, pid = 1, conn = NULL, ...){
-  skids = catmaid::catmaid_skids(skid, pid=pid,conn=conn,...)
+  skids = catmaid::catmaid_skids(skids, pid=pid,conn=conn,...)
   catmaid::catmaid_set_annotations_for_skeletons(skids, annotations = "locked", pid = pid,
                                                  conn = conn, ...)
 }
 #' @export
 #' @rdname catmaid_lock_neurons
 catmaid_unlock_neurons <- function(skids, pid = 1, conn = NULL, ...){
-  skids = catmaid::catmaid_skids(skid, pid=pid,conn=conn,...)
+  skids = catmaid::catmaid_skids(skids, pid=pid,conn=conn,...)
   catmaid::catmaid_remove_annotations_for_skeletons(skids, annotations = "locked", pid = pid,
                                                     conn = conn, ...)
 }
