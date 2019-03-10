@@ -2,7 +2,7 @@
 % Please edit documentation in R/editcatmaid.R
 \name{catmaid_controlled_upload}
 \alias{catmaid_controlled_upload}
-\title{Upload neuron(s) to CATMAID}
+\title{Interactively upload neuron(s) to CATMAID}
 \usage{
 catmaid_controlled_upload(x, tolerance = 0.15,
   name = "v14-seg neuron upload", annotations = "v14-seg upload",
@@ -22,6 +22,8 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 \item{name}{whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.}
 
 \item{annotations}{a character vector of annotations, to be added to all of the uploaded neurons}
+
+\item{avoid}{a character vector. If a neuron contains an annotation specified by avoid, it will not be considered for upload}
 
 \item{include.potential.duplicates}{whether or not to include skeletons from the instance specified by conn2, that have the annotation "duplicated"}
 
@@ -45,6 +47,8 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 
 \item{brain}{the brain to plot while visualising potential mergers using rgl. Defaults to NULL, no brain plotted.}
 
+\item{return.uploaded.skids}{whether or not to returns the skeleton IDs of uploaded neurons. If FALSE, nothing is returned}
+
 \item{duplication.range.nm}{the radius around each node of a skeleton you are looking to upload, in which to search for other CATMAID skeletons that might represent a duplication of the same neuron}
 
 \item{pid}{project id for conn. Defaults to 1}
@@ -56,8 +60,6 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 \item{conn2}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch #' @examples}
-
-\item{max.upload}{the maximum number of files that the function will allow you to upload at once}
 }
 \description{
 Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.

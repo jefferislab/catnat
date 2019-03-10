@@ -384,14 +384,12 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
 #'
 #' @description Visualise neuron meshes or point clouds, retrieved and downsampled from the Google brainmaps segmentation by Peter Li.
 #' @param neuronvolume an object of class neuronvolume, as returned by catnat::fafb_segs_stitch_volumes
-#' @param volumes a list of mesh3d objects, retrieved using fafbseg::read_brainmaps_meshes
 #' @param type whether to plot meshes of a point cloud
 #' @param split whether to plot the whole neuron or some subset of it
 #' @param alpha mesh transparency
 #' @param synapse.radius radius information passed to rgl:spheres3d
 #' @param cols colours for different parts of the neuron
 #' @param WithConnectors whether or not to plot synaptic connectors using spheres3D()
-#' @param ... methods passed to Rvcg functions: vcgUniformRemesh, vcgSmooth, vcgClost
 #' @export
 #' @rdname fafb_segs_stitch_volumes
 neuronvolume3d <- function(neuronvolume,
@@ -496,12 +494,8 @@ neuronvolume3d <- function(neuronvolume,
 #'
 #' @description  Update radius information for skeletons in a CATMAID instance using Peter Li's segmentation of FAFB-v14. Brainmaps API access required
 #' @param x the treenode ids to edit
-#' @param radii a vector the same length as tnids, giving the new radius for each treenode id in that vector
 #' @param max.dist the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.
 #' @param method whether to use raycast (casts 10 rays perpendicular to the path of the neuron for each point, slower but more accurate) or the nearest point on the bounding mesh, to estimate node radius
-#' @param pid project id. Defaults to 1
-#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
-#' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
 #' @rdname catmaid_update_radius
 fafbseg_update_node_radii <- function(x, max.dist = 2000, method = c("nearest.mesh.point","ray.cast"),

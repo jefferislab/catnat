@@ -48,6 +48,8 @@ in_neuropil(x, method = c("Cable", "PRE", "POST"),
 \item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion}
 
 \item{...}{additional arguments passed to methods}
+
+\item{neuropil}{the code for the neuropil volume to be searched. See nat.flybrains::JFRC2NP.surf$RegionList for codes}
 }
 \value{
 a matrix of 3D points

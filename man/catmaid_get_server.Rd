@@ -8,6 +8,8 @@ catmaid_get_server(conn = NULL, ...)
 }
 \arguments{
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{...}{methods passed to catmaid::catmaid_login}
 }
 \description{
 shows the URL for a connection object (see ?catmaid::catmaid_login)

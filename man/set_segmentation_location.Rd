@@ -2,28 +2,13 @@
 % Please edit documentation in R/fafbseg.R
 \name{set_segmentation_location}
 \alias{set_segmentation_location}
-\alias{fafb_neuron_details}
 \title{Calculate a connectivity similarity score between two connectivity profiles}
 \usage{
 set_segmentation_location(path)
-
-fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
-  connector_ids = connector_ids, volume = NULL, pid = 1,
-  conn = NULL, ...)
 }
 \arguments{
 \item{path}{path to FAFB segmentation skeleton .zip files}
-
-\item{skids}{neuron skeleton ids}
-
-\item{direction}{whether to fetch putative incoming or outgoing partners}
-
-\item{volume}{volume to which to restrict connector locations}
-
-\item{...}{methods passed to catmaid_get_connector_table}
 }
 \description{
-Set the local path to the location where you have .zip files of FAFB segmented skeletons
-
 Set the local path to the location where you have .zip files of FAFB segmented skeletons
 }

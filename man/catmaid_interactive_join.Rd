@@ -19,10 +19,6 @@ catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
-
-\item{search.range.nm}{the maximum distance from which to search from the TODO point tag to find potential mergers}
-
-\item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
 }
 \description{
 Interactively choose to join neurons in CATMAID via rgl in R. Use with caution in live tracing environments.

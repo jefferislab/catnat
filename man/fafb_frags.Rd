@@ -8,14 +8,15 @@
 \title{Fetch the up or outgoing auto-traced FAFB fragments from a CATMAID FAFB neuron}
 \usage{
 fafb_frags_ids(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, volume = NULL, ...)
+  connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...)
 
 fafb_frags_skeletons(ids, skids = NULL, direction = c("incoming",
   "outgoing"), connector_ids = NULL, read.from = c("CATMAID",
-  "Neuroglancer", "local"), ...)
+  "Neuroglancer", "local"), pid = 1, conn = NULL, ...)
 
 fafb_seg_hitlist(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, treat.skids.separately = FALSE, ...)
+  connector_ids = NULL, treat.skids.separately = FALSE, pid = pid,
+  conn = conn, ...)
 
 fafb_seg_tracing_list(skids, direction = c("incoming", "outgoing"),
   connector_ids = NULL, max.nodes = 10, add.links = TRUE,
@@ -31,9 +32,15 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 
 \item{volume}{volume to which to restrict connector locations}
 
+\item{pid}{project id. Defaults to 1}
+
+\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
 \item{...}{methods passed to catmaid::catmaid_fetch, catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons}
 
 \item{ids}{ids for FAFB segmentations to be read. If skids are given, fafb_frags_ids is called and ids is overlooked.}
+
+\item{read.from}{from where to read FAFB segmented skeletons}
 
 \item{treat.skids.separately}{create hitlist, with hits pooled for all skids given (FALSE, default) or per skid given (TRUE)}
 
@@ -42,10 +49,6 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 \item{add.links}{add links to CATMAID in our tracing list}
 
 \item{unique}{if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column}
-
-\item{pid}{project id. Defaults to 1}
-
-\item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
 }
 \description{
 Fetch skeleton ids or read skeletons from the FAFb Google Segmentation by Peter Li.

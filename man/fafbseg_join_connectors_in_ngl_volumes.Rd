@@ -12,6 +12,8 @@ fafbseg_join_connectors_in_ngl_volumes(x, direction = c("presynapses",
 \arguments{
 \item{x}{a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids}
 
+\item{direction}{whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.}
+
 \item{putatively.connected.skids}{the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered}
 
 \item{connector.range.nm}{the range in nm within which to search for a treenode ID to attach the connector}

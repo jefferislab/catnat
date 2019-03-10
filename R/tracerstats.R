@@ -131,6 +131,7 @@ tracer.neuron.stats <- function(skids, value = c("nodes","pre","post"), ...){
 #'
 #' @param x a neuronlist where the name of each neuron is its skeleton ID
 #' @param exclude.authors a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meet the threshold specified by arguments to suggest_authorship
+#' @param direction for synapse.contribution.to.skeletons, whether to look at upstream or downstream connections
 #' @param ... argument supplied to suggest_authorship
 #' @export
 #' @rdname contribution.to.skeletons

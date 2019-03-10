@@ -7,8 +7,7 @@
 \title{Function used to delete single neurons from CATMAID based on a given skeleton ID}
 \usage{
 catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
+  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
 
 catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
 
@@ -34,9 +33,9 @@ Really should only be set to FALSE if you are deleting from your own CATMAID ins
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
 
-\item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
+\item{connector_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
 
-\item{delete_ids}{CATMAID connector IDs to be deleted, as long as they do not connect to any skeletons}
+\item{skids}{if multiple neurons are to be deleted interactively, skids can be a vector of skeleton IDs, name or an annotation, anything that can be read by catmaid::catmaid_skids}
 }
 \description{
 Delete a single neuron from a given CATMAID instance.

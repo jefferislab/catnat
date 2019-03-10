@@ -3,6 +3,7 @@
 #' @description Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 #'
 #' @param x a set of neurons or, for points_in_neuropil a mxn matrix of 3D points
+#' @param neuropil the code for the neuropil volume to be searched. See nat.flybrains::JFRC2NP.surf$RegionList for codes
 #' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
 #' @param method whether to calculate cable inside a given neuropil volume, or synapse number (PRE or POST)
 #' @param min.endpoints the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it

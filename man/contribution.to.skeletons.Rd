@@ -16,6 +16,8 @@ synapse.contribution.to.skeletons(x, exclude.authors = NULL,
 \item{exclude.authors}{a vector of full author names to exclude from result. The result will then print the contributions of non-authors that meet the threshold specified by arguments to suggest_authorship}
 
 \item{...}{argument supplied to suggest_authorship}
+
+\item{direction}{for synapse.contribution.to.skeletons, whether to look at upstream or downstream connections}
 }
 \description{
 Get data tracers' contributions to nodes of skeletons of CATMAID neurons, where the skeletons have been edited e.g. branches removed or added

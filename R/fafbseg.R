@@ -118,9 +118,11 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @param skids neuron skeleton ids
 #' @param direction whether to fetch putative incoming or outgoing partners
 #' @param volume volume to which to restrict connector locations
+#' @param pid project id. Defaults to 1
+#' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid_get_connector_table
 #' @export
-#' @rdname set_segmentation_location
+#' @rdname fafb_neuron_details
 fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
   if(!requireNamespace('fafbseg', quietly = TRUE))
     stop("Please install suggested fafbseg package")
@@ -173,6 +175,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @param max.nodes the maximum number of nodes that an extant FAFB partner can have, before we consider using the segmentation for our tracing list.
 #' @param add.links add links to CATMAID in our tracing list
 #' @param treat.skids.separately create hitlist, with hits pooled for all skids given (FALSE, default) or per skid given (TRUE)
+#' @param read.from from where to read FAFB segmented skeletons
 #' @param unique if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
@@ -183,20 +186,20 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' fafb_seg_tracing_list goes a bit further and supplies emt information and links to \code{FAFBv14} and the \code{FAFBv14} segmentation instance.
 #' @export
 #' @rdname fafb_frags
-fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, ...) {
+fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...) {
   if(!requireNamespace('fafbseg', quietly = TRUE))
     stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
   if(direction=="incoming"){
-    connected=catmaid::catmaid_get_connectors_between(post_skids = skids, ...)
+    connected=catmaid::catmaid_get_connectors_between(post_skids = skids, pid=pid, conn = conn, ...)
     if(length(skids)>15){
-      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(post_skids = skid, ...)))
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(post_skids = skid, pid=pid, conn = conn, ...)))
     }
     connected = connected[,c("connector_id", "pre_node_x", "pre_node_y", "pre_node_z")]
   }else{
     connected=catmaid::catmaid_get_connectors_between(pre_skids = skids, ...)
     if(length(skids)>15){
-      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(pre_skids = skid, ...)))
+      connected=do.call(rbind,lapply(skids,function(skid) catmaid::catmaid_get_connectors_between(pre_skids = skid, pid=pid, conn = conn, ...)))
     }
     connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
   }
@@ -217,11 +220,12 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
 #' @export
 #' @rdname fafb_frags
 fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","outgoing"),
-                                 connector_ids = NULL, read.from = c("CATMAID","Neuroglancer","local"), ...) {
+                                 connector_ids = NULL, read.from = c("CATMAID","Neuroglancer","local"),
+                                 pid = 1, conn = NULL, ...) {
   direction=match.arg(direction)
   read.from=match.arg(read.from)
   if(skids){
-    ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids)
+    ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...)
   }
   uids=setdiff(ids,0)
   if(read.from=="CATMAID"){
@@ -240,24 +244,25 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
 #' @export
 #' @rdname fafb_frags
 fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
-                             connector_ids = NULL, treat.skids.separately = FALSE,...){
+                             connector_ids = NULL, treat.skids.separately = FALSE,
+                             pid=pid, conn = conn, ...){
   direction=match.arg(direction)
   if(!requireNamespace('reshape2', quietly = TRUE))
     stop("Please install suggested reshape2 package")
-  func <- function(skids = skids, direction = direction, connector_ids = connector_ids, ...){
-    ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, ...)
+  func <- function(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...){
+    ids = fafb_frags_ids(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...)
     df = reshape2::melt(table(ids))
     df = df[order(df$value, decreasing = TRUE),]
     colnames(df) = c("ngl_id","hits")
     df
   }
   if(treat.skids.separately){
-    hitlist = lapply(skids, function(skid) func(skids = skid, direction = direction, connector_ids = connector_ids, ...))
+    hitlist = lapply(skids, function(skid) func(skids = skid, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...))
     nams = rep(skids,sapply(hitlist,nrow))
     df = do.call(rbind, hitlist)
     df$skid = nams
   }else{
-    df = func(skids = skids, direction = direction, connector_ids = connector_ids, ...)
+    df = func(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...)
   }
   df
 }
