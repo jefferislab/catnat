@@ -204,7 +204,7 @@ catmaid_interactive_name_transfer <- function(x = "name:ASB CHECK", transfer.ann
     message("Considering changing the name of  ", o, " from ")
     print(neurons2[j,"name"])
     similar = catmaid::read.neurons.catmaid(t, OmitFailures = TRUE, pid = pid2, conn = conn2, ...)
-    rgl::plot3d(neurons2[i], col= "black", lwd=2, WithConnectors = TRUE)
+    rgl::plot3d(neurons2[j], col= "black", lwd=2, WithConnectors = TRUE)
     rgl::plot3d(similar, col="grey", lwd=5, WithConnectors = TRUE)
     message("To its most overlapping neuron (grey):")
     print(similar[,"name"])
@@ -217,13 +217,13 @@ catmaid_interactive_name_transfer <- function(x = "name:ASB CHECK", transfer.ann
     }
     if(transfer.annotations){
       anns2 = catmaid::catmaid_get_annotations_for_skeletons(t,pid=pid2,conn=conn2,...)
-      print(anns2[,"annotation"])
+      print(ann2$annotation)
       continue2 = readline("Do you want to transfer these annotations? y=yes,n=no: ")
-      if(continue2=="y"&length(anns2[,"annotation"])){
+      if(continue2=="y"&!is.null(anns2$annotation)){
         anns = catmaid::catmaid_get_annotations_for_skeletons(o,pid=pid,conn=conn,...)
-        print(anns[,"annotation"]&length(anns[,"annotation"]))
+        print(anns$annotation)
         continue3 = readline("Do you want to first try to remove these annotations annotations, if you have permission? y=yes,n=no: ")
-        if(continue3=="y"){
+        if(continue3=="y"&!is.null(anns$annotation)){
           message("removing annotations...")
           remove.annotations = sapply(anns$annotation, function(a) tryCatch(catmaid::catmaid_remove_annotations_for_skeletons(skids = o,
                                                                                                                            annotations = a,
@@ -551,7 +551,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
   total.joins = c()
   ### Get ngl IDs corresponding to potential presynapses ###
   if(direction%in%c("presynapses","both")){
-    message("Fetching putatively connected presynapses in ", catmaig_get_server(conn))
+    message("Fetching putatively connected presynapses in ", catmaid_get_server(conn))
     connectors.pre = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
       tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
                                                     direction = "incoming",
@@ -578,7 +578,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
   }
   ### Get ngl IDs corresponding to potential postsynapses ###
   if(direction%in%c("postsynapses","both")){
-    message("Fetching putatively connected postsynapses in ", catmaig_get_server(conn))
+    message("Fetching putatively connected postsynapses in ", catmaid_get_server(conn))
     connectors.post = do.call(rbind,lapply(putatively.connected.skids, function(pcs)
       tryCatch(catmaid::catmaid_get_connector_table(skids=pcs,
                                                     direction = "outgoing",
@@ -593,7 +593,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
     pb <- utils::txtProgressBar(min = 0, max = nrow(connectors.post), style = 3)
     for(i in 1:nrow(connectors.post)){
       node.df = catmaid_connector_nodes(connector_id = connectors.post[i,"connector_id"],node = "postsynaptic",pid=pid,conn=conn,...)
-      node.df = merge(node.df[,c("connector_id","x","y","z","partner_treenode_id")],
+      node.df = merge(node.df[,c("connector_id","x","y","z","treenode_id")],
                       connectors.post[i,setdiff(colnames(connectors.post),c("x","y","z"))])
       connectors.post.nodes = rbind(connectors.post.nodes,node.df)
       utils::setTxtProgressBar(pb, i)
@@ -603,7 +603,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
     df.post.connectors = data.frame(connector_id = connectors.post.nodes$connector_id, connector.skid = connectors.post.nodes$skid,
                                     x = connectors.post.nodes$x, y = connectors.post.nodes$y, z = connectors.post.nodes$z,
                                     ngl_id = connector.post.segs, link_type = "postsynaptic",
-                                    partner_nodes = connectors.post.nodes$partner_nodes, partner_treenode_id = connectors.post.nodes$partner_treenode_id)
+                                    partner_nodes = connectors.post.nodes$partner_nodes, partner_treenode_id = connectors.post.nodes$treenode_id)
   }
   ### Assign to volumes
   if(direction=="both"){
@@ -650,12 +650,12 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
         ## Make sure tnid2 is still not conencted to anything else!
         tnid2 = df[i,"partner_treenode_id"]
         tnid2.detail = catmaid::catmaid_get_treenodes_detail (tnids=tnid2, pid = pid, conn = conn, ...)
-        n = catmaid::catmaid_get_node_count(tnid2.info$skid, conn=conn, OmitFailures = FALSE,...)
-        if(n<1){
+        n = catmaid::catmaid_get_node_count(tnid2.detail$skid, conn=conn, OmitFailures = FALSE,...)
+        if(n<1&length(tnid2)==1&length(tnid)==1){
           tryCatch(catmaid_join_skeletons(from_treenode_id = tnid2, to_treenode_id = tnid, pid = pid, conn = conn, ...),
                    error = function(e) warning("treenode join ",tnid," to ", tnid2, "failed"))
         }else{
-          warning("treenode join ",tnid," to ", tnid2, "failed because ", tnid2, "is now connected to a different skeleton")
+          warning("treenode join ",tnid," to ", tnid2, "failed, possibly because ", tnid2, "is now connected to a different skeleton")
         }
       }
     }
@@ -1018,7 +1018,9 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
     if("annotation"%in%colnames(anns)){
       if(include.potential.duplicates){
-        avoiding =c(avoid,"duplicated")
+        avoiding  = avoid
+      }else{
+        avoiding = c(avoid,"duplicated")
       }
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
@@ -1087,7 +1089,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
       progress = readline("Sure? y=yes, n=no, a=no + annotate as duplicated: ")
     }
     if(dupe){
-      warning("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
+      message("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
               Upload for neuron ", i, " aborted (tolerance:",tolerance,").")
     }else if (progress=="a"){
       catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = "duplicated", pid = pid2, conn = conn2, ...)
@@ -1147,7 +1149,9 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
     anns = catmaid::catmaid_get_annotations_for_skeletons(x,pid=pid2,conn=conn2,...)
     if("annotation"%in%colnames(anns)){
       if(include.potential.duplicates){
-        avoiding =c(avoid,"duplicated")
+        avoiding  = avoid
+      }else{
+        avoiding = c(avoid,"duplicated")
       }
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
