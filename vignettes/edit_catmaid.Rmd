@@ -9,8 +9,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
   
-```{r setup, include=FALSE, eval=F, echo=T}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=FALSE}
+# this is the one thing we want to run (but not show in html output)
+# in order to stop any other chunks from being run 
+# (with potentially destructive consequences)
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
 We can use the CATMAID API to make edits to CATMAID. We can also use 3D volumetric segmentation to inform how we should make edits to CATMAID neurons, or how we sample up/downstream of them.
