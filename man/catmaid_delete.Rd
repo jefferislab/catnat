@@ -41,7 +41,7 @@ Really should only be set to FALSE if you are deleting from your own CATMAID ins
 \description{
 Delete a single neuron from a given CATMAID instance.
 Deletes a neuron if and only if two things are the case: 1. The user
-owns all treenodes of the skeleton modeling the neuron in question and
+owns all treenodes of the skeleton modelling the neuron in question and
 2. The neuron is not annotated by other users.
 Use with extreme caution as you may be significantly affecting others' work.
 You will first be shown the neuron you want to delete and who has worked on it, and then asked whether or not you want to continue.

@@ -27,7 +27,7 @@ splitscan(someneuronlist, col = c("blue", "orange", "purple", "green",
 
 \item{soma}{whether to plot a soma, and what the radius should be}
 
-\item{highflow}{wheather to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)}
+\item{highflow}{whether to plot the nodes of highest (with in one standard deviation less than maximum) flow centrality (pink points)}
 
 \item{lwd}{Line width (default 1)}
 

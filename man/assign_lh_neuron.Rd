@@ -3,7 +3,7 @@
 \name{assign_lh_neuron}
 \alias{assign_lh_neuron}
 \alias{scan_lh_matches}
-\title{Assign identitiy to lateral horn neurons}
+\title{Assign identity to lateral horn neurons}
 \usage{
 assign_lh_neuron(someneuronlist, most.lhns = lhns::most.lhns,
   most.lhns.dps = catnat::most.lhns.dps,
@@ -14,11 +14,11 @@ scan_lh_matches(someassignedneuronlist)
 \arguments{
 \item{someneuronlist}{a neuronlist object}
 
-\item{most.lhns}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017, as do the two arguments below}
+\item{most.lhns}{a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the FlyCircuit neurons and dye-fills used in Frechter et al. 2018, as do the two arguments below}
 
 \item{most.lhns.dps}{a dotprops object of the above}
 
-\item{most.lhns.pnts.dps}{the primary neurite tracts to search against as a dotrpops object}
+\item{most.lhns.pnts.dps}{the primary neurite tracts to search against as a \code{\link{dotprops}} object}
 
 \item{brain}{the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB}
 
@@ -30,8 +30,8 @@ scan_lh_matches(someassignedneuronlist)
 a neuronlist with the best guess for primary neurite tract, anatomy group and cell type listed in its metadata. Quality of this estimation depends on quality of the skeleton objects used in this function and their registration ot FCWB space
 }
 \description{
-Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
+Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Frechter et al. 2018.
 Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
-unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root. This fucntion provides a good guess, however if it gets a neurons assignment
+unidentified tracts/anatomy group/cell types. Relies on NBLAST. Skeletons must have their somas as their root. This function provides a good guess, however if it gets a neurons assignment
 incorrect, that does not necessarily mean the neuron in question is not covered by the naming system.
 }

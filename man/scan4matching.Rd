@@ -9,7 +9,7 @@ scan4matching(someneuronlist, pairs, reference, ...)
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}
 
-\item{pairs}{A data frame / matrix of two columns named skid.rgight and skid.left perhaps generated using the deformetricar package to estimate neuron cognates.}
+\item{pairs}{A data frame / matrix of two columns named skid.right and skid.left perhaps generated using the deformetricar package to estimate neuron cognates.}
 
 \item{reference}{A reference object to plot. E.g. CNS cortex.}
 

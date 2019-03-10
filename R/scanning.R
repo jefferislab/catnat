@@ -3,7 +3,7 @@
 #' @description implementation of the algorithm for clustering neurons by synapse location from Schlegel et al. (2016). Assumes neurons are scaled to microns.
 #'
 #' @param someneuronlist a neuronlist or neuron object
-#' @param pairs A data frame / matrix of two columns named skid.rgight and skid.left perhaps generated using the deformetricar package to estimate neuron cognates.
+#' @param pairs A data frame / matrix of two columns named skid.right and skid.left perhaps generated using the deformetricar package to estimate neuron cognates.
 #' @param reference A reference object to plot. E.g. CNS cortex.
 #' @param ... additional arguments passed to methods.
 #'

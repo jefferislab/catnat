@@ -19,5 +19,5 @@ catmaid_set_meta_annotations(meta_annotations, annotations, pid = 1,
 \item{...}{additional arguments passed to methods.}
 }
 \description{
-Meta-annotate a grops of CATMAID annotations
+Meta-annotate a group of CATMAID annotations
 }

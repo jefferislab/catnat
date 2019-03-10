@@ -12,7 +12,7 @@ catmaid_get_tag(x, tag = "TODO", url = FALSE, only.leaves = TRUE,
 
 \item{tag}{a single character specifying which tag to look for. Defaults to TODO}
 
-\item{url}{if TRUE (defualt) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags}
+\item{url}{if TRUE (default) a list of URLs pertaining to specified tag locations are returned. If FALSE, a data.frame subsetted from x$d is returned, reporting treenode ID and X,Y,Z positions for specified tags}
 
 \item{leaf.only}{whether or not to only return leaf nodes with the specified tag}
 }

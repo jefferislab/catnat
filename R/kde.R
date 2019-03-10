@@ -1,7 +1,7 @@
 #' Convert a 3D Kernel Density Estimate (package ks) into rgl mesh3d object
 #'
 #' @param x The kde object
-#' @param cont The countour level to use
+#' @param cont The contour level to use
 #' @param method Which conversion method to use (see details)
 #' @param ashape.alpha A length parameter (alpha) passed to
 #'   \code{alphashape3d::\link[alphashape3d]{ashape3d}} (see details).
@@ -11,7 +11,7 @@
 #'   \code{FALSE}).
 #'
 #' @details There are two conversion methods. The default uses the output of the
-#'   misc3d::countour3d function. This looks nice but seems to me to have a lot
+#'   misc3d::contour3d function. This looks nice but seems to me to have a lot
 #'   of redundant triangles. The alternative uses the \code{alphashape3d}
 #'   library which produces a simpler output. \bold{But} you must provide a
 #'   length parameter \code{ashape.alpha} which is passed to \code{alphashape3d}

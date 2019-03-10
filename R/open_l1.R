@@ -2,7 +2,7 @@
 #'
 #' @description Takes you to a region in the Em data chosen by an rgl selection window by the user
 #'
-#' @param x a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coorinates can be accessed with nat::xyzmatrix()
+#' @param x a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coordinates can be accessed with nat::xyzmatrix()
 #' @param s selection method. Defaults to rgl selection window.
 #' @param zoom zoom level to be applied in CATMAID
 #' @param open whether to open CATMAID window in browser

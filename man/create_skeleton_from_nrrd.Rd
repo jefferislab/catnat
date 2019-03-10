@@ -8,13 +8,13 @@ create_skeleton_from_nrrd(files, connection.distance = 25, k = "all",
   distance.steps = 0.5, ...)
 }
 \arguments{
-\item{files}{paths to saved .Nrrd files that have been skeletonsied in Fiji}
+\item{files}{paths to saved .Nrrd files that have been skeletonised in Fiji}
 
 \item{connection.distance}{maximal connection distance between points}
 
 \item{k}{value used in nearest neighbours search to identify close points and draw lines between them}
 
-\item{distance.steps}{each round of the algorithm connects the cosest points to the start point / leaf node, that are within the search range, starting at distance.steps and increasing by this amount to the maximal connection.distance}
+\item{distance.steps}{each round of the algorithm connects the closest points to the start point / leaf node, that are within the search range, starting at distance.steps and increasing by this amount to the maximal connection.distance}
 
 \item{...}{additional arguments passed to methods.}
 }

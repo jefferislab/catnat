@@ -20,7 +20,7 @@ fafbseg_transfer_connectors(new.neuron, old.neuron, offset = FALSE,
 
 \item{offset}{whether or not to expect a displacement in space between the new and old neurons. If so, search.range.nm is used to find the nearest nodes to which to assign tags/connectors, within the radius it specifies}
 
-\item{search.range.nm}{the maimum distance between points in the v14 and v14-seg skeleton, that is acceptable for the transfer ot tag/connector information. Not set to 0 be default to accept small variations in node position that might occur between the two tracing environments, due to tracer edit.s}
+\item{search.range.nm}{the maximum distance between points in the v14 and v14-seg skeleton, that is acceptable for the transfer ot tag/connector information. Not set to 0 be default to accept small variations in node position that might occur between the two tracing environments, due to tracer edit.s}
 
 \item{pid}{project id for conn. Defaults to 1}
 

@@ -12,7 +12,7 @@ update_names(someneuronlist, skids = names(someneuronlist), ...)
 \arguments{
 \item{someneuronlist}{a neuronlist object}
 
-\item{skids}{sekeleton IDs}
+\item{skids}{skeleton IDs}
 
 \item{...}{additional arguments passed to read.neurons.catmaid}
 }

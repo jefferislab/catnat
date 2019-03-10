@@ -5,7 +5,7 @@
 #' @param someneuronlist a neuronlist or neuron object
 #' @param ... additional arguments passed to methods
 #'
-#' @return Someneuronlist with cell sidedness in the metadata
+#' @return someneuronlist with cell sidedness in the metadata
 #' @export
 assignside <- function(someneuronlist, ...){
   sdf=as.data.frame(someneuronlist)
@@ -61,7 +61,7 @@ assignside <- function(someneuronlist, ...){
 #' @description Returns the primary neurite of a neuron, defined as the cable between soma and first branch point
 #'
 #' @param x a neuron or neuronlist object
-#' @param resample The newspacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
+#' @param resample The new spacing with which to evenly resample each neuron. Can be set to F to prevent resampling.
 #' @param k the number of nodes from the soma to include
 #' @param keep.pnt whether to keep just the primary neurite tract of the skeleton, or remove it and keep the neuron's arbour instead
 #' @param ... additional arguments passed to methods

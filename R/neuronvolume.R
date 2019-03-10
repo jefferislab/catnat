@@ -1,20 +1,20 @@
 #' Get neuron volumes and stitch them into a cohesive neuron, or neuronal compartment
 #'
-#' @description Stitch together volumes for a single neuron, based on the Google FAFB zsegmentation by Peter Li. If the neuron given has its microtubules marked (catnat::mark.microtubules), Strahler orders (catnat::assign_strahler) or
+#' @description Stitch together volumes for a single neuron, based on the Google FAFB segmentation by Peter Li. If the neuron given has its microtubules marked (catnat::mark.microtubules), Strahler orders (catnat::assign_strahler) or
 #' axon/dendrite (catnat::flow.centrality) then this information can be used to estimate a volume that over these neuronal sub-compartments.
-#' @param neuron a neuron object that macthes the volumes given
+#' @param neuron a neuron object that matches the volumes given
 #' @param volumes a list of mesh3d objects, retrieved using fafbseg::read_brainmaps_meshes
-#' @param voxelSize a single number, which is used to downsmaple the starting meshes, resample neuron, and choose an alpha value for alphashape3d::ashape3d()
-#' @param downsample.factor after the Google volumes have been resampled uniformaly at voxelSize, points are randomly removed from the neuron cloud
+#' @param voxelSize a single number, which is used to downsample the starting meshes, resample neuron, and choose an alpha value for alphashape3d::ashape3d()
+#' @param downsample.factor after the Google volumes have been resampled uniformly at voxelSize, points are randomly removed from the neuron cloud
 #' (no.points=no.points/downsample.factor) in order to make alphashape generation by alphashape3d::ashape manageable
 #' @param map if TRUE, instead of using the volumes argument, map_fafbsegs_to_neuron and fafbseg::read_brainmaps_meshes are used to retrieve Google 3D segmentations as mesh3d objects
 #' @param soma if TRUE, the soma (root point for neuron) will be identified
 #' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
-#' These nodes all need to be consecutive, in the sense that they must be in the same segement or a branch from that segment. I.e. If a neuron matches with a volume
-#' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segement.
+#' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
+#' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
 #' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned
 #' @param resample.neuron if TRUE, neuron is resampled (nat:resample), stepsize = voxelSize
-#' @param resample.volume if TRUE, the final mesh3D object is uniformaly resampled using Rvcg::vcgUniformRemesh, voxelSize = voxelSize
+#' @param resample.volume if TRUE, the final mesh3D object is uniformly resampled using Rvcg::vcgUniformRemesh, voxelSize = voxelSize
 #' @param smooth if TRUE, the final mesh will be smoothed, using
 #' @param smooth.type character: select smoothing algorithm. Available are "taubin", "laplace", "HClaplace","fujiLaplace", "angWeight" (and any sensible abbreviations). See Rvcg::vcgSmooth
 #' @param lambda numeric: parameter for Taubin smooth. See Rvcg::vcgSmooth
@@ -499,7 +499,7 @@ neuronvolume3d <- function(neuronvolume,
 #' @param x the treenode ids to edit
 #' @param radii a vector the same length as tnids, giving the new radius for each treenode id in that vector
 #' @param max.dist the radius is calculated as the mean distance of the nearest 10 mesh vertices for a 3D volume to a each treenode the mesh encompasses. Max.dist sets the maximum distance fro which to search for the ten closest nodes. If exceeded, the radius is set to max.dist.
-#' @param method whather to use raycast (casts 10 rays perpendicular to the path of the neuron for each point, slower but more accurate) or the nearest point on the bounding mesh, to estimate node radius
+#' @param method whether to use raycast (casts 10 rays perpendicular to the path of the neuron for each point, slower but more accurate) or the nearest point on the bounding mesh, to estimate node radius
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch

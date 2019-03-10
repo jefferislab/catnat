@@ -191,7 +191,7 @@ manually_assign_axon_dendrite.neuronlist<-function(x, ...){
 #'   axon and dendrite
 #'
 #' @param x a neuron/neuronlist object that has primary neurites marked (Label = 7) and soma as the root
-#' @param ... Currrently ignored
+#' @param ... Currently ignored
 #' @export
 #' @rdname assign.connector.info
 assign.connector.info <-function(x, ...) UseMethod("assign.connector.info")

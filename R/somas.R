@@ -1,13 +1,13 @@
 #' Functions for retrieving soma data
 #'
-#' @description Functions for retrieving data amout somata from skeletons, that has been assigned in CATMAID using the tag system
+#' @description Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system
 #' @param x a neuron or neuronlist object
 #' @param ... additional arguments passed to methods
 #'
 #' @details CATMAID access required. Data collected and described in cited publication.
 #'
 #' @references Ohyama T, Schneider-Mizell CM, Fetter RD, Aleman JV, Franconville R, Rivera-Alba M, Mensh BD, Branson KM, Simpson JH, Truman JW, et al. (2015) A multilevel multimodal circuit enhances action selection in Drosophila. Nature.
-#' @return Either the soma's 3D coorindates (soma) its id number (somaid) or its posiiton in the neuron's skeleton (somapos)
+#' @return Either the soma's 3D coordinates (soma) its id number (somaid) or its position in the neuron's skeleton (somapos)
 #' @export
 soma<-function(x, ...) UseMethod("soma")
 

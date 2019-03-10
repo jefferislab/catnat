@@ -61,7 +61,7 @@ transform3dalphashape = function (ashape, transformations, ...){
 #' @param ashape List of alphashape objects
 #' @param filename Path to and name of desired file. Should end in .vtk
 #' @param title Title of the .vtk file
-#' @param datatype Either floar or double
+#' @param datatype Either float or double
 #' @param ... additional arguments passed to methods
 #'
 #' @return A .vtk file saved to a given location

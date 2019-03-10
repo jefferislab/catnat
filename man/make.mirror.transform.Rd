@@ -15,7 +15,7 @@ make.mirror.transform(x, icpiter = 50, subsample = NULL,
 
 \item{subsample}{integer: use only a subset for icp matching}
 
-\item{pcAlign}{if TRUE, the icp will be preceeded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data}
+\item{pcAlign}{if TRUE, the icp will be preceded by an alignment of the principal axis (only used if icpiter > 0), currently only works for 3D data}
 
 \item{mirroraxis}{integer: which axis to mirror at}
 

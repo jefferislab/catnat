@@ -14,7 +14,7 @@ catmaid_find_likely_merge(TODO, fafbseg = FALSE, min_nodes = 2,
 
 \item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
 
-\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
+\item{search.range.nm}{the maximum distance from which to search from the TODO point tag to find potential mergers}
 
 \item{pid}{project id. Defaults to 1}
 

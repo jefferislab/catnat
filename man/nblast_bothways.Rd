@@ -2,7 +2,7 @@
 % Please edit documentation in R/flycircuit.R
 \name{nblast_bothways}
 \alias{nblast_bothways}
-\title{NBlast two different sets of neurons forwards and backwards}
+\title{NBLAST two different sets of neurons forwards and backwards}
 \usage{
 nblast_bothways(group1, group2 = group1, smat = NULL, sd = 3,
   version = c(2, 1), normalised = FALSE, UseAlpha = FALSE,
@@ -13,7 +13,7 @@ nblast_bothways(group1, group2 = group1, smat = NULL, sd = 3,
 
 \item{group2}{a neuronlist object, defaults to group1}
 
-\item{smat}{the score matrix to be used. See ?nlast.}
+\item{smat}{the score matrix to be used. See ?\code{\link{nblast}}.}
 
 \item{sd}{Standard deviation to use in distance dependence of nblast v1 algorithm. Ignored when version=2}
 
@@ -23,7 +23,7 @@ nblast_bothways(group1, group2 = group1, smat = NULL, sd = 3,
 
 \item{UseAlpha}{whether to consider local directions in the similarity calculation (default: FALSE)}
 
-\item{OmitFailures}{Whether to omit neurons for which FUN gives an error. The default value (NA) will result in nblast stopping with an error message the moment there is an eror}
+\item{OmitFailures}{Whether to omit neurons for which FUN gives an error. The default value (NA) will result in nblast stopping with an error message the moment there is an error}
 
 \item{...}{additional arguments passed to methods}
 }
@@ -31,5 +31,5 @@ nblast_bothways(group1, group2 = group1, smat = NULL, sd = 3,
 a dotprops object
 }
 \description{
-NBlast two different sets of neurons forwards and backwards, and take the mean of these results
+NBLAST two different sets of neurons forwards and backwards, and take the mean of these results
 }

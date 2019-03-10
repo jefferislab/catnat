@@ -14,7 +14,7 @@ WriteVTKalphashape(ashape, filename, title = filename,
 
 \item{title}{Title of the .vtk file}
 
-\item{datatype}{Either floar or double}
+\item{datatype}{Either float or double}
 
 \item{...}{additional arguments passed to methods}
 }

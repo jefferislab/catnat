@@ -13,7 +13,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-We can use the CATMAID API to make edits to CATMAID. We can also use 3D volumetric segmentation to inform how we should make edits to CATMAID neurons, or how we sample up/donwstream of them.
+We can use the CATMAID API to make edits to CATMAID. We can also use 3D volumetric segmentation to inform how we should make edits to CATMAID neurons, or how we sample up/downstream of them.
 
 In this vignette we'll have a look at `catnat`'s functions for working with Greg Jefferis' package `fafbseg`, and its use of the brainmaps API to access to a 3D segmentation of FAFB v14 (the female adult fly brain version 14, Bock lab) from Peter Li at Google.
 
@@ -28,7 +28,7 @@ library(catnat)
 library(fafbseg)
 ```
 
-This is useful for several reasons - primarily 1) to help sample a neuron's synaptic partners, 2) to retrieve a volumetric reconstruction of a neuron, starting with a (probably manually) traced skeleton (fundementally a 2D line object embedded in 3D space) and 3) import neurons, along with their synapse and tag data, into a live CATMAID instance from another source (say where we have used data from a new segmentation) and join imported skeletons to extant neurons.
+This is useful for several reasons - primarily 1) to help sample a neuron's synaptic partners, 2) to retrieve a volumetric reconstruction of a neuron, starting with a (probably manually) traced skeleton (fundamentally a 2D line object embedded in 3D space) and 3) import neurons, along with their synapse and tag data, into a live CATMAID instance from another source (say where we have used data from a new segmentation) and join imported skeletons to extant neurons.
 
 In this example, we are going to assume that you want to import new tracing made from concatenating auto-segmented skeletonisations from the CATMAID instance https://neuropil.janelia.org/tracing/fafb/v14-seg/ to the 'primary' live CATMAID instance 'https://neuropil.janelia.org/tracing/fafb/v14-seg/'.
 
@@ -47,7 +47,7 @@ a2sc = read.neurons.catmaid("name:MBON a2sc")
 print(a2sc[,])
 ```
 
-Now we can seek to generate a 'tracing sheet' that gives us back 'free' () upstream connectors or downstream connections, but rather than performing a random sample, we have a ranked list. They are ranked using the FAFB v14 segmentation from Peter Li at Google. Synapses are ranked higher if they connect to an auto-traced fragment that also coressponds to other synapses. The returned object will give synapse locations and their connecotr IDs, as well as the `ngl_segment`, the 'Neuroglancer segment' read from the brainmaps API. For now, you must have authentication to use this, and you will be prompted for it when you start using functions that rely on the package `fafbseg`, like this one.
+Now we can seek to generate a 'tracing sheet' that gives us back 'free' () upstream connectors or downstream connections, but rather than performing a random sample, we have a ranked list. They are ranked using the FAFB v14 segmentation from Peter Li at Google. Synapses are ranked higher if they connect to an auto-traced fragment that also corresponds to other synapses. The returned object will give synapse locations and their connector IDs, as well as the `ngl_segment`, the 'Neuroglancer segment' read from the brainmaps API. For now, you must have authentication to use this, and you will be prompted for it when you start using functions that rely on the package `fafbseg`, like this one.
 
 ```{r tracing.sheets, eval=F, echo=T}
 # Generate tracing sheet
@@ -55,7 +55,7 @@ tl.incoming = fafb_seg_tracing_list(skids = names(a2sc),connector_ids = NULL, di
 tl.outgoing= fafb_seg_tracing_list(skids = names(a2sc),connector_ids = NULL, direction = "outgoing", unique = FALSE)
 ```
 
-Now because it takes a long time to trace, I am only interested in looking at the connectivity of the right-side MBON. However, I have generated a tracing sheet using both members of the cell type, i..e both MBOn a2sc Right and Left. This is useful, because they likely connect with the same neuron, and since the auto-segmented fragments are small, using multiple members of a cell type helps to rank our synapses better. But let's subset for just those that also conenct with MBON a2sc Right.
+Now because it takes a long time to trace, I am only interested in looking at the connectivity of the right-side MBON. However, I have generated a tracing sheet using both members of the cell type, i..e both MBOn a2sc Right and Left. This is useful, because they likely connect with the same neuron, and since the auto-segmented fragments are small, using multiple members of a cell type helps to rank our synapses better. But let's subset for just those that also connect with MBON a2sc Right.
 
 ```{r subset.for.mbona2sc.r, eval=F, echo=T}
 # Generate tracing sheet
@@ -63,7 +63,7 @@ tl.incoming = subset(tl.incoming,skid==names(a2sc)[1])
 tl.outgoing = subset(tl.outgoing,skid==names(a2sc)[1])
 ```
 
-So now if you want you can take these tracing data frames and go straight to CATMAID `v14` (https://neuropil.janelia.org/tracing/fafb/v14/), and start working! Just folow the URLs under `FAFB.link`. However, we can subset the data frame further so that we do not have to look at so many synapses - because we now know which synapses share the same `ngl_segment`, we can just look at one synapse per segment. If manually tacing, this assumed you'll flesh out enough to get the other synapses, this is especially useful if tracing in the `v14-seg` CATMAID instance (https://neuropil.janelia.org/tracing/fafb/v14-seg/) as you already get a little chunk of traced neuron. Let's assume you are using you are using this aproach from now on.
+So now if you want you can take these tracing data frames and go straight to CATMAID `v14` (https://neuropil.janelia.org/tracing/fafb/v14/), and start working! Just follow the URLs under `FAFB.link`. However, we can subset the data frame further so that we do not have to look at so many synapses - because we now know which synapses share the same `ngl_segment`, we can just look at one synapse per segment. If manually tracing, this assumed you'll flesh out enough to get the other synapses, this is especially useful if tracing in the `v14-seg` CATMAID instance (https://neuropil.janelia.org/tracing/fafb/v14-seg/) as you already get a little chunk of traced neuron. Let's assume you are using you are using this approach from now on.
 
 ```{r subset.ngl_id, eval=F, echo=T}
 # Generate tracing sheet
@@ -120,7 +120,7 @@ nopen3d()
 neuronvolume3d(neuronvolume, split = "split", type = "volume")
 ```
 
-We can also push the radius information to the manually traced CATMAID skeleton in `v14`, which might aid visualisation and tracing. To do this, we can use the neuronvolume we just created, which will be quicker, or just give the function an annotation to work with. In the latter instance, working from nothing this is faster but less acruate, as radii are calculated for nodes within each brainmaps volume separately, whereas `fafb_segs_stitch_volumes` makes a single cohesive volume, i.e. a node in the former case may be near a mesh boundary that only exists because the segmentation failed.
+We can also push the radius information to the manually traced CATMAID skeleton in `v14`, which might aid visualisation and tracing. To do this, we can use the neuronvolume we just created, which will be quicker, or just give the function an annotation to work with. In the latter instance, working from nothing this is faster but less accurate, as radii are calculated for nodes within each brainmaps volume separately, whereas `fafb_segs_stitch_volumes` makes a single cohesive volume, i.e. a node in the former case may be near a mesh boundary that only exists because the segmentation failed.
 
 ```{r update.radii, eval=F, echo=T}
 # This updates CATMAID. In this example, it updates the fafbseg `v14-seg` envrionment neuron, specified using the conn argument.
@@ -133,25 +133,25 @@ catmaid_update_radius(tnids = neuron[[1]]$d$PointNo, radii = -1)
 
 ## 3) Importing neurons from one CATMAID instance to another, retaining connectors and adding in new connectors
 
-Okay, now let's say you have done some tracing in a CATMAID instance and you want to import it into another instance. In this example, we will assume that you have been following the `FAFBseg.link` column in our tracing sheet and tracing in there. You want to uplod your skeletons with their connector and tag information, connect them to the synapses you were tracign from in the tracign sheet we generated, and also join your new skeletons up to manually traced neurons in the 'main' collaborative `v14` instance.
+Okay, now let's say you have done some tracing in a CATMAID instance and you want to import it into another instance. In this example, we will assume that you have been following the `FAFBseg.link` column in our tracing sheet and tracing in there. You want to upload your skeletons with their connector and tag information, connect them to the synapses you were tracing from in the tracing sheet we generated, and also join your new skeletons up to manually traced neurons in the 'main' collaborative `v14` instance.
 
 It's important to do a few things while tracing in the `v14-seg` instance:
   
   - STOP tracing in `v14-seg` when you come up against a manually traced neuron. Split off any overlapping cable.
-- Annotate all the neurons you want to upload with the same annotation (or consetllation of annotations)
+- Annotate all the neurons you want to upload with the same annotation (or constellation of annotations)
 - Leave a specific tag (e.g. "TODO") at leaf nodes where you want to join your `v14-seg` skeleton up to a manually traced neuron once ported to 'v14'. Place ths leaf node as close to the manual skeleton as possible.
-- Be aware that the importign whill take connetors with your neuron, but in `v14-seg` it will create new connectors, that will not retain any other connectivity information other than theur relationship with the imported skeleton.
+- Be aware that the importing will take connectors with your neuron, but in `v14-seg` it will create new connectors, that will not retain any other connectivity information other than theur relationship with the imported skeleton.
 
 There are function to do the import and joining automatically without user interaction (`catmaid_uncontrolled_upload`), however, it is STRONGLY recommended that you use `catmaid_controlled_upload` which will walk you through the changes you are making to CATMAID so you can be sure you do not make a mistake. The process is roughly:
   
   - Skeletons are chosen based on an annotation/name/skeleton IDs that you give
 - These skeletons are checked for annotations that label them as already imported. These are specified by the `avoid` argument.
-- The space around every node in each `v14-seg` skeleton is queried (in a bounding box of `duplication.range.nm` nm) to see if there are any other neurons. If there are, that node is counted as 'duplicated'. This is better refined by using fafbseg = TRUE, in which case duplication is based on the existence of other skeletons in the same neuroglancer voumes via the brainmaps API (must have access). This can be a slow process, and is made faster (but less accurate) by downsampling the neuron using higher values of `downsample`.
-- You are shown the neuron and the skeletons that overlap it the most, and asked if you want to continue the upload. If `tolerance` is set to a value, and the level of dupliction is above the `tolerance` proportion, the skeleton will not be uploaded.
-- Once uploaded, connectors are transfered (if `include.connectors = FALSE`) and tags (if `include.tags = FALSE`).
+- The space around every node in each `v14-seg` skeleton is queried (in a bounding box of `duplication.range.nm` nm) to see if there are any other neurons. If there are, that node is counted as 'duplicated'. This is better refined by using fafbseg = TRUE, in which case duplication is based on the existence of other skeletons in the same neuroglancer volumes via the brainmaps API (must have access). This can be a slow process, and is made faster (but less accurate) by downsampling the neuron using higher values of `downsample`.
+- You are shown the neuron and the skeletons that overlap it the most, and asked if you want to continue the upload. If `tolerance` is set to a value, and the level of duplication is above the `tolerance` proportion, the skeleton will not be uploaded.
+- Once uploaded, connectors are transferred (if `include.connectors = FALSE`) and tags (if `include.tags = FALSE`).
 - The newly uploaded neurons will be given the names and annotations specified with `name` and `annotation`.
 - If `lock=TRUE` the old neurons in `v14-seg` will also be locked, to prevent others adding to it and maybe accidentally wanting to upload it.
-- If `join=TRUE` you will now cycle through potential join sites to manual neurons in `v14-seg`, found by looking in a radius of `search.range.nm` around the neuron's leade ndoes that contain `join.tag`. If `fafbseg=TRUE` this works better, as only neurons in the same neuroglancer volume are considered. You can choose to make joins or not interactively.
+- If `join=TRUE` you will now cycle through potential join sites to manual neurons in `v14-seg`, found by looking in a radius of `search.range.nm` around the neuron's lead nodes that contain `join.tag`. If `fafbseg=TRUE` this works better, as only neurons in the same neuroglancer volume are considered. You can choose to make joins or not interactively.
 
 ```{r controlled.upload.to.CATMAID, eval=F, echo=T}
 # This example annotation may not work, depending on the current state of CATMAID v14-seg. Try with your own small test neuron first, to trial this function
@@ -161,7 +161,7 @@ fafbseg = TRUE,  join = TRUE, join,tag = "TODO",
 brain = elmr::FAFB14, lock = TRUE)
 ```
 
-Now that you have uploaded your neuron, you might want to automatically conenct it to stuff. We can do this using extant neurons and Peter Li's segmentation
+Now that you have uploaded your neuron, you might want to automatically connect it to stuff. We can do this using extant neurons and Peter Li's segmentation
 
 ```{r auto.attach.connectors, eval=F, echo=T}
 # WTPN2017_AL_PN refers to all olfactory projection neurons from the antennal lobe
@@ -169,7 +169,7 @@ fafbseg_join_connectors_in_ngl_volumes("annotation:ASB Test v14-seg Upload",
                                        putatively.connected.skids="annotation:WTPN2017_AL_PN")
 ```
 
-If you want to, you can then transfer names and annotations back in `v14-seg` so you cvan easily identify these neurons when you go back to tracing in that environment
+If you want to, you can then transfer names and annotations back in `v14-seg` so you can easily identify these neurons when you go back to tracing in that environment
 ```{r transfer.names, eval=F, echo=T}
 catmaid_interactive_name_transfer(x="annotation:ASB Test v14-seg Upload", conn = fafb_seg_conn(), conn2 = NULL)
 ```
@@ -178,7 +178,7 @@ And done! Pretty handy yeh.
 
 ## 4) Deleting neurons
 
-You may accidentally upload something you did not mean to. Or you may only have a slighty overlap between your uploaded neuron and an original neuron, and choose to cut it out manually in CATMAID. You now want to delete that neuron. If you have control access over all of its nodes (typically these are just node that you yourself have added or imported) you may delete a neuron. 
+You may accidentally upload something you did not mean to. Or you may only have a slight overlap between your uploaded neuron and an original neuron, and choose to cut it out manually in CATMAID. You now want to delete that neuron. If you have control access over all of its nodes (typically these are just node that you yourself have added or imported) you may delete a neuron. 
 
 You can be careful about it and do this interactively:
   

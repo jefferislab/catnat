@@ -15,7 +15,7 @@ catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
 \arguments{
 \item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}
 
-\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes ndoes outside search area)}
+\item{min_nodes}{the minimum number of nodes a neuron in the search area must have (includes nodes outside search area)}
 
 \item{pid}{project id. Defaults to 1}
 
@@ -27,7 +27,7 @@ catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
 
 \item{skid}{the skeleton ID that corresponds to neuron}
 
-\item{tolerance}{how many potentially duplictated nodes you will tolerate. If NULL, skeleton IDs for potentially duplictated neurons are returned.}
+\item{tolerance}{how many potentially duplicated nodes you will tolerate. If NULL, skeleton IDs for potentially duplicated neurons are returned.}
 
 \item{duplication.range.nm}{determines the size of the bounding box around each node in neuron to search for a duplicated. Defaults to 10 nm}
 
@@ -42,8 +42,8 @@ catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \value{
-If tolerance is NULL, then a list, with entires duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
-and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSe is returned.
+If tolerance is NULL, then a list, with entries duplicated.nodes (a TRUE or FALSE for ever node in neuron, TRUE is there is another skeleton within duplication.range.nm)
+and overlapping.skids, a list of skeleton IDs for potentially overlapping neurons. If tolerance is a numeric value between 0 and 1, TRUE or FALSE is returned.
 }
 \description{
 Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.

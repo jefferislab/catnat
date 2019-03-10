@@ -20,7 +20,7 @@ catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
 
-\item{search.range.nm}{the maimum distance from which to search from the TODO point tag to find potential mergers}
+\item{search.range.nm}{the maximum distance from which to search from the TODO point tag to find potential mergers}
 
 \item{min_nodes}{the minimum number of nodes a potential merger skeleton needs to have}
 }

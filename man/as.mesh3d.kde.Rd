@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{The kde object}
 
-\item{cont}{The countour level to use}
+\item{cont}{The contour level to use}
 
 \item{approx.cont}{Whether to compute an approximate contour level. (Default
 \code{FALSE}).}
@@ -31,7 +31,7 @@ Convert a 3D Kernel Density Estimate (package ks) into rgl mesh3d object
 }
 \details{
 There are two conversion methods. The default uses the output of the
-  misc3d::countour3d function. This looks nice but seems to me to have a lot
+  misc3d::contour3d function. This looks nice but seems to me to have a lot
   of redundant triangles. The alternative uses the \code{alphashape3d}
   library which produces a simpler output. \bold{But} you must provide a
   length parameter \code{ashape.alpha} which is passed to \code{alphashape3d}

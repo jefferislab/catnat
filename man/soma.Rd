@@ -36,10 +36,10 @@ somapos(x, ...)
 \item{...}{additional arguments passed to methods}
 }
 \value{
-Either the soma's 3D coorindates (soma) its id number (somaid) or its posiiton in the neuron's skeleton (somapos)
+Either the soma's 3D coordinates (soma) its id number (somaid) or its position in the neuron's skeleton (somapos)
 }
 \description{
-Functions for retrieving data amout somata from skeletons, that has been assigned in CATMAID using the tag system
+Functions for retrieving data about somata from skeletons, that has been assigned in CATMAID using the tag system
 }
 \details{
 CATMAID access required. Data collected and described in cited publication.

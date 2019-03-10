@@ -2,7 +2,7 @@
 #'
 #' @description Gets neurons downstream/upstream of a query set of skeletons from a CATMAID database
 #'
-#' @param someneuronlist a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coorinates can be accessed with nat::xyzmatrix()
+#' @param someneuronlist a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coordinates can be accessed with nat::xyzmatrix()
 #' @param X The upper and lower bounds for acceptable X coordinates
 #' @param Y The upper and lower bounds for acceptable Y coordinates
 #' @param Z The upper and lower bounds for acceptable Z coordinates
@@ -52,10 +52,10 @@ get_connected_skeletons <- function(someneuronlist, X = c(upper = 100000000, low
 
 #' Generate connectivity matrix
 #'
-#' @description Generate a conenctivity matrix from neuronlist skeleton data. Can also be used with fragmented neurons, i.e. those generated using the flow.centrality() and neurites() functions.
+#' @description Generate a connectivity matrix from neuronlist skeleton data. Can also be used with fragmented neurons, i.e. those generated using the flow.centrality() and neurites() functions.
 #'
 #' @param pre skeletons from which connections are to be included
-#' @param post skeletons to which connections from the pre group are to be incuded. Defaults to the pre group.
+#' @param post skeletons to which connections from the pre group are to be included. Defaults to the pre group.
 #' @param data a connectivity matrix
 #' @param ... additional arguments passed to methods.
 #'

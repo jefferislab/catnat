@@ -1,6 +1,6 @@
 ## These are flycircuit functions
 
-#' Fetch Flycircuit neuron skeletons from the Tawian Flycircuit server
+#' Fetch FlyCircuit neuron skeletons from the Taiwan FlyCircuit server
 #'
 #' @description Assigns cell body side based in neuron name.
 #'
@@ -10,7 +10,7 @@
 #' @param x some neuron or neuronlist
 #' @param ... additional arguments passed to methods
 #'
-#' @return A neuronlist of FlyCirucit neurons reigstered in the intersex FCWB brain space
+#' @return A neuronlist of FlyCircuit neurons registered in the intersex FCWB brain space
 #' @export
 get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
   ids = c()
@@ -45,12 +45,12 @@ Chiang2FCWB <- function(x, female = grepl("-F-",x), xform_version=1) {
 }
 
 
-#' Apply a transform to a neruon/neuronlist
+#' Apply a transform to a neuron/neuronlist
 #'
-#' @description Apply a transform to a neruon/neuronlist object using Morpho::applyTransform
+#' @description Apply a transform to a neuron/neuronlist object using Morpho::applyTransform
 #'
 #' @param x a neuron/neuronlist object
-#' @param trafo A valid transformation for Morpho:applyTransform
+#' @param trafo A valid transformation for \code{Morpho::\link{applyTransform}}
 #' @param inverse whether to calculate the inverse of trafo
 #' @param ... additional arguments passed to methods
 #'
@@ -76,13 +76,13 @@ napplyTransform.neuronlist <- function(x, trafo, inverse = F,...){
 
 #' Assign axon/dendrite split to skeletons
 #'
-#' @description manually cycle through and assign a label to points in a neuron to mark out axonic, dednritic and mixed/uncertain cable
+#' @description manually cycle through and assign a label to points in a neuron to mark out axonic, dendritic and mixed/uncertain cable
 #'
 #' @param someneuronlist a neuron/neuronlist object
 #' @param brain brain template to plot alongside neuron?
 #' @param ... additional arguments passed to methods
 #'
-#' @return Neuronlist with polarity assignantion marked in the neuron$d dataframe of each neuron object within that neuronlist
+#' @return Neuronlist with polarity assignation marked in the \code{neuron$d} \code{dataframe} of each \code{\link{neuron}} object within that \code{\link{neuronlist}}
 #' @export
 #' @importFrom grDevices colorRampPalette
 assign_cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...){
@@ -388,7 +388,7 @@ write.spin.swc <- function(neuron, file){
   neuron$d$PointNo = match(neuron$d$PointNo,s) # Re-name points according to SegList
   neuron$d$Parent = ifelse(!is.na(match(neuron$d$Parent,s)),match(neuron$d$Parent,s),-1) # Given the above, correct Parent attribution
   neuron$d = neuron$d[order(neuron$d$PointNo),] # Order the swc matrix
-  neuron$d$Label = 0 # Labels are all wrong when downloaded from Flycircuit, make them 0 for 'unknwon'
+  neuron$d$Label = 0 # Labels are all wrong when downloaded from FlyCircuit, make them 0 for 'unknwon'
   neuron$d$Label[1] = 1 # Add soma label
   write.neuron(neuron,file = file,format="swc",Force=T) # Write file
 }
@@ -398,7 +398,7 @@ write.spin.swc <- function(neuron, file){
 #' Plot a neuron with different coloured synapses depending on partners
 #'
 #' @description  Plot a neuron with different coloured synapses depending on partners.
-#' Points indicate inputs synapses, and asterixes indicate output synapses.
+#' Points indicate inputs synapses, and asterisks indicate output synapses.
 #'
 #' @param neuron a neuron to plot
 #' @param skids the skeleton ids of neurons with which synapses are to be shown. Defaults to all partners.
@@ -444,13 +444,13 @@ synapsecolours.neuron <-function(neuron, skids = NULL, col = "black", inputs = T
 #' Average non-branching tracts
 #'
 #' @description  Function returns an 'average tract' when given a neuronlist of non-branching cable.
-#' The function uses NBlast to find the the neuron within the group that has the highest average similarity score with the rest of
+#' The function uses NBLAST to find the the neuron within the group that has the highest average similarity score with the rest of
 #' the given cable
 #'
-#' @param cable somneuronlist object
+#' @param cable someneuronlist object
 #' @param sigma smoothing parameter given to nat::smooth_neuron, i.e. the standard deviation of the Gaussian smoothing kernel (which has the same spatial units as the object being smoothed)
 #' @param stepsize the spacing to which cable should be resampled
-#' @param mode Either 1 or 2. Method 1 simply takes the best NBlast match and, for each of its nodes, finds the mean xyz coordinate for that node index in the cable group (soma has index 1), all resampled to the stepsize value.
+#' @param mode Either 1 or 2. Method 1 simply takes the best NBLAST match and, for each of its nodes, finds the mean xyz coordinate for that node index in the cable group (soma has index 1), all resampled to the stepsize value.
 #' Method 2 is similar, but takes the closest node in each of the other neurons in the cable neuronlist rather than the nodes of the same index.
 #' @param ... additional arguments passed to methods
 #'
@@ -504,17 +504,17 @@ average.tracts <- function(cable, sigma = 6, mode = c(1,2),stepsize = 1,...){
   }else {cable[[1]]}
 }
 
-#' Assign identitiy to lateral horn neurons
+#' Assign identity to lateral horn neurons
 #'
-#' @description  Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Fretcher et al. 2017.
+#' @description  Given a neuron, this function assigns it to a lateral horn primary neurite tract, anatomy group and cell type as described by Frechter et al. 2018.
 #' Note should be taken with what side of the brain the sample group is on. Note that the function will force an assignation even if the neurons in someneuronlist belong to
-#' unidentiified tracts/anatomy group/cell types. Relies on NBlast. Skeletons must have their somas as their root. This fucntion provides a good guess, however if it gets a neurons assignment
+#' unidentified tracts/anatomy group/cell types. Relies on NBLAST. Skeletons must have their somas as their root. This function provides a good guess, however if it gets a neurons assignment
 #' incorrect, that does not necessarily mean the neuron in question is not covered by the naming system.
 #'
 #' @param someneuronlist a neuronlist object
-#' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the Flycircuit neurons and dye-fills used in Fretcher et al. 2017, as do the two arguments below
+#' @param most.lhns a dataset containing example neurons of different primary neurite tracts, anatomy groups and cell types. Defaults to the FlyCircuit neurons and dye-fills used in Frechter et al. 2018, as do the two arguments below
 #' @param most.lhns.dps a dotprops object of the above
-#' @param most.lhns.pnts.dps the primary neurite tracts to search against as a dotrpops object
+#' @param most.lhns.pnts.dps the primary neurite tracts to search against as a \code{\link{dotprops}} object
 #' @param brain the brainspace of the someneuronlist. If left NULL, assumes the space is FCWB
 #' @param someassignedneuronlist a neuronlist that has been passed through assign_lh_neuron
 #' @param ... additional arguments passed to methods
@@ -606,9 +606,9 @@ rescue.dps <- function(someneuronlist,resample.unit=1,...){
   someneuronlist.dps
 }
 
-#' NBlast two different sets of neurons forwards and backwards
+#' NBLAST two different sets of neurons forwards and backwards
 #'
-#' @description  NBlast two different sets of neurons forwards and backwards, and take the mean of these results
+#' @description  NBLAST two different sets of neurons forwards and backwards, and take the mean of these results
 #'
 #' @param group1 a neuronlist object
 #' @param group2 a neuronlist object, defaults to group1
@@ -616,8 +616,8 @@ rescue.dps <- function(someneuronlist,resample.unit=1,...){
 #' @param version the version of the algorithm to use (the default, 2, is the latest)
 #' @param UseAlpha whether to consider local directions in the similarity calculation (default: FALSE)
 #' @param normalised whether to divide scores by the self-match score of the query
-#' @param OmitFailures Whether to omit neurons for which FUN gives an error. The default value (NA) will result in nblast stopping with an error message the moment there is an eror
-#' @param smat the score matrix to be used. See ?nlast.
+#' @param OmitFailures Whether to omit neurons for which FUN gives an error. The default value (NA) will result in nblast stopping with an error message the moment there is an error
+#' @param smat the score matrix to be used. See ?\code{\link{nblast}}.
 #' @param ... additional arguments passed to methods
 #'
 #' @return a dotprops object

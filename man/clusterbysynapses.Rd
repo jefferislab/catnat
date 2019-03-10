@@ -2,7 +2,7 @@
 % Please edit documentation in R/clusterbysynapse.R
 \name{clusterbysynapses}
 \alias{clusterbysynapses}
-\title{Cluster neurons by pre- and postsynapse positons}
+\title{Cluster neurons by pre- and postsynapse positions}
 \usage{
 clusterbysynapses(someneuronlist, sigma = 1, omega = sigma,
   symmetric = T, direction = c(0, 1, 2))
@@ -14,9 +14,9 @@ clusterbysynapses(someneuronlist, sigma = 1, omega = sigma,
 
 \item{omega}{synapse cluster radius. Defaults to sigma.}
 
-\item{symmetric}{whether to return a symmetric martrix (average of scores between two neurons in both directions)}
+\item{symmetric}{whether to return a symmetric matrix (average of scores between two neurons in both directions)}
 
-\item{direction}{cluster neurons by presynapses (0), postysnapses (1) or both (2)}
+\item{direction}{cluster neurons by presynapses (0), postsynapses (1) or both (2)}
 
 \item{...}{additional arguments passed to methods.}
 }

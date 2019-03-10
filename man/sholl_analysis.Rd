@@ -11,7 +11,7 @@ sholl_data(neuron, start = colMeans(xyzmatrix(neuron)),
 \arguments{
 \item{neuron}{a neuron object}
 
-\item{start}{the origin from which spheres are grown for the sholl analysis}
+\item{start}{the origin from which spheres are grown for the Sholl analysis}
 
 \item{starting.radius}{the radius of the first sphere. Defaults to the radius step}
 
@@ -23,5 +23,5 @@ sholl_data(neuron, start = colMeans(xyzmatrix(neuron)),
 a data.frame of spheres radii and the number of dendritic intersections at each radius
 }
 \description{
-Functions for sholl analysis of neuronal skeletons
+Functions for Sholl analysis of neuronal skeletons
 }

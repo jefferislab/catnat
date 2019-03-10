@@ -21,7 +21,7 @@ get.hxsurf(filename, RegionNames = NULL, RegionChoice = "both",
 \item{...}{additional arguments passed to methods}
 }
 \value{
-Someneuronlist with cell sidedness in the metadata
+someneuronlist with cell sidedness in the metadata
 }
 \description{
 Read Amira surface (aka HxSurface or HyperSurface) files into hxsurf object. Modified version of similar nat function, nat::read.hxsurf()
