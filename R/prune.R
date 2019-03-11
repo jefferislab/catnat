@@ -70,7 +70,9 @@ downstream.deletion.test <- function(someneuronlist,names = c("Alex Bates", "Rua
 #' @seealso \code{\link[nat]{prune}}
 prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
                                 return.indices = FALSE,...){
-  pruned = nat::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
+  # the "correct" way to do this is to use NextMethod() but the absence of
+  # unit tests, I am not going to fiddle.
+  pruned = nat:::prune.neuron(x,target=target, maxdist=maxdist, keep = keep,
                  return.indices = return.indices, ...)
   pruned$connectors = x$connectors[x$connectors$treenode_id%in%pruned$d$PointNo,]
   relevant.points = subset(x$d, PointNo%in%pruned$d$PointNo)
