@@ -308,6 +308,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' @param ... methods passed to fafbseg::brainmaps_xyz2id
 #' @export
 #' @rdname map_fafbsegs_to_neuron
+#' @importFrom stats aggregate
 map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
     someneuronlist = as.neuronlist(someneuronlist)

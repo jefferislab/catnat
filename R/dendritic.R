@@ -1,4 +1,5 @@
 # Increase sigma, increase randomness ofgrowth direction
+#' @importFrom stats rnorm runif
 dendritic.morphogenisis <- function(start = c(173.038, 76.40729, 70.57396), root = c(212.2850, 54.08630, 50.54488),
                                     sigma = 0.25, inertia.with.microtubules = 1, inertia.without.microtubules = 0.5,
                                     root.tropism = 1, self.repulsion = 5, growth.rate = 1, boundary.repulsion = 10,

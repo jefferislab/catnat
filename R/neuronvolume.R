@@ -560,6 +560,7 @@ fafbseg_get_volumes <- function(nglids){
 }
 
 # Hidden
+#' @importFrom stats median
 neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c("nearest.mesh.point","ray.cast")){
   method = match.arg(method)
   message("Estimating node radii")

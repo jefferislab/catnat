@@ -349,6 +349,7 @@ create_tracing_samplesheet <-function(neuron, sheet_title = "mystery_neuron", fo
 
 #' @export
 #' @rdname create_tracing_samplesheet
+#' @importFrom utils read.csv
 update_single_samplesheet <- function(sheet_title = "mystery_neuron", folder = "googlesheet", neuron = NULL, skid = neuron$skid, ws="whole neuron input"){
   if(folder=="googlesheet"){
     if(!is.character(ws)){
