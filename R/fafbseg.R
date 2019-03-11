@@ -117,6 +117,7 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons
 #' @param skids neuron skeleton ids
 #' @param direction whether to fetch putative incoming or outgoing partners
+#' @param connector_ids Optional numeric ids of CATMAID connector nodes that will restrict connections for analysis
 #' @param volume volume to which to restrict connector locations
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details

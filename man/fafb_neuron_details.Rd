@@ -13,6 +13,8 @@ fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
 
 \item{direction}{whether to fetch putative incoming or outgoing partners}
 
+\item{connector_ids}{Optional numeric ids of CATMAID connector nodes that will restrict connections for analysis}
+
 \item{volume}{volume to which to restrict connector locations}
 
 \item{pid}{project id. Defaults to 1}
