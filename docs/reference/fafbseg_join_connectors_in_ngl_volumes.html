@@ -126,9 +126,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>fafbseg_join_connectors_in_ngl_volumes</span>(<span class='no'>x</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"presynapses"</span>,
-  <span class='st'>"postsynapses"</span>, <span class='st'>"both"</span>), <span class='no'>putatively.connected.skids</span>,
-  <span class='kw'>connector.range.nm</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>node.match</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='st'>"postsynapses"</span>, <span class='st'>"both"</span>), <span class='no'>maybe.connected</span>, <span class='kw'>connector.range.nm</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>node.match</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,10 +138,10 @@
     </tr>
     <tr>
       <th>direction</th>
-      <td><p>whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.</p></td>
+      <td><p>whether to seek to assign connectors upstream of neurons specified by maybe.connected, or connections downstream, or both.</p></td>
     </tr>
     <tr>
-      <th>putatively.connected.skids</th>
+      <th>maybe.connected</th>
       <td><p>the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered</p></td>
     </tr>
     <tr>

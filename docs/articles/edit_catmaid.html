@@ -114,7 +114,7 @@
 <span class="co"># Read some interesting neurons from CATMAID</span>
 a2sc =<span class="st"> </span><span class="kw">read.neurons.catmaid</span>(<span class="st">"name:MBON a2sc"</span>)
 
-<span class="co"># Let's see what we hsve</span>
+<span class="co"># Let's see what we have</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(a2sc[,])</code></pre></div>
 <p>Now we can seek to generate a ‘tracing sheet’ that gives us back ‘free’ () upstream connectors or downstream connections, but rather than performing a random sample, we have a ranked list. They are ranked using the FAFB v14 segmentation from Peter Li at Google. Synapses are ranked higher if they connect to an auto-traced fragment that also corresponds to other synapses. The returned object will give synapse locations and their connector IDs, as well as the <code>ngl_segment</code>, the ‘Neuroglancer segment’ read from the brainmaps API. For now, you must have authentication to use this, and you will be prompted for it when you start using functions that rely on the package <code>fafbseg</code>, like this one.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate tracing sheet</span>
@@ -197,8 +197,9 @@ uploaded =<span class="st"> </span><span class="kw"><a href="../reference/catmai
 <span class="dt">brain =</span> elmr<span class="op">::</span>FAFB14, <span class="dt">lock =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Now that you have uploaded your neuron, you might want to automatically connect it to stuff. We can do this using extant neurons and Peter Li’s segmentation</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># WTPN2017_AL_PN refers to all olfactory projection neurons from the antennal lobe</span>
-<span class="kw"><a href="../reference/fafbseg_join_connectors_in_ngl_volumes.html">fafbseg_join_connectors_in_ngl_volumes</a></span>(<span class="st">"annotation:ASB Test v14-seg Upload"</span>,
-                                       <span class="dt">putatively.connected.skids=</span><span class="st">"annotation:WTPN2017_AL_PN"</span>)</code></pre></div>
+joins =<span class="st"> </span><span class="kw"><a href="../reference/fafbseg_join_connectors_in_ngl_volumes.html">fafbseg_join_connectors_in_ngl_volumes</a></span>(<span class="st">"annotation:ASB Test v14-seg Upload"</span>,
+                                       <span class="dt">maybe.connected=</span><span class="st">"annotation:WTPN2017_AL_PN"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(joins)</code></pre></div>
 <p>If you want to, you can then transfer names and annotations back in <code>v14-seg</code> so you can easily identify these neurons when you go back to tracing in that environment</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/catmaid_interactive_name_transfer.html">catmaid_interactive_name_transfer</a></span>(<span class="dt">x=</span><span class="st">"annotation:ASB Test v14-seg Upload"</span>, <span class="dt">conn =</span> <span class="kw"><a href="../reference/fafb_seg_conn.html">fafb_seg_conn</a></span>(), <span class="dt">conn2 =</span> <span class="ot">NULL</span>)</code></pre></div>
 <p>And done! Pretty handy yeh.</p>

@@ -230,24 +230,27 @@ Please use with caution, as you could be heavily adding to a live tracing enviro
     </tr>
     <tr>
       <th>...</th>
-      <td><p>methods passed to catmaid::catmaid_fetch #' @examples</p></td>
+      <td><p>methods passed to catmaid::catmaid_fetch</p></td>
     </tr>
     </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># This function, first, gets the neurons we want from the v14-seg CATMAID instance</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># This function, first, gets the neurons we want from the v14-seg CATMAID instance</span>
 <span class='co'># Then it checks that we have not already uploaded to v14-seg using the annotations you specify with the avoid argument</span>
 <span class='co'># Then it will seek to upload them in a controlled way, that gives us options to have their tags, connectors, and make joins, as well as trying to check for possible duplication.</span>
 <span class='co'># Be aware that the interactive join will often suggest the same neuron multiple times at different join sites.</span>
 <span class='co'># The join sites are indicated by spheres - you may need to zoom in in order to see them.</span>
 <span class='co'># If lock = TRUE, the neurons we just uploaded will be locked, to lessen the chance someone else will connect stuff to them and want to upload them AGAIN later...</span>
 <span class='no'>uploaded</span> <span class='kw'>=</span> <span class='fu'>catmaid_controlled_upload</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"name:ASB Tester"</span>, <span class='kw'>join</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"ASB Tester from v14-seg"</span>, <span class='kw'>duplication.range.nm</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-<span class='kw'>search.range.nm</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>annotations</span> <span class='kw'>=</span> <span class='st'>"ASB Test v14-seg Upload"</span>, <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw pkg'>elmr</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/elmr/topics/FAFB'>FAFB14</a></span>)</div><div class='output co'>#&gt; <span class='message'>Reading neurons from https://neuropil.janelia.org/tracing/fafb/v14-seg/</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No matches for query "name:ASB Tester"!</span></div><div class='output co'>#&gt; <span class='error'>Error in names(res) &lt;- `*vtmp*`: attempt to set an attribute on NULL</span></div><div class='input'><span class='co'># Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.</span>
+<span class='kw'>search.range.nm</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>annotations</span> <span class='kw'>=</span> <span class='st'>"ASB Test v14-seg Upload"</span>, <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw pkg'>elmr</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/elmr/topics/FAFB'>FAFB14</a></span>)
+<span class='co'># Note that CATMAID links will also be supplied, so you can inspect a merge site in CATMAID. If you join in CATMAID, do not join in the interactive window, ad this will throw an errror, just keep hitting 'n' for no, until all options are exhausted.</span>
 <span class='co'># Oops, did you make a mistake in uploading this neuron?</span>
-<span class='fu'><a href='catmaid_delete.html'>catmaid_delete_neurons</a></span>(<span class='st'>"annotation:ASB Tester from v14-seg"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No matches for query "annotation:ASB Tester from v14-seg"!</span></div><div class='input'># Be careful wen deleting, especially if you have merged your fragment during the interactive join.
-# Phew.
-</div></pre>
+<span class='fu'><a href='catmaid_delete.html'>catmaid_delete_neurons</a></span>(<span class='st'>"annotation:ASB Tester from v14-seg"</span>)
+<span class='co'># Be careful wen deleting, especially if you have merged your fragment during the interactive join.</span>
+<span class='co'># Phew.</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
