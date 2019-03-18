@@ -20,7 +20,7 @@ In this vignette we'll have a look at `catnat`'s functions for working with Greg
 ```{r load.catnat, eval=F, echo=T}
 # installation
 if (!require("devtools")) install.packages("devtools")
-if (!require("catnat")) devtools::install_github("alexanderbates/catnat")
+if (!require("catnat")) devtools::install_github("jefferislab/catnat")
 if (!require("fafbseg")) install.packages("jefferis/fafbseg")
 
 # Load catnat

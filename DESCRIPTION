@@ -35,7 +35,7 @@ Suggests:
 VignetteBuilder: knitr
 Depends: R (>= 2.10), nat, catmaid, alphashape3d, nat.nblast, nat.flybrains
 Imports: Rvcg, nabor, Morpho, dplyr, nat.templatebrains, rgl, plyr, igraph, googlesheets
-URL: https://github.com/alexanderbates/catnat
+URL: https://github.com/jefferislab/catnat
 BugReports: https://github.com/jefferislab/catnat/issues
 Remotes: kassambara/easyGgplot2,
     jefferis/nat,

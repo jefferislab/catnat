@@ -1,4 +1,4 @@
-[![Travis-CI Build Status](https://api.travis-ci.org/alexanderbates/catnat.svg?branch=master)](https://travis-ci.org/alexanderbates/catnat)
+[![Travis-CI Build Status](https://api.travis-ci.org/alexanderbates/catnat.svg?branch=master)](https://travis-ci.org/jefferislab/catnat)
 [![Docs](https://img.shields.io/badge/docs-100%25-brightgreen.svg)](http://jefferislab.github.io/catnat/reference/)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
