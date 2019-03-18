@@ -424,6 +424,9 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
 #' @rdname catmaid_interactive_join
 catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
                                      brain = NULL, pid = 1, conn = conn, ...){
+  possible.merges$downstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$downstream.skid)
+  possible.merges$upstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$upstream.skid)
+  possible.merges = possible.merges[order(possible.merges$upstream.nodes,decreasing = FALSE),]
   if(!is.null(downstream.neurons)&!nat::is.neuronlist(downstream.neurons)){
     stop("downstream.neurons must either be a neuronlist,
          or left NULL if you want to fetch them from CATMAID within this function")
@@ -441,6 +444,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
     }
     downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
     continue = FALSE
+    multiple.joins = FALSE # First merge retains name and skid of the manual neuron, rather than the larger
     i = 1
     while(!continue){
       message("Option ",i," of ", nrow(TODO.possible), " for ", skid)
@@ -469,9 +473,24 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
         rgl::plot3d(merger.neuron,col="green",lwd=2,soma=T)
         sure = readline("Sure? y = yes, n = no : ")
         if(sure=="y"){
-          catmaid_join_skeletons(from_treenode_id = TODO.possible[i,"downstream.node"],
-                                 to_treenode_id = TODO.possible[i,"upstream.node"],
-                                 pid = pid, conn = conn, ...)
+          # find out which skeleton is larger
+          if(multiple.joins){
+            message("multiple joins for the same uploaded fragment being made")
+            if(last.merge.size>TODO.possible[i,"upstream.nodes"]){
+              from_treenode_id = TODO.possible[i,"upstream.node"]
+              to_treenode_id = TODO.possible[i,"downstream.node"]
+            }else{
+              from_treenode_id = TODO.possible[i,"downstream.node"]
+              to_treenode_id = TODO.possible[i,"upstream.node"]
+            }
+            catmaid_join_skeletons(from_treenode_id = from_treenode_id, to_treenode_id = to_treenode_id, pid = pid, conn = conn, ...)
+          }else{
+            catmaid_join_skeletons(from_treenode_id = TODO.possible[i,"downstream.node"],
+                                   to_treenode_id = TODO.possible[i,"upstream.node"],
+                                   pid = pid, conn = conn, ...)
+          }
+          last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
+          multiple.joins = TRUE
           continue=TRUE
         }else{
           i = ifelse(i==nrow(TODO.possible),i,i+1)
@@ -753,7 +772,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
       utils::setTxtProgressBar(pb, i)
     }
     close(pb)
-    if(fafbseg){
+    if(fafbseg&!is.null(unlist(skids))){
       if(!requireNamespace('fafbseg', quietly = TRUE))
         stop("Please install suggested fafbseg package")
       message("Checking whether potential duplicates are within the same FAFB volumetric auto-traced segments")
@@ -1152,7 +1171,8 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
 catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron upload",
                                         annotations = "v14-seg upload", avoid = "v14",
                                         include.tags = TRUE, include.connectors = TRUE,
-                                        search.range.nm = 1000, duplication.range.nm = 10, join = TRUE, join.tag = "TODO",
+                                        search.range.nm = 1000, duplication.range.nm = 10, join = TRUE,
+                                        join.tag = "TODO",
                                         lock = TRUE, fafbseg = TRUE, downsample = 2, min_nodes = 2,
                                         return.uploaded.skids = TRUE,
                                         pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),  ...){
@@ -1227,6 +1247,10 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
           if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
           if(length(possible.merges)){
             message("making joins")
+            possible.merges$downstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$downstream.skid)
+            possible.merges$upstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$upstream.skid)
+            possible.merges = possible.merges[order(possible.merges$upstream.nodes,decreasing = FALSE),]
+            multiple.joins = FALSE # First merge retains name and skid of the manual neuron, rather than the larger
             for(todo in unique(possible.merges$downstream.node)){
               TODO.possible = subset(possible.merges,downstream.node==todo)
               downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
@@ -1241,7 +1265,22 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
               catmaid_url = paste0(catmaid_url, "&active_skeleton_id=", new.skid)
               catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
               message("See merge site in CATMAID: ", catmaid_url)
-              catmaid_join_skeletons(from_treenode_id = TODO.possible[1,"downstream.node"], to_treenode_id = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
+              # find out which skeleton is larger
+              if(multiple.joins){
+                message("multiple joins for the same uploaded fragment being made")
+                if(last.merge.size>TODO.possible[1,"upstream.nodes"]){
+                  from_treenode_id = TODO.possible[1,"upstream.node"]
+                  to_treenode_id = TODO.possible[1,"downstream.node"]
+                }else{
+                  from_treenode_id = TODO.possible[1,"downstream.node"]
+                  to_treenode_id = TODO.possible[1,"upstream.node"]
+                }
+                catmaid_join_skeletons(from_treenode_id = from_treenode_id, to_treenode_id = to_treenode_id, pid = pid, conn = conn, ...)
+              }else{
+                catmaid_join_skeletons(from_treenode_id = TODO.possible[1,"downstream.node"], to_treenode_id = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
+              }
+              last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
+              multiple.joins = TRUE
             }
           }else{
             message("No potential join sites found for new neuron ", new.skid)
@@ -1436,7 +1475,7 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 
 
 #' # Test these functions
-# uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg", tolerance = 0.05, name = "v14-seg neuron upload ASB",
+# uploaded = catmaid_controlled_upload(x ="annotation:ASB downseg", tolerance = 0.05, name = "v14-seg neuron upload ASB",
 #                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
 #                                        include.tags = TRUE, include.connectors = FALSE, downsample = 1,
 #                                        search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",

@@ -5,16 +5,15 @@
 \title{Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume}
 \usage{
 fafbseg_join_connectors_in_ngl_volumes(x, direction = c("presynapses",
-  "postsynapses", "both"), putatively.connected.skids,
-  connector.range.nm = 1000, node.match = 5, pid = 1, conn = NULL,
-  ...)
+  "postsynapses", "both"), maybe.connected, connector.range.nm = 1000,
+  node.match = 5, pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{x}{a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids}
 
-\item{direction}{whether to seek to assign connectors upstream of neurons specified by putatively.connected.skids, or connections downstream, or both.}
+\item{direction}{whether to seek to assign connectors upstream of neurons specified by maybe.connected, or connections downstream, or both.}
 
-\item{putatively.connected.skids}{the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered}
+\item{maybe.connected}{the skeleton IDs for neurons whose connectors (both incoming and outgoing) may be considered}
 
 \item{connector.range.nm}{the range in nm within which to search for a treenode ID to attach the connector}
 
