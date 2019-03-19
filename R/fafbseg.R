@@ -246,7 +246,7 @@ fafb_frags_skeletons <- function(ids, skids = NULL, direction = c("incoming","ou
 #' @rdname fafb_frags
 fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
                              connector_ids = NULL, treat.skids.separately = FALSE,
-                             pid=pid, conn = conn, ...){
+                             pid=1, conn = NULL, ...){
   direction=match.arg(direction)
   if(!requireNamespace('reshape2', quietly = TRUE))
     stop("Please install suggested reshape2 package")
