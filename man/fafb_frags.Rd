@@ -15,8 +15,8 @@ fafb_frags_skeletons(ids, skids = NULL, direction = c("incoming",
   "Neuroglancer", "local"), pid = 1, conn = NULL, ...)
 
 fafb_seg_hitlist(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, treat.skids.separately = FALSE, pid = pid,
-  conn = conn, ...)
+  connector_ids = NULL, treat.skids.separately = FALSE, pid = 1,
+  conn = NULL, ...)
 
 fafb_seg_tracing_list(skids, direction = c("incoming", "outgoing"),
   connector_ids = NULL, max.nodes = 10, add.links = TRUE,
