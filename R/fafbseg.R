@@ -261,7 +261,7 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
     hitlist = lapply(skids, function(skid) func(skids = skid, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...))
     nams = rep(skids,sapply(hitlist,nrow))
     df = do.call(rbind, hitlist)
-    df$skid = nams
+    df$neuron = nams
   }else{
     df = func(skids = skids, direction = direction, connector_ids = connector_ids, pid=pid, conn = conn, ...)
   }
