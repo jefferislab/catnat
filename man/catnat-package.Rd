@@ -3,9 +3,37 @@
 \docType{package}
 \name{catnat-package}
 \alias{catnat-package}
+\alias{_PACKAGE}
 \alias{catnat}
-\title{Alex Bates' functions for use with nat and rcatmaid}
+\title{catnat: Analyse neuronal morphology and connectivity (extends catmaid and nat)}
 \description{
-Alex Bates' functions for use with nat and rcatmaid
+A selection of functions for analysis of neuronal morphology and
+    connectivity created for use alongside the nat and catmaid packages. Many
+    of the functions are driven by the need to analyse the results of annotation
+    of 3D electron microscopy data from the `CATMAID` web application. This 
+    package is largely an incubator for work by Alex Bates and is subject to 
+    frequent updates.
 }
-\keyword{package}
+\section{Online Help}{
+ See \url{https://jefferislab.github.io/catnat} for
+  online documentation.
+}
+
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jefferislab/catnat}
+  \item Report bugs at \url{https://github.com/jefferislab/catnat/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Alex Bates \email{abates@mrc-lmb.cam.ac.uk} (0000-0002-1195-0445)
+
+Authors:
+\itemize{
+  \item Gregory Jefferis \email{jefferis@gmail.com} (0000-0002-0587-9355)
+}
+
+}
+\keyword{internal}
