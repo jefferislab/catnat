@@ -1038,7 +1038,9 @@ catmaid_convert_time <- function(utc){
 #' @export
 #' @rdname catmaid_controlled_upload
 catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuron upload",
-                                      annotations = "v14-seg upload", avoid = "v14", include.potential.duplicates = FALSE,
+                                      annotations = "v14-seg upload", avoid = "v14",
+                                      avoid.join= NULL, join.only = NULL,
+                                      include.potential.duplicates = FALSE,
                                       include.tags = TRUE, include.connectors = TRUE,
                                       search.range.nm = 1000, join = FALSE, join.tag = "TODO",
                                       lock = TRUE, fafbseg = FALSE, downsample = 2, min_nodes = 2,
@@ -1146,6 +1148,19 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
           possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                                min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
                                      error = function(e) message("Error finding join sites, aborting join"))
+          if(!is.null(avoid.join)|!is.null(join.only)){
+            upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
+            if(!is.null(avoid.join)){
+              message("Remvoing any join taget with annotations specified by avoid.join")
+              acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
+              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+            }
+            if(!is.null(join.only)){
+              message("Choosing only join tagets with annotations specified by join.only")
+              acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
+              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+            }
+          }
           if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
           if(length(possible.merges)){
             message("Choose join sites interactively: ")
@@ -1170,6 +1185,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
 # Hidden function, for efficiency
 catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron upload",
                                         annotations = "v14-seg upload", avoid = "v14",
+                                        avoid.join = NULL, join.only = NULL,
                                         include.tags = TRUE, include.connectors = TRUE,
                                         search.range.nm = 1000, duplication.range.nm = 10, join = TRUE,
                                         join.tag = "TODO",
@@ -1244,6 +1260,19 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
           possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                                min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
                                      error = function(e) message("Error finding join sites, aborting join"))
+          if(!is.null(avoid.join)|!is.null(join.only)){
+            upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
+            if(!is.null(avoid.join)){
+              message("Remvoing any join taget with annotations specified by avoid.join")
+              acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
+              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+            }
+            if(!is.null(join.only)){
+              message("Choosing only join tagets with annotations specified by join.only")
+              acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
+              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+            }
+          }
           if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
           if(length(possible.merges)){
             message("making joins")
@@ -1554,12 +1583,12 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #' ### ASP-g v14-seg project
 #' library(catnat)
 #' # The first thing we can do it very quickly upload fragments that have no duplication, and make joins
-#' uploaded1 = catmaid_uncontrolled_upload(x ="annotation:aSP-g L upstream", tolerance = 0.05, name = "pheromonal circuit v14-seg upload ASB",
-#'                                         annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = "v14", lock = TRUE,
-#'                                         include.tags = TRUE, include.connectors = FALSE, downsample = 1,
-#'                                         search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
-#'                                         fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
-#'                                         pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+# uploaded1 = catmaid_uncontrolled_upload(x ="annotation:aSP-g L upstream", tolerance = 0.05, name = "pheromonal circuit v14-seg upload ASB",
+#                                         annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = "v14", lock = TRUE,
+#                                         include.tags = TRUE, include.connectors = FALSE, downsample = 1,
+#                                         search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
+#                                         fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
+#                                         pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
 #' uploaded2 = catmaid_controlled_upload(x = "aSP-g L upstream", tolerance = 0.05, name = "pheromonal circuit v14-seg upload ASB",
 #'                                       annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = "v14", lock = TRUE,
 #'                                       include.tags = TRUE, include.connectors = FALSE, duplication.range.nm = 20,
