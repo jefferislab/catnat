@@ -31,7 +31,7 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
 
 #' @rdname get.skeleton.from.flycircuit
 reroot.flycircuit.neuron <- function(x){
-  x =as.neuron(as.ngraph(x), origin = which(x$d$Label==4))
+  x = nat::as.neuron(nat::as.ngraph(x), origin = which(x$d$Label==4))
   x$d$Label = 0
   x$d$Label[x$StartPoint] = 1
   x
