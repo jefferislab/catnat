@@ -302,7 +302,7 @@ catmaid_link_connectors <- function(treenode_id, connector_id,
   path = sprintf("/%d/link/create", pid)
   res = catmaid::catmaid_fetch(path, body = post_data, include_headers = F,
                                simplifyVector = T, conn = conn, ...)
-  invisible(catmaid:::catmaid_error_check(res2))
+  invisible(catmaid:::catmaid_error_check(res))
   if(verbose){
     if(!is.null(res$error)){
       stop(res$error)
@@ -375,13 +375,13 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
   for(i in 1:nrow(TODO)){
     todo = TODO[i,]
     if(is.null(skid)){
-      skid = rownames(todo)
+      skid = floor(as.numeric(rownames(todo)))
     }
     bbx = rbind(todo[,c('X','Y', 'Z')]-search.range.nm,todo[,c('X','Y', 'Z')]+search.range.nm)
     skids.bbx = catmaid_skeletons_in_bbx(bbx=bbx, min_nodes=min_nodes, pid=pid, conn = conn, ...)
     neuron.bbx = catmaid::read.neurons.catmaid(skids.bbx, OmitFailures = TRUE, pid=pid, conn = conn, ...)
     neuron.bbx = neuron.bbx[setdiff(names(neuron.bbx),skid)]
-    message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag")
+    message(length(neuron.bbx), " fragments found within ", search.range.nm," nm of merge tag ", i)
     if(fafbseg){
       if(!requireNamespace('fafbseg', quietly = TRUE))
         stop("Please install suggested fafbseg package")
@@ -392,18 +392,22 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
       s = s[s!=0]
       vol = tryCatch(suppressMessages(fafbseg::read_brainmaps_meshes(s)), error = function(e) message("warning: Google brainmaps read error, take extra care when deciding on join"))
       in.vol = tryCatch(sapply(neuron.bbx,function(n) sum(nat::pointsinside(nat::xyzmatrix(n),surf=vol))>0),error = function(e) rep(TRUE,length(neuron.bbx)))
-      neuron.bbx = neuron.bbx[in.vol]
-      message(length(neuron.bbx), " fragments found in FAFB Google auto-traced segment corresponding with merge tag")
+      if(length(in.vol)){
+        neuron.bbx = neuron.bbx[in.vol]
+      }
+      message(length(neuron.bbx), " fragments found in FAFB Google auto-traced segment corresponding with merge tag ", i)
     }
-    neuron.bbx.d = do.call(rbind,lapply(1:length(neuron.bbx),function(n) cbind(neuron.bbx[[n]]$d,skid=names(neuron.bbx[n]))))
-    near = nabor::knn(query = todo[,c('X','Y', 'Z')], data =nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
-    near = near[near!=0]
-    near = neuron.bbx.d[near,]
-    near$TODO = todo$PointNo
-    near$merger = skid
-    #near = subset(possible.merges,upstream.skid!=skid)
-    if(length(near)){
-      possible.merges = rbind(possible.merges,near)
+    if(length(neuron.bbx)){
+      neuron.bbx.d = do.call(rbind,lapply(1:length(neuron.bbx),function(n) cbind(neuron.bbx[[n]]$d,skid=names(neuron.bbx[n]))))
+      near = nabor::knn(query = todo[,c('X','Y', 'Z')], data =nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
+      near = near[near!=0]
+      near = neuron.bbx.d[near,]
+      near$TODO = todo$PointNo
+      near$merger = skid
+      #near = subset(possible.merges,upstream.skid!=skid)
+      if(length(near)){
+        possible.merges = rbind(possible.merges,near)
+      }
     }
   }
   possible.merges = possible.merges[,setdiff(colnames(possible.merges),"Parent")]
@@ -812,7 +816,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
 #' @param plot whether or not the plot the neuron you are considering deleting, before deciding to end it
 #' @param brain the brain you want to plot alongside the neuron you are considering deleting.
 #' @param max.nodes the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-#' control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
+#' @param control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
 #' Really should only be set to FALSE if you are deleting from your own CATMAID instance
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
@@ -822,7 +826,7 @@ catmaid_duplicated <- function(neuron, skid = 0, tolerance = NULL, duplication.r
 catmaid_delete_neuron <- function(skid,
                                   delete_connectors = TRUE,
                                   plot = TRUE, brain = NULL,
-                                  max.nodes = 100,
+                                  max.nodes = 100, control = TRUE,
                                   pid = 1, conn = NULL, ...){
   if(length(skid)>1){
     stop("length(skid)>1 - You may only attempt to delete one neuron at a time.")
@@ -869,7 +873,7 @@ catmaid_delete_neuron <- function(skid,
       print(paste0("See neuron in CATMAID at: ", catmaid_url))
       decide = "n"
       if(control){
-        decide = readline(paste0("Are you SURE you want to delete: ", skid," in CATMAID instance ", server, "? y=yes, n=no : "))
+        decide = readline(paste0("Are you SURE you want to delete: ", skid," in CATMAID instance ", catmaid_get_server(conn), "? y=yes, n=no : "))
       }else{
         decide = "y"
       }
@@ -893,7 +897,7 @@ catmaid_delete_neuron <- function(skid,
 }
 #' @export
 #' @rdname catmaid_delete
-catmaid_delete_connectors <- function(connector_ids, pid = pid, conn = conn, ...){
+catmaid_delete_connectors <- function(connector_ids, pid = 1, conn = NULL, ...){
   delete = c()
   for(i in 1:length(connector_ids)){
     post_data = list()
@@ -929,11 +933,11 @@ catmaid_delete_connectors <- function(connector_ids, pid = pid, conn = conn, ...
 catmaid_delete_neurons <- function(skids,
                                    delete_connectors = TRUE,
                                    plot = TRUE, brain = NULL,
-                                   max.nodes = 100,
+                                   max.nodes = 100, control = TRUE,
                                    pid = 1, conn = NULL, ...){
   delete.skids = catmaid::catmaid_skids(skids, pid = pid, conn = conn, ...)
   deletions = sapply(delete.skids,catmaid_delete_neuron,delete_connectors=delete_connectors,
-                     plot=plot,brain=brain,max.nodes=max.nodes,pid=pid,conn=conn,...)
+                     plot=plot,brain=brain,max.nodes=max.nodes,control=control,pid=pid,conn=conn,...)
 }
 
 #' Get the CATMAID neuron ID that corresponds to the skeleton ID
@@ -1151,14 +1155,14 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
           if(!is.null(avoid.join)|!is.null(join.only)){
             upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
             if(!is.null(avoid.join)){
-              message("Remvoing any join taget with annotations specified by avoid.join")
+              message("Removing any join taget with annotations specified by avoid.join")
               acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
-              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
             if(!is.null(join.only)){
               message("Choosing only join tagets with annotations specified by join.only")
               acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
-              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
           }
           if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
@@ -1265,12 +1269,12 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
             if(!is.null(avoid.join)){
               message("Remvoing any join taget with annotations specified by avoid.join")
               acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
-              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
             if(!is.null(join.only)){
               message("Choosing only join tagets with annotations specified by join.only")
               acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
-              possible.merges = subset(possible.merges,skid%in%acceptable.skids)
+              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
           }
           if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
