@@ -6,11 +6,11 @@
 \usage{
 catmaid_controlled_upload(x, tolerance = 0.15,
   name = "v14-seg neuron upload", annotations = "v14-seg upload",
-  avoid = "v14", include.potential.duplicates = FALSE,
-  include.tags = TRUE, include.connectors = TRUE,
-  search.range.nm = 1000, join = FALSE, join.tag = "TODO",
-  lock = TRUE, fafbseg = FALSE, downsample = 2, min_nodes = 2,
-  brain = NULL, return.uploaded.skids = TRUE,
+  avoid = "v14", avoid.join = NULL, join.only = NULL,
+  include.potential.duplicates = FALSE, include.tags = TRUE,
+  include.connectors = TRUE, search.range.nm = 1000, join = FALSE,
+  join.tag = "TODO", lock = TRUE, fafbseg = FALSE, downsample = 2,
+  min_nodes = 2, brain = NULL, return.uploaded.skids = TRUE,
   duplication.range.nm = 20, pid = 1, conn = NULL, pid2 = 1,
   conn2 = fafb_seg_conn(), ...)
 }

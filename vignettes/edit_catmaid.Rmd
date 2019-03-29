@@ -118,7 +118,7 @@ neuronvolume = fafb_segs_stitch_volumes(neuron = neuron.flow, map = TRUE)
 
 This might be useful for analysis stuff. It's also pretty, let's look at it split into its different components:
   
-  ```{r neuronvolume3d, eval=F, echo=T}
+```{r neuronvolume3d, eval=F, echo=T}
 nopen3d()
 neuronvolume3d(neuronvolume, split = "split", type = "volume")
 ```
@@ -169,11 +169,13 @@ Now that you have uploaded your neuron, you might want to automatically connect 
 ```{r auto.attach.connectors, eval=F, echo=T}
 # WTPN2017_AL_PN refers to all olfactory projection neurons from the antennal lobe
 joins = fafbseg_join_connectors_in_ngl_volumes("annotation:ASB Test v14-seg Upload",
-                                       maybe.connected="annotation:WTPN2017_AL_PN")
+                                       maybe.connected="annotation:WTPN2017_AL_PN",
+                                       direction = "presynapses")
 print(joins)
 ```
 
 If you want to, you can then transfer names and annotations back in `v14-seg` so you can easily identify these neurons when you go back to tracing in that environment
+
 ```{r transfer.names, eval=F, echo=T}
 catmaid_interactive_name_transfer(x="annotation:ASB Test v14-seg Upload", conn = fafb_seg_conn(), conn2 = NULL)
 ```

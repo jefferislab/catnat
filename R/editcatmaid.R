@@ -669,7 +669,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
         message("Joining at: ", catmaid_url)
         total.joins = c(total.joins,catmaid_url)
         if(df[i,"partner_nodes"]==0){
-          ## Make sure connector is still not conencted to anything else!
+          ## Make sure connector is still not connected to anything else!
           connector.info = catmaid_connector_nodes(connector_id = df[i,"connector_id"],node = df[i,"link_type"],
                                                    pid=pid,conn=conn, ...)
           if(connector.info$partner_nodes==0){

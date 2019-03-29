@@ -7,12 +7,14 @@
 \title{Function used to delete single neurons from CATMAID based on a given skeleton ID}
 \usage{
 catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
+  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
+  conn = NULL, ...)
 
-catmaid_delete_connectors(connector_ids, pid = pid, conn = conn, ...)
+catmaid_delete_connectors(connector_ids, pid = 1, conn = NULL, ...)
 
 catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, pid = 1, conn = NULL, ...)
+  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
+  conn = NULL, ...)
 }
 \arguments{
 \item{skid}{the skeleton ID for a single neuron you want to delete}
@@ -23,8 +25,9 @@ catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
 
 \item{brain}{the brain you want to plot alongside the neuron you are considering deleting.}
 
-\item{max.nodes}{the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
+\item{max.nodes}{the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons}
+
+\item{control}{if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
 Really should only be set to FALSE if you are deleting from your own CATMAID instance}
 
 \item{pid}{project id. Defaults to 1}
