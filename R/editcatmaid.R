@@ -1121,62 +1121,64 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
     }
     dupe = calc > tolerance
     message("The neuron flagged for upload seems to have ", calc*100, "% of its nodes may already be in the targetted CATMAID instance")
-    progress = "n"
-    progress = readline("Do you want to upload this neuron? y=yes, n=no, a=no + annotate as duplicated: ")
-    if(progress=="y"){
-      progress = readline("Sure? y=yes, n=no, a=no + annotate as duplicated: ")
-    }
-    if(progress=="a"){
-      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = "duplicated", pid = pid2, conn = conn2, ...)
-    }else if (dupe){
-      message("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
-              Upload for neuron ", i, " aborted (tolerance:",tolerance,").")
-    }else if(progress=="y"){
-      if(calc>0){
-        nat::npop3d()
+    progress = "s"
+    while(!progress%in%c("y","n","a")){
+      progress = readline("Do you want to upload this neuron? y=yes, n=no, a=no + annotate as duplicated: ")
+      if(progress=="y"){
+        progress = readline("Sure? y=yes, n=no, a=no + annotate as duplicated: ")
       }
-      message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid)),
-                                        include.tags=include.tags,include.connectors=include.connectors,
-                                        return.new.skids = TRUE,
-                                        conn = conn, pid = pid, max.upload = 1, ...)
-      new.neuron = read.neurons.catmaid(new.skid, OmitFailures = TRUE, conn=conn, pid=pid, ...)
-      message("Upload successful, neuron ", new.skid, " created, named: ", new.neuron[,"name"])
-      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = avoid, pid = pid2, conn = conn2, ...)
-      uploaded.new = c(uploaded.new,new.skid)
-      uploaded.old = c(uploaded.old,old.skid)
-      if(join){
-        message("Finding tagged potential join points ...")
-        TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
-        if(length(TODO)){
-          possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
-                                                               min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
-                                     error = function(e) message("Error finding join sites, aborting join"))
-          if(!is.null(avoid.join)|!is.null(join.only)){
-            upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
-            if(!is.null(avoid.join)){
-              message("Removing any join taget with annotations specified by avoid.join")
-              acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
-              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
+      if(progress=="a"){
+        catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = "duplicated", pid = pid2, conn = conn2, ...)
+      }else if (dupe){
+        message("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
+                Upload for neuron ", i, " aborted (tolerance:",tolerance,").")
+      }else if(progress=="y"){
+        if(calc>0){
+          nat::npop3d()
+        }
+        message("Uploading neuron ", i)
+        new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid)),
+                                          include.tags=include.tags,include.connectors=include.connectors,
+                                          return.new.skids = TRUE,
+                                          conn = conn, pid = pid, max.upload = 1, ...)
+        new.neuron = read.neurons.catmaid(new.skid, OmitFailures = TRUE, conn=conn, pid=pid, ...)
+        message("Upload successful, neuron ", new.skid, " created, named: ", new.neuron[,"name"])
+        catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = avoid, pid = pid2, conn = conn2, ...)
+        uploaded.new = c(uploaded.new,new.skid)
+        uploaded.old = c(uploaded.old,old.skid)
+        if(join){
+          message("Finding tagged potential join points ...")
+          TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
+          if(length(TODO)){
+            possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
+                                                                 min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
+                                       error = function(e) message("Error finding join sites, aborting join"))
+            if(!is.null(avoid.join)|!is.null(join.only)){
+              upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
+              if(!is.null(avoid.join)){
+                message("Removing any join taget with annotations specified by avoid.join")
+                acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
+                possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
+              }
+              if(!is.null(join.only)){
+                message("Choosing only join tagets with annotations specified by join.only")
+                acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
+                possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
+              }
             }
-            if(!is.null(join.only)){
-              message("Choosing only join tagets with annotations specified by join.only")
-              acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
-              possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
+            if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
+            if(length(possible.merges)){
+              message("Choose join sites interactively: ")
+              tryCatch(catmaid_interactive_join(possible.merges=possible.merges, downstream.neurons = new.neuron, brain = brain, pid = pid, conn = conn, ...),
+                       error = function(e) message("Error making join, aborting join"))
+            }else{
+              message("No potential join sites found for new neuron ", new.skid)
+              next
             }
-          }
-          if(length(possible.merges)){possible.merges = subset(possible.merges,upstream.skid!=new.skid)}
-          if(length(possible.merges)){
-            message("Choose join sites interactively: ")
-            tryCatch(catmaid_interactive_join(possible.merges=possible.merges, downstream.neurons = new.neuron, brain = brain, pid = pid, conn = conn, ...),
-                     error = function(e) message("Error making join, aborting join"))
           }else{
             message("No potential join sites found for new neuron ", new.skid)
             next
           }
-        }else{
-          message("No potential join sites found for new neuron ", new.skid)
-          next
         }
       }
     }
@@ -1526,13 +1528,13 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #'
 #' ### ASP-g project
 #' annoatation.asp = "aSP-g L upstream"
-#' uploaded = catmaid_controlled_upload(x = annoatation.asp, tolerance = 0.5, name = "pheromonal circuit v14-seg upload ASB",
-#'                                      annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = "v14", lock = TRUE,
-#'                                      include.tags = TRUE, include.connectors = FALSE,
-#'                                      search.range.nm = 1000, join = TRUE, join.tag = "TODO",
-#'                                      fafbseg = TRUE, min_nodes = 2, downsample = 2,
-#'                                      brain = NULL, return.uploaded.skids = TRUE,
-#'                                      pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+# uploaded = catmaid_controlled_upload(x = annoatation.asp, tolerance = 0.5, name = "pheromonal circuit v14-seg upload ASB",
+#                                      annotations = c("v14-seg upload", "ASB upseg", "ForBilly"), avoid = c("v14","duplicated"), lock = TRUE,
+#                                      include.tags = TRUE, include.connectors = FALSE,
+#                                      search.range.nm = 1000, join = TRUE, join.tag = "TODO",
+#                                      fafbseg = TRUE, min_nodes = 2, downsample = 2,
+#                                      brain = NULL, return.uploaded.skids = TRUE,
+#                                      pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
 #'
 #'
 #' ### Other
