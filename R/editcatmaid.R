@@ -1122,11 +1122,11 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
     if(progress=="y"){
       progress = readline("Sure? y=yes, n=no, a=no + annotate as duplicated: ")
     }
-    if(dupe){
+    if(progress=="a"){
+      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = "duplicated", pid = pid2, conn = conn2, ...)
+    }else if (dupe){
       message("Neuron ", i, " with skid ", old.skid, " appears to already exist in the CATMAID instance to which you are seeking to upload.
               Upload for neuron ", i, " aborted (tolerance:",tolerance,").")
-    }else if (progress=="a"){
-      catmaid::catmaid_set_annotations_for_skeletons(skids = old.skid, annotations = "duplicated", pid = pid2, conn = conn2, ...)
     }else if(progress=="y"){
       if(calc>0){
         nat::npop3d()
