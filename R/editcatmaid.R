@@ -555,7 +555,7 @@ catmaid_connector_nodes <- function(connector_id, node = c("presynaptic","postsy
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch and catmaid::catmaid_get_treenode_detail
 #' @return makes joins in the specified CATMAID instance, but also returns a list of URLs for the locations at which joins have been made
-#' @export
+# #' @export
 #' @rdname fafbseg_join_connectors_in_ngl_volumes
 fafbseg_join_connectors_in_ngl_volumes <- function(x,
                                                    direction = c("presynapses","postsynapses", "both"),
