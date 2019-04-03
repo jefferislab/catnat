@@ -18,7 +18,9 @@
 #' or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 #' This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 #' or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").
+#' @param catmaid if TRUE, the default CATMAID server cna be queried in order to find the number of connections each connector has, and use this to weight this each connector's influence in the flow through the neuronal arbour
 #' @param ... additional arguments passed to methods.
+#' @inheritParams catmaid::read.neurons.catmaid
 #'
 #' @details From Schneider-Mizell et al. (2016): "We use flow centrality for
 #'   four purposes. First, to split an arbor into axon and dendrite at the
@@ -44,13 +46,14 @@
 #'   = PN).
 #' @export
 #' @seealso \code{\link{seesplit3d}} \code{\link{get.synapses}} \code{\link{neurites}}
-flow.centrality <-function(x, mode = c("sum","centrifugal","centripetal"), polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"),...) UseMethod("flow.centrality")
+flow.centrality <-function(x, mode = c("sum","centrifugal","centripetal"), polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"), catmaid = TRUE, ...) UseMethod("flow.centrality")
 
 #' @export
 #' @rdname flow.centrality
 flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"),
                                    polypre = TRUE, primary.dendrite = 0.9,
-                                   bending.flow = FALSE, split = c("postsynapses","presynapses","distance"), ...){
+                                   bending.flow = FALSE, split = c("postsynapses","presynapses","distance"),
+                                   catmaid = TRUE, ...){
   # prune Strahler first...and use segmentgraph?
   split = match.arg(split)
   mode = match.arg(mode)
@@ -71,14 +74,18 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   nodes[,"flow.cent"] <- 0 # We'll addd the score for each node here
   nodes[,"Label"] <- 3
   nodes = nodes[unlist(c(root, lapply(segs, function (x) x[-1]))),]
-  syns.in = x$connectors[x$connectors[,3]==1,][,1]
-  if (polypre == T){
-    pres = x$connectors[x$connectors[,3]==0,][,2]
-    pre.cons = catmaid::catmaid_get_connectors(pres)$connector_id
-    pre.cons = c(pre.cons,pres[!pres%in%pre.cons])
-    syns.out = x$connectors[,1][match(pre.cons, x$connectors[,2])]
+  syns.in = x$connectors[x$connectors$prepost==1,][,"treenode_id"]
+  if (polypre){
+    if(catmaid){
+      pres = x$connectors[x$connectors$prepost==0,][,"connector_id"]
+      pre.cons = catmaid::catmaid_get_connectors(pres, ...)$connector_id
+      pre.cons = c(pre.cons,pres[!pres%in%pre.cons])
+      syns.out = x$connectors[,"treenode_id"][match(pre.cons, x$connectors[,"connector_id"])]
+    }else{
+      syns.out = x$connectors[x$connectors$prepost==0,][,"treenode_id"]
+    }
   }else{
-    syns.out = x$connectors[x$connectors[,3]==0,][,1]
+    syns.out = unique(x$connectors[x$connectors$prepost==0,][,"treenode_id"])
   }
   # Rearrange so nodes are the indices and we can count no. of synapses to which nodes connect  -(count things multiples???)
   point.no.in = rownames(nodes)[match(syns.in,nodes[,"PointNo"])]
@@ -218,7 +225,6 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
   ### Assign putative axonic and dendritic compartments ###
   if(grepl("synapses",split)){
     synapse.choice = gsub("synapses","",split)
-    message(split)
     choice = sum(nodes[as.character(downstream.unclassed),synapse.choice]) < sum(nodes[as.character(upstream.unclassed),synapse.choice])
     if (choice){
       nodes[as.character(downstream.unclassed),"Label"] = 2
@@ -281,8 +287,8 @@ flow.centrality.neuron <- function(x, mode = c("sum","centrifugal","centripetal"
 
 #' @export
 #' @rdname flow.centrality
-flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"),...){
-  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, split = split, ...)
+flow.centrality.neuronlist <- function(x, mode = c("sum","centrifugal","centripetal"), polypre = T, primary.dendrite = 0.9, bending.flow = FALSE,split = c("postsynapses","presynapses","distance"), catmaid = TRUE, ...){
+  neurons = nat::nlapply(x, flow.centrality, mode = mode, polypre = polypre, primary.dendrite = primary.dendrite, OmitFailures = T, split = split, catmaid = catmaid, ...)
   neurons
 }
 

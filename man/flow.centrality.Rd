@@ -8,17 +8,18 @@
 \usage{
 flow.centrality(x, mode = c("sum", "centrifugal", "centripetal"),
   polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,
-  split = c("postsynapses", "presynapses", "distance"), ...)
+  split = c("postsynapses", "presynapses", "distance"), catmaid = TRUE,
+  ...)
 
 \method{flow.centrality}{neuron}(x, mode = c("sum", "centrifugal",
   "centripetal"), polypre = TRUE, primary.dendrite = 0.9,
   bending.flow = FALSE, split = c("postsynapses", "presynapses",
-  "distance"), ...)
+  "distance"), catmaid = TRUE, ...)
 
 \method{flow.centrality}{neuronlist}(x, mode = c("sum", "centrifugal",
   "centripetal"), polypre = T, primary.dendrite = 0.9,
   bending.flow = FALSE, split = c("postsynapses", "presynapses",
-  "distance"), ...)
+  "distance"), catmaid = TRUE, ...)
 }
 \arguments{
 \item{x}{a neuronlist or neuron object}
@@ -41,6 +42,8 @@ Assigning to NULL will prevent generating this compartment.}
 or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").}
+
+\item{catmaid}{if TRUE, the default CATMAID server cna be queried in order to find the number of connections each connector has, and use this to weight this each connector's influence in the flow through the neuronal arbour}
 
 \item{...}{additional arguments passed to methods.}
 }
