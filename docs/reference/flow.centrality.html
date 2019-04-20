@@ -129,19 +129,20 @@
 
     <pre class="usage"><span class='fu'>flow.centrality</span>(<span class='no'>x</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"sum"</span>, <span class='st'>"centrifugal"</span>, <span class='st'>"centripetal"</span>),
   <span class='kw'>polypre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>primary.dendrite</span> <span class='kw'>=</span> <span class='fl'>0.9</span>, <span class='kw'>bending.flow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>split</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"postsynapses"</span>, <span class='st'>"presynapses"</span>, <span class='st'>"distance"</span>), <span class='no'>...</span>)
+  <span class='kw'>split</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"postsynapses"</span>, <span class='st'>"presynapses"</span>, <span class='st'>"distance"</span>), <span class='kw'>catmaid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for neuron</span>
 <span class='fu'>flow.centrality</span>(<span class='no'>x</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"sum"</span>, <span class='st'>"centrifugal"</span>,
   <span class='st'>"centripetal"</span>), <span class='kw'>polypre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>primary.dendrite</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>bending.flow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"postsynapses"</span>, <span class='st'>"presynapses"</span>,
-  <span class='st'>"distance"</span>), <span class='no'>...</span>)
+  <span class='st'>"distance"</span>), <span class='kw'>catmaid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for neuronlist</span>
 <span class='fu'>flow.centrality</span>(<span class='no'>x</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"sum"</span>, <span class='st'>"centrifugal"</span>,
   <span class='st'>"centripetal"</span>), <span class='kw'>polypre</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>primary.dendrite</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>bending.flow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"postsynapses"</span>, <span class='st'>"presynapses"</span>,
-  <span class='st'>"distance"</span>), <span class='no'>...</span>)</pre>
+  <span class='st'>"distance"</span>), <span class='kw'>catmaid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,6 +179,10 @@ Assigning to NULL will prevent generating this compartment.</p></td>
 or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").</p></td>
+    </tr>
+    <tr>
+      <th>catmaid</th>
+      <td><p>if TRUE, the default CATMAID server cna be queried in order to find the number of connections each connector has, and use this to weight this each connector's influence in the flow through the neuronal arbour</p></td>
     </tr>
     <tr>
       <th>...</th>
