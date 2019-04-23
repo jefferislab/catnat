@@ -37,7 +37,7 @@ connectivity_similarity_matrix(m, c1 = 0.5, c2 = 0.18,
 
 \item{diag}{for connectivity_similarity_distance. Logical value indicating whether the diagonal of the distance matrix should be printed by print.dist.}
 
-\item{upper}{for connectivity_similarity_distance. ogical value indicating whether the upper triangle of the distance matrix should be printed by print.dist.}
+\item{upper}{for connectivity_similarity_distance. Logical value indicating whether the upper triangle of the distance matrix should be printed by print.dist.}
 }
 \description{
 Calculate a similarity score between connectivity matrices that penalises small differences between low and does not heavily penalise large differences between high weights. Algorithm from Jarrell et al. 2012.

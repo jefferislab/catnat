@@ -43,7 +43,7 @@ or dendrite (Label = 3) in the returned objects, at neuron$d$Label.
 This assignment can be based which compartment contains the most postsynapses ("postsynapses") or presynapses ("presynapses"),
 or the Euclidean distance of its first branch point from the primary branch point (i.e. the first branch point from the soma) ("distance").}
 
-\item{catmaid}{if TRUE, the default CATMAID server cna be queried in order to find the number of connections each connector has, and use this to weight this each connector's influence in the flow through the neuronal arbour}
+\item{catmaid}{if TRUE, the default CATMAID server can be queried in order to find the number of connections each connector has, and use this to weight this each connector's influence in the flow through the neuronal arbour}
 
 \item{...}{additional arguments passed to methods.}
 }

@@ -136,12 +136,14 @@ You will first be shown the neuron you want to delete and who has worked on it, 
     </div>
 
     <pre class="usage"><span class='fu'>catmaid_delete_neuron</span>(<span class='no'>skid</span>, <span class='kw'>delete_connectors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.nodes</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.nodes</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
-<span class='fu'>catmaid_delete_connectors</span>(<span class='no'>connector_ids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='no'>pid</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='no'>conn</span>, <span class='no'>...</span>)
+<span class='fu'>catmaid_delete_connectors</span>(<span class='no'>connector_ids</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='fu'>catmaid_delete_neurons</span>(<span class='no'>skids</span>, <span class='kw'>delete_connectors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.nodes</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>brain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.nodes</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pid</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>conn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,8 +166,11 @@ You will first be shown the neuron you want to delete and who has worked on it, 
     </tr>
     <tr>
       <th>max.nodes</th>
-      <td><p>the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons
-control if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
+      <td><p>the maximum number of nodes a neuron can have, and still be successfully deleted. Helps prevent the accidental deletion of large neurons</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>if TRUE (default) you will be asked at each stage if you wish to continue. Helps prevent accidental deletions. If FALSE, then will delete without asking.
 Really should only be set to FALSE if you are deleting from your own CATMAID instance</p></td>
     </tr>
     <tr>
