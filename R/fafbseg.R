@@ -118,13 +118,13 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
 #' @param skids neuron skeleton ids
 #' @param direction whether to fetch putative incoming or outgoing partners
 #' @param connector_ids Optional numeric ids of CATMAID connector nodes that will restrict connections for analysis
-#' @param volume volume to which to restrict connector locations
+#' @param mesh3d mesh3d to which to restrict connector locations
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid_get_connector_table
 #' @export
 #' @rdname fafb_neuron_details
-fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, volume = NULL, pid = 1, conn = NULL, ...) {
+fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), connector_ids = connector_ids, mesh3d = NULL, pid = 1, conn = NULL, ...) {
   if(!requireNamespace('fafbseg', quietly = TRUE))
     stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
@@ -144,8 +144,8 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
                               "post_node_y", "post_node_z")]
   }
   colnames(connected) = c("connector_id","X","Y","Z")
-  if(!is.null(volume)){
-    i = nat::pointsinside(nat::xyzmatrix(connected),volume,rval = "logical")
+  if(!is.null(mesh3d)){
+    i = nat::pointsinside(nat::xyzmatrix(connected),mesh3d,rval = "logical")
     connected = connected[i,]
     if(is.null(connector_ids)){
       connector_ids = connected[,"connector_id"]
@@ -170,7 +170,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @param skids neuron skeleton ids
 #' @param ids ids for FAFB segmentations to be read. If skids are given, fafb_frags_ids is called and ids is overlooked.
 #' @param direction whether to fetch putative incoming or outgoing partners
-#' @param volume volume to which to restrict connector locations
+#' @param mesh3d mesh3d to which to restrict connector locations
 #' @param connector_ids restrict your search to only certain connectors. Use if, for example, you want to spatially restrict your search.
 #' Default set to NULL, searches all incoming or outgoing connectors, as specified by direction.
 #' @param max.nodes the maximum number of nodes that an extant FAFB partner can have, before we consider using the segmentation for our tracing list.
@@ -187,7 +187,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' fafb_seg_tracing_list goes a bit further and supplies emt information and links to \code{FAFBv14} and the \code{FAFBv14} segmentation instance.
 #' @export
 #' @rdname fafb_frags
-fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...) {
+fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connector_ids = NULL, mesh3d = NULL, pid = 1, conn = NULL, ...) {
   if(!requireNamespace('fafbseg', quietly = TRUE))
     stop("Please install suggested fafbseg package")
   direction=match.arg(direction)
@@ -208,8 +208,8 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
     connected = subset(connected,connector_id%in%connector_ids)
   }
   colnames(connected) = c("connector_id","X","Y","Z")
-  if(!is.null(volume)){
-    i = nat::pointsinside(nat::xyzmatrix(connected),volume,rval = "logical")
+  if(!is.null(mesh3d)){
+    i = nat::pointsinside(nat::xyzmatrix(connected),mesh3d,rval = "logical")
     connected = connected[i,]
   }
   if(!is.null(connector_ids)){
