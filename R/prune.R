@@ -260,6 +260,7 @@ prune_by_tag <-function(x, ...) UseMethod("prune_by_tag")
 #' @rdname prune_by_tag
 #' @export
 prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...){
+  classes = class(x)
   p = unlist(x$tags[names(x$tags)%in%tag])
   if(is.null(p)){
     stop(paste0("Neuron does not have a tag in: ",tag))
@@ -268,7 +269,9 @@ prune_by_tag.neuron <- function(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, 
   n = nat::as.ngraph(x)
   leaves = nat::endpoints(x)
   downstream = suppressWarnings(unique(unlist(igraph::shortest_paths(n, split.point, to = leaves, mode = "out")$vpath)))
-  nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream, ...)
+  x = nat::prune_vertices(x,verticestoprune = downstream, invert = remove.upstream, ...)
+  class(x) = classes
+  x
 }
 #' @rdname prune_by_tag
 #' @export
@@ -287,6 +290,7 @@ prune_by_tag.catmaidneuron<- function(x, tag = "SCHLEGEL_LH", remove.upstream = 
   y = pruned
   y$d = relevant.points[match(pruned$d$PointNo,relevant.points$PointNo),]
   y$d$Parent = pruned$d$Parent
+  class(y) = c("neuron","catmaidneuron")
   y
 }
 #' @rdname prune_by_tag
