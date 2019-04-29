@@ -399,14 +399,14 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
     }
     if(length(neuron.bbx)){
       neuron.bbx.d = do.call(rbind,lapply(1:length(neuron.bbx),function(n) cbind(neuron.bbx[[n]]$d,skid=names(neuron.bbx[n]))))
-      near = nabor::knn(query = todo[,c('X','Y', 'Z')], data =nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
+      near = nabor::knn(query = todo[,c('X','Y', 'Z')], data = nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
       near = near[near!=0]
       near = neuron.bbx.d[near,]
       near$TODO = todo$PointNo
       near$merger = skid
       #near = subset(possible.merges,upstream.skid!=skid)
-      if(length(near)){
-        possible.merges = rbind(possible.merges,near)
+      if(nrow(near)){
+        possible.merges = plyr::rbind.fill(possible.merges,near)
       }
     }
   }
@@ -436,6 +436,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
          or left NULL if you want to fetch them from CATMAID within this function")
   }
   neurons = catmaid::read.neurons.catmaid(skids=unique(possible.merges$upstream.skid), OmitFailures = TRUE, pid=pid,conn=conn,...)
+  last.merge.size = 1e6
   for(todo in 1:length(unique(possible.merges$downstream.node))){
     TODO.possible = subset(possible.merges,downstream.node==unique(possible.merges$downstream.node)[todo])
     skid = unique(TODO.possible[,"downstream.skid"])[todo]
@@ -988,7 +989,6 @@ catmaid_unlock_neurons <- function(skids, pid = 1, conn = NULL, ...){
                                                     conn = conn, ...)
 }
 
-
 # A helper function, not exported
 catmaid_convert_time <- function(utc){
   t = format(as.POSIXlt(utc,tz="GMT",origin="1970-01-01"), "%Y-%m-%d %H:%M:%OS3")
@@ -1063,7 +1063,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
       if(length(already.there)){
-        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+        message(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
       }
     }
   }else{
@@ -1286,6 +1286,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
             possible.merges$upstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$upstream.skid)
             possible.merges = possible.merges[order(possible.merges$upstream.nodes,decreasing = FALSE),]
             multiple.joins = FALSE # First merge retains name and skid of the manual neuron, rather than the larger
+            last.merge.size = 1e6
             for(todo in unique(possible.merges$downstream.node)){
               TODO.possible = subset(possible.merges,downstream.node==todo)
               downstream.node = catmaid::catmaid_get_treenodes_detail(tnids = todo, pid = pid, conn = conn, ...)
@@ -1510,20 +1511,20 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 
 
 #' # Test these functions
-# uploaded = catmaid_controlled_upload(x ="annotation:ASB downseg", tolerance = 0.05, name = "v14-seg neuron upload ASB",
+# uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg", tolerance = 0.15, name = "v14-seg neuron upload ASB",
 #                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
 #                                        include.tags = TRUE, include.connectors = FALSE, downsample = 1,
 #                                        search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
 #                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
 #                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
 
-# x ="annotation:ASB downseg"; tolerance = 0.15; name = "v14-seg neuron upload ASB";
+# x ="annotation:ASB downseg"; tolerance = 0.25; name = "v14-seg neuron upload ASB";
 #                                        annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
-#                                        include.tags = TRUE; include.connectors = FALSE; downsample = 1;
+#                                        include.tags = TRUE; include.connectors = FALSE; downsample = 1;avoid.join = NULL;
 #                                        search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
-#                                        fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;
-#                                        pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn()
-
+#                                        fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;join.only=NULL
+#                                        pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn();include.potential.duplicates=FALSE
+#
 
 #'
 #' ### ASP-g project
@@ -1621,5 +1622,3 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 #' oa.em = read.neurons.catmaid(oa)
 #' opns.em = c(opns.em[!names(opns.em)%in%c(csd,oa)],csds.em,oa.em)
 #'
-
-
