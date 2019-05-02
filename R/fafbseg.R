@@ -299,7 +299,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' Find out what is already known about a neuron's connectivity profile and connected FAFB segments
 #'
 #' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons. This function also very roughly estimates
-#' whether fragment is microtubule containing,  what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
+#' whether fragment is microtubule containing, what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
 #' @param someneuronlist a neuronlist or neuron object
 #' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
 #' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
@@ -317,62 +317,68 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
   t = data.frame()
   if(nat::is.neuronlist(someneuronlist)){
     pb <- utils::txtProgressBar(min = 0, max = length(someneuronlist), style = 3)
-    for(n in 1:length(someneuronlist)){
+    n <- 1
+    while(n != length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...)
-      m = reshape2::melt(table(segs))
-      colnames(m) = c("ngl_id","node_hits")
-      m$skid = names(someneuronlist)[n]
-      # Get a rough idea if a fragment if microtubule containing, or what Strahler order it is at, if the neuron has this marked
-      if(!is.null(neuron$d$microtubules)){
-        mt = aggregate(neuron$d$microtubules,list(ngl_id = segs),function(x) (sum(x)/length(x))>=0.5)
-        colnames(mt) = c("ngl_id","microtubules")
-        m = merge(m,mt,all = TRUE)
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), function(e) NULL)
+      if(is.null(segs)){
+        message("brainmaps read error, retrying ...")
       }else{
-        m$microtubules = NA
-      }
-      if(!is.null(neuron$d$strahler_order)){
-        so = aggregate(neuron$d$strahler_order,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
-        colnames(so) = c("ngl_id","strahler_order")
-        m = merge(m,so,all = TRUE)
-      }else{
-        m$strahler_order = NA
-      }
-      if(!is.null(neuron$d$Label)){
-        lab = aggregate(neuron$d$Label,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
-        colnames(lab) = c("ngl_id","Label")
-        m = merge(m,lab,all = TRUE)
-      }else{
-        m$Label = NA
-      }
-      mm = subset(m,node_hits>=node.match)
-      s = neuron$SegList
-      keep = c()
-      for(nid in m$ngl_id){
-        if(nid!=0){
-          pnos = which(segs==nid)
-          in.segs = lapply(s,function(y) pnos%in%y)
-          in.segs.sum = sapply(in.segs,sum)
-          for(pos in which(in.segs.sum>0)){
-            branches = sapply(s,function(x) sum(s[[pos]]%in%x))
-            score = sum(in.segs.sum[which(branches>0)])
-            if(score>=node.match){
-              keep = c(keep,nid)
+        m = reshape2::melt(table(segs))
+        colnames(m) = c("ngl_id","node_hits")
+        m$skid = names(someneuronlist)[n]
+        # Get a rough idea if a fragment if microtubule containing, or what Strahler order it is at, if the neuron has this marked
+        if(!is.null(neuron$d$microtubules)){
+          mt = aggregate(neuron$d$microtubules,list(ngl_id = segs),function(x) (sum(x)/length(x))>=0.5)
+          colnames(mt) = c("ngl_id","microtubules")
+          m = merge(m,mt,all = TRUE)
+        }else{
+          m$microtubules = NA
+        }
+        if(!is.null(neuron$d$strahler_order)){
+          so = aggregate(neuron$d$strahler_order,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
+          colnames(so) = c("ngl_id","strahler_order")
+          m = merge(m,so,all = TRUE)
+        }else{
+          m$strahler_order = NA
+        }
+        if(!is.null(neuron$d$Label)){
+          lab = aggregate(neuron$d$Label,list(ngl_id = segs),function(x) names(sort(-table(x)))[1])
+          colnames(lab) = c("ngl_id","Label")
+          m = merge(m,lab,all = TRUE)
+        }else{
+          m$Label = NA
+        }
+        mm = subset(m,node_hits>=node.match)
+        s = neuron$SegList
+        keep = c()
+        for(nid in m$ngl_id){
+          if(nid!=0){
+            pnos = which(segs==nid)
+            in.segs = lapply(s,function(y) pnos%in%y)
+            in.segs.sum = sapply(in.segs,sum)
+            for(pos in which(in.segs.sum>0)){
+              branches = sapply(s,function(x) sum(s[[pos]]%in%x))
+              score = sum(in.segs.sum[which(branches>0)])
+              if(score>=node.match){
+                keep = c(keep,nid)
+              }
             }
           }
         }
+        mm = subset(mm,ngl_id%in%keep)
+        if(return.unmatched){
+          as = assign_strahler(neuron)
+          unmatched.pnos = neuron$d$PointNo[which(!segs%in%mm$ngl_id)]
+          mm = subset(as$d,PointNo%in%unmatched.pnos)
+          mm$index = rownames(mm)
+          mm$skid = neuron$skid
+        }
+        t = rbind(t,mm)
+        utils::setTxtProgressBar(pb, n)
+        n = n + 1
       }
-      mm = subset(mm,ngl_id%in%keep)
-      if(return.unmatched){
-        as = assign_strahler(neuron)
-        unmatched.pnos = neuron$d$PointNo[which(!segs%in%mm$ngl_id)]
-        mm = subset(as$d,PointNo%in%unmatched.pnos)
-        mm$index = rownames(mm)
-        mm$skid = neuron$skid
-      }
-      t = rbind(t,mm)
-      utils::setTxtProgressBar(pb, n)
     }
     close(pb)
   }else {
