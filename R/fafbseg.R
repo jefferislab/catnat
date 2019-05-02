@@ -321,7 +321,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
     while(n != length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), function(e) NULL)
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), error = function(e) NULL)
       if(is.null(segs)){
         message("brainmaps read error, retrying ...")
       }else{
