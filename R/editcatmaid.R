@@ -227,15 +227,15 @@ catmaid_interactive_name_transfer <- function(x = "name:ASB CHECK", transfer.ann
         if(continue3=="y"&!is.null(anns$annotation)){
           message("removing annotations...")
           remove.annotations = sapply(anns$annotation, function(a) tryCatch(catmaid::catmaid_remove_annotations_for_skeletons(skids = o,
-                                                                                                                           annotations = a,
-                                                                                                                           pid = pid, conn = conn, ...),
+                                                                                                                              annotations = a,
+                                                                                                                              pid = pid, conn = conn, ...),
                                                                             error = function(e) warning("Could not remove annotation ", a," for neuron ", o)))
         }
         message("setting annotations...")
         add.annotations = sapply(anns2$annotation, function(a) tryCatch(catmaid::catmaid_set_annotations_for_skeletons(skids = o,
-                                                                                                         annotations = a,
-                                                                                                         pid = pid, conn = conn, ...),
-                                                          error = function(e) warning("Could not set annotation ", a," for neuron ", o)))
+                                                                                                                       annotations = a,
+                                                                                                                       pid = pid, conn = conn, ...),
+                                                                        error = function(e) warning("Could not set annotation ", a," for neuron ", o)))
       }else{
         message("Not annotations set or removed for  ", o)
       }
@@ -430,7 +430,6 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
                                      brain = NULL, pid = 1, conn = conn, ...){
   possible.merges$downstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$downstream.skid)
   possible.merges$upstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$upstream.skid)
-  possible.merges = possible.merges[order(possible.merges$upstream.nodes,decreasing = FALSE),]
   if(!is.null(downstream.neurons)&!nat::is.neuronlist(downstream.neurons)){
     stop("downstream.neurons must either be a neuronlist,
          or left NULL if you want to fetch them from CATMAID within this function")
@@ -488,13 +487,14 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
               from_treenode_id = TODO.possible[i,"downstream.node"]
               to_treenode_id = TODO.possible[i,"upstream.node"]
             }
+            last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
             catmaid_join_skeletons(from_treenode_id = from_treenode_id, to_treenode_id = to_treenode_id, pid = pid, conn = conn, ...)
           }else{
+            last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
             catmaid_join_skeletons(from_treenode_id = TODO.possible[i,"downstream.node"],
                                    to_treenode_id = TODO.possible[i,"upstream.node"],
                                    pid = pid, conn = conn, ...)
           }
-          last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
           multiple.joins = TRUE
           continue=TRUE
         }else{
@@ -595,8 +595,8 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
     message("Identifying treenodes associated with presynapses...")
     partner_treenode_id = pbapply::pbsapply(1:nrow(connectors.pre), function(i)
       tryCatch(catmaid_connector_nodes(connector_id = connectors.pre[i,"connector_id"],node = "presynaptic",
-                                           pid=pid,conn=conn, ...)$treenode_id,
-      error = function(e) NA))
+                                       pid=pid,conn=conn, ...)$treenode_id,
+               error = function(e) NA))
     if(nrow(connectors.pre)!=length(partner_treenode_id)){
       stop("Issues finding treenodes upstream of connector objects")
     }
@@ -645,7 +645,7 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
     df.connectors = df.post.connectors
   }
   df.connectors = subset(df.connectors,ngl_id!=0)
-  df.connectors=df.connectors[is.na(df.connectors$partner_treenode_id)|is.na(df.connectors$partner_nodes),]
+  df.connectors=df.connectors[!is.na(df.connectors$partner_treenode_id)|!is.na(df.connectors$partner_nodes),]
   ### Get ngl IDs corresponding to the skeletons ###
   message("Finding the 3D segments that correspond to ", length(neurons), " neurons:")
   segs = map_fafbsegs_to_neuron(neurons, node.match = node.match)
@@ -656,40 +656,50 @@ fafbseg_join_connectors_in_ngl_volumes <- function(x,
   if(nrow(df)){
     for(i in 1:nrow(df)){
       neuron = neurons[df[i,"skid"]][[1]]
-      near = nabor::knn(data = nat::xyzmatrix(neuron), query = nat::xyzmatrix(df[i,]),k=1,radius = connector.range.nm)$nn.idx
+      # Get target node
+      tnid2 = df[i,"partner_treenode_id"]
+      tnid2.detail = catmaid::catmaid_get_treenodes_detail (tnids=tnid2, pid = pid, conn = conn, ...)
+      if(is.null(tnid2.detail)){
+        tnid2.detail = df[i,]
+      }
+      # Get nearest node on putative partner
+      near = nabor::knn(data = nat::xyzmatrix(neuron), query = nat::xyzmatrix(tnid2.detail),k=1,radius = connector.range.nm)$nn.idx
       tnid = neuron$d[near,"PointNo"]
       ### Make links ###
       if(length(tnid)==1){
-        catmaid_url = paste0(catmaid_get_server(conn), "?pid=",pid)
-        catmaid_url = paste0(catmaid_url, "&zp=", df[i,"z"])
-        catmaid_url = paste0(catmaid_url, "&yp=", df[i,"y"])
-        catmaid_url = paste0(catmaid_url, "&xp=", df[i,"x"])
-        catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
-        catmaid_url = paste0(catmaid_url, "&active_node_id=", df[i,"skid"])
-        catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
-        message("Joining at: ", catmaid_url)
-        total.joins = c(total.joins,catmaid_url)
-        if(df[i,"partner_nodes"]==0){
-          ## Make sure connector is still not connected to anything else!
-          connector.info = catmaid_connector_nodes(connector_id = df[i,"connector_id"],node = df[i,"link_type"],
-                                                   pid=pid,conn=conn, ...)
-          if(connector.info$partner_nodes==0){
-            tryCatch(catmaid_link_connectors(treenode_id = tnid, connector_id = df[i,"connector_id"],
-                                             link_type = df[i,"link_type"],
-                                             pid = pid, conn = conn, verbose = FALSE, ...),
-                     error = function(e) warning("treenode join ",tnid," to connector ", df[i,"connector_id"], "failed"))
+        edist = euc.dist(df[i,c("x","y","z")],tnid2.detail[,c("x","y","z")])
+        if(edist<=connector.range.nm){
+          catmaid_url = paste0(catmaid_get_server(conn), "?pid=",pid)
+          catmaid_url = paste0(catmaid_url, "&zp=", df[i,"z"])
+          catmaid_url = paste0(catmaid_url, "&yp=", df[i,"y"])
+          catmaid_url = paste0(catmaid_url, "&xp=", df[i,"x"])
+          catmaid_url = paste0(catmaid_url, "&tool=tracingtool")
+          catmaid_url = paste0(catmaid_url, "&active_node_id=", df[i,"skid"])
+          catmaid_url = paste0(catmaid_url, "&sid0=5&s0=0")
+          message("Attempting join at: ", catmaid_url)
+          total.joins = c(total.joins,catmaid_url)
+          if(df[i,"partner_nodes"]==0){
+            ## Make sure connector is still not connected to anything else!
+            connector.info = catmaid_connector_nodes(connector_id = df[i,"connector_id"],node = df[i,"link_type"],
+                                                     pid=pid,conn=conn, ...)
+            if(connector.info$partner_nodes==0){
+              tryCatch(catmaid_link_connectors(treenode_id = tnid, connector_id = df[i,"connector_id"],
+                                               link_type = df[i,"link_type"],
+                                               pid = pid, conn = conn, verbose = FALSE, ...),
+                       error = function(e) message("treenode join ",tnid," to connector ", df[i,"connector_id"], "failed"))
+            }
+          }else if(df[i,"partner_nodes"]<10){
+            ## Make sure tnid2 is still not connected to anything else!
+            n = catmaid::catmaid_get_node_count(tnid2.detail$skid, conn=conn, OmitFailures = FALSE,...)
+            if(n<10&length(tnid2)==1&length(tnid)==1){
+              tryCatch(catmaid_join_skeletons(from_treenode_id = tnid2, to_treenode_id = tnid, pid = pid, conn = conn, ...),
+                       error = function(e) message("treenode join ",tnid," to ", tnid2, " failed"))
+            }else{
+              message("treenode join ",tnid," to ", tnid2, " failed, possibly because ", tnid2, " is now connected to a different skeleton")
+            }
           }
-        }else if(df[i,"partner_nodes"]<10){
-          ## Make sure tnid2 is still not connected to anything else!
-          tnid2 = df[i,"partner_treenode_id"]
-          tnid2.detail = catmaid::catmaid_get_treenodes_detail (tnids=tnid2, pid = pid, conn = conn, ...)
-          n = catmaid::catmaid_get_node_count(tnid2.detail$skid, conn=conn, OmitFailures = FALSE,...)
-          if(n<1&length(tnid2)==1&length(tnid)==1){
-            tryCatch(catmaid_join_skeletons(from_treenode_id = tnid2, to_treenode_id = tnid, pid = pid, conn = conn, ...),
-                     error = function(e) warning("treenode join ",tnid," to ", tnid2, "failed"))
-          }else{
-            warning("treenode join ",tnid," to ", tnid2, "failed, possibly because ", tnid2, "is now connected to a different skeleton")
-          }
+        }else{
+          message("treenode join ",tnid," to ", tnid2, "failed, possibly because ", tnid2, " they  are too far apart")
         }
       }
     }
@@ -1064,6 +1074,9 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
       neurons = neurons[setdiff(names(neurons),already.there)]
       if(length(already.there)){
         message(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+        if(length(neurons)==length(already.there)){
+          stop("No neurons to upload, you can try setting the argument include.potential.duplicates to TRUE")
+        }
       }
     }
   }else{
@@ -1181,12 +1194,12 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
           }
         }
       }
-    }
+  }
   }
   if(return.uploaded.skids){
     list(uploaded.skids = uploaded.new, downloaded.skids = uploaded.old)
   }
-}
+  }
 
 # Hidden function, for efficiency
 catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron upload",
@@ -1194,7 +1207,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
                                         avoid.join = NULL, join.only = NULL,
                                         include.tags = TRUE, include.connectors = TRUE,
                                         search.range.nm = 1000, duplication.range.nm = 10, join = TRUE,
-                                        join.tag = "TODO",
+                                        join.tag = "TODO", include.potential.duplicates = TRUE,
                                         lock = TRUE, fafbseg = TRUE, downsample = 2, min_nodes = 2,
                                         return.uploaded.skids = TRUE,
                                         pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),  ...){
@@ -1211,7 +1224,10 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
       already.there = subset(anns,annotation%in%avoiding)$skid
       neurons = neurons[setdiff(names(neurons),already.there)]
       if(length(already.there)){
-        warning(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+        message(length(already.there), " neurons have an annotation that indicates that they should not be uploaded: ", avoid)
+        if(length(neurons)==length(already.there)){
+          stop("No neurons to upload, you can try setting the argument include.potential.duplicates to TRUE")
+        }
       }
     }
   }else{
@@ -1227,7 +1243,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
       names = name
     }
   }else{
-      stop("name must be a character vector")
+    stop("name must be a character vector")
   }
   if(lock){
     avoid = unique(c(avoid,"locked"))
@@ -1269,12 +1285,12 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
           if(!is.null(avoid.join)|!is.null(join.only)){
             upstream.annotations = catmaid::catmaid_get_annotations_for_skeletons(unique(possible.merges$upstream.skid), pid = pid, conn = conn, ...)
             if(!is.null(avoid.join)){
-              message("Remvoing any join taget with annotations specified by avoid.join")
+              message("Removing any join target with annotations specified by avoid.join")
               acceptable.skids = setdiff(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%avoid.join)$skid))
               possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
             if(!is.null(join.only)){
-              message("Choosing only join tagets with annotations specified by join.only")
+              message("Choosing only join targets with annotations specified by join.only")
               acceptable.skids = intersect(unique(possible.merges$upstream.skid),unique(subset(upstream.annotations,annotation%in%join.only)$skid))
               possible.merges = subset(possible.merges,upstream.skid%in%acceptable.skids)
             }
@@ -1284,7 +1300,6 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
             message("making joins")
             possible.merges$downstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$downstream.skid)
             possible.merges$upstream.nodes  = catmaid::catmaid_get_node_count(possible.merges$upstream.skid)
-            possible.merges = possible.merges[order(possible.merges$upstream.nodes,decreasing = FALSE),]
             multiple.joins = FALSE # First merge retains name and skid of the manual neuron, rather than the larger
             last.merge.size = 1e6
             for(todo in unique(possible.merges$downstream.node)){
@@ -1311,11 +1326,12 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
                   from_treenode_id = TODO.possible[1,"downstream.node"]
                   to_treenode_id = TODO.possible[1,"upstream.node"]
                 }
+                last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
                 catmaid_join_skeletons(from_treenode_id = from_treenode_id, to_treenode_id = to_treenode_id, pid = pid, conn = conn, ...)
               }else{
+                last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
                 catmaid_join_skeletons(from_treenode_id = TODO.possible[1,"downstream.node"], to_treenode_id = TODO.possible[1,"upstream.node"], pid = pid, conn = conn, ...)
               }
-              last.merge.size = catmaid::catmaid_get_node_count(as.character(merger$skid)) + unique(TODO.possible$downstream.nodes)
               multiple.joins = TRUE
             }
           }else{
@@ -1332,7 +1348,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
   if(return.uploaded.skids){
     list(uploaded.skids = uploaded.new, downloaded.skids = uploaded.old)
   }
-}
+  }
 
 #' Connect to a local CATMAID server
 #'
@@ -1509,22 +1525,22 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 
 
 
-
-#' # Test these functions
-# uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg", tolerance = 0.15, name = "v14-seg neuron upload ASB",
-#                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
-#                                        include.tags = TRUE, include.connectors = FALSE, downsample = 1,
-#                                        search.range.nm = 1000, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
-#                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
-#                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
-
-# x ="annotation:ASB downseg"; tolerance = 0.25; name = "v14-seg neuron upload ASB";
-#                                        annotations = c("v14-seg upload", "ASB upseg"); avoid = "v14"; lock = TRUE;
-#                                        include.tags = TRUE; include.connectors = FALSE; downsample = 1;avoid.join = NULL;
-#                                        search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
-#                                        fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;join.only=NULL
-#                                        pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn();include.potential.duplicates=FALSE
-#
+#'
+#' #' # Test these functions
+#' uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg 2", tolerance = 0.3, name = "v14-seg neuron upload ASB",
+#'                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
+#'                                        include.tags = TRUE, include.connectors = FALSE, downsample = 2, include.potential.duplicates=TRUE,
+#'                                        search.range.nm = 500, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
+#'                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
+#'                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+#'
+#' x ="annotation:ASB downseg 2"; tolerance = 0.25; name = "v14-seg neuron upload ASB";
+#' annotations = c("v14-seg upload", "ASB upseg 2"); avoid = "v14"; lock = TRUE;
+#' include.tags = TRUE; include.connectors = FALSE; downsample = 1;avoid.join = NULL;
+#' search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
+#' fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;join.only=NULL
+#' pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn();include.potential.duplicates=FALSE
+#'
 
 #'
 #' ### ASP-g project
