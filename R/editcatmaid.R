@@ -58,7 +58,8 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
     catmaid::catmaid_set_annotations_for_skeletons(skids = res$skeleton_id,
                                                    annotations = annotations,
                                                    pid = pid, conn = conn, ...)
-    tryCatch(catmaid::catmaid_rename_neuron(skids = res$skeleton_id, names = name[file], pid = pid, conn = conn, ...),error = function(e) warning("Could not name new neuron ",res$skeleton_id))
+    tryCatch(catmaid::catmaid_rename_neuron(skids = res$skeleton_id, names = name[file], pid = pid, conn = conn, ...), error = function(e)
+      warning("Could not name new neuron ",res$skeleton_id))
     message(paste0("Annotations and names set to new skeleton: ", res$skeleton_id))
     new.neuron = catmaid::read.neuron.catmaid(res$skeleton_id, pid = pid, conn = conn, ...)
     if(include.tags&nat::is.neuron(neurons[[file]])){
@@ -104,7 +105,7 @@ fafbseg_transfer_tags <- function(new.neuron, old.neuron, offset = TRUE, search.
     tagged.points = tagged.points[tagged.points%in%old.neuron$d$PointNo]
     tagged.points = old.neuron$d[match(tagged.points,old.neuron$d$PointNo),]
     tagged.points$tag = labels
-    near = nabor::knn(query = tagged.points[,c('X','Y', 'Z')], data =nat::xyzmatrix(new.neuron), k=1, radius=ifelse(offset,search.range.nm,0))$nn.idx
+    near = nabor::knn(query = tagged.points[,c('X','Y', 'Z')], data =nat::xyzmatrix(new.neuron), k=1, radius= ifelse(offset,search.range.nm,0) )$nn.idx
     near = near[near!=0]
     labels = tagged.points$tag[near!=0]
     nodes = new.neuron$d$PointNo[near]
@@ -1150,7 +1151,7 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
           nat::npop3d()
         }
         message("Uploading neuron ", i)
-        new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations, paste0("v14-seg: ",old.skid)),
+        new.skid = catmaid_upload_neurons(swc=neuron,name=names[i],annotations = c(annotations),
                                           include.tags=include.tags,include.connectors=include.connectors,
                                           return.new.skids = TRUE,
                                           conn = conn, pid = pid, max.upload = 1, ...)
@@ -1161,7 +1162,8 @@ catmaid_controlled_upload <- function(x, tolerance = 0.15, name = "v14-seg neuro
         uploaded.old = c(uploaded.old,old.skid)
         if(join){
           message("Finding tagged potential join points ...")
-          TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
+          TODO = tryCatch(catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE),
+                          error = function(e) message("Could not find merge related tags, no joining to be done"))
           if(length(TODO)){
             possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                                  min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
@@ -1266,7 +1268,7 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
               Upload for neuron ", i, " aborted (tolerance: ",tolerance,").")
     }else{
       message("Uploading neuron ", i)
-      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations, paste0("v14-seg: ",old.skid)),
+      new.skid = catmaid_upload_neurons(swc=neuron,name=names[i], annotations = c(annotations),
                                         include.tags=include.tags,include.connectors=include.connectors,
                                         return.new.skids = TRUE,
                                         conn = conn, pid = pid, max.upload = 1, ...)
@@ -1277,7 +1279,8 @@ catmaid_uncontrolled_upload <- function(x, tolerance = 0, name = "v14-seg neuron
       uploaded.old = c(uploaded.old,old.skid)
       if(join){
         message("Finding tagged potential join points ...")
-        TODO = catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE)
+        TODO = tryCatch(catmaid_get_tag(x = new.neuron, tag = join.tag, url = FALSE),
+                          error = function(e) message("Could not find merge related tags, no joining to be done"))
         if(length(TODO)){
           possible.merges = tryCatch(catmaid_find_likely_merge(TODO = TODO, pid=pid, fafbseg = fafbseg, conn = conn,
                                                                min_nodes = min_nodes, search.range.nm = search.range.nm, ...),
@@ -1523,23 +1526,29 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 }
 
 
-
+# uploaded1 = catmaid_controlled_upload(x ="annotation:downstream of aBN1", tolerance = 1, name = "downstream of antennal BN1 KE_",
+#                                       annotations = c("v14 upload", "downstream of aBN1"), avoid = "v14 upload", lock = FALSE,
+#                                       include.tags = TRUE, include.connectors = TRUE, downsample = 10,
+#                                       search.range.nm = 100, duplication.range.nm=100, join = FALSE, join.tag = "TODO",
+#                                       fafbseg = FALSE, min_nodes = 2, return.uploaded.skids = TRUE,
+#                                       pid2 = 1, conn2 = NULL, pid = 1, conn = fafb_seg_conn(),
+#                                       include.potential.duplicates = FALSE, join.only = NULL, avoid.join = NULL)
 
 #'
 #' #' # Test these functions
-#' uploaded = catmaid_uncontrolled_upload(x ="annotation:ASB downseg 2", tolerance = 0.3, name = "v14-seg neuron upload ASB",
-#'                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
-#'                                        include.tags = TRUE, include.connectors = FALSE, downsample = 2, include.potential.duplicates=TRUE,
-#'                                        search.range.nm = 500, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
-#'                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
-#'                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
+# uploaded = catmaid_controlled_upload(x ="annotation:ASB downseg", tolerance = 0.8, name = "v14-seg neuron upload ASB",
+#                                        annotations = c("v14-seg upload", "ASB upseg"), avoid = "v14", lock = TRUE,
+#                                        include.tags = TRUE, include.connectors = FALSE, downsample = 2, include.potential.duplicates=TRUE,
+#                                        search.range.nm = 500, duplication.range.nm=100, join = TRUE, join.tag = "TODO",
+#                                        fafbseg = TRUE, min_nodes = 2, return.uploaded.skids = TRUE,
+#                                        pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn())
 #'
-#' x ="annotation:ASB downseg 2"; tolerance = 0.25; name = "v14-seg neuron upload ASB";
-#' annotations = c("v14-seg upload", "ASB upseg 2"); avoid = "v14"; lock = TRUE;
-#' include.tags = TRUE; include.connectors = FALSE; downsample = 1;avoid.join = NULL;
-#' search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
-#' fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;join.only=NULL
-#' pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn();include.potential.duplicates=FALSE
+# x ="annotation:ASB downseg 2"; tolerance = 0.25; name = "v14-seg neuron upload ASB";
+# annotations = c("v14-seg upload", "ASB upseg 2"); avoid = "v14"; lock = TRUE;
+# include.tags = TRUE; include.connectors = FALSE; downsample = 1;avoid.join = NULL;
+# search.range.nm = 1000; duplication.range.nm=100; join = TRUE; join.tag = "TODO";
+# fafbseg = TRUE; min_nodes = 2; return.uploaded.skids = TRUE;join.only=NULL
+# pid = 1; conn = NULL; pid2 = 1; conn2 = fafb_seg_conn();include.potential.duplicates=FALSE
 #'
 
 #'
