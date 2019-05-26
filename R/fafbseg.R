@@ -321,9 +321,15 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
     while(n != length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), error = function(e) NULL)
-      if(is.null(segs)){
+      if(!"neuron"%in%class(neuron)){
+        n = n + 1
+        next
+      }
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron)), error = function(e) NULL)
+      count = 0
+      if(is.null(segs)&count<100){
         message("brainmaps read error, retrying ...")
+        count = count+1
       }else{
         m = reshape2::melt(table(segs))
         colnames(m) = c("ngl_id","node_hits")

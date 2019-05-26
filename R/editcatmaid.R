@@ -75,7 +75,7 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
   if(return.new.skids){
     skids
   }
-  }
+}
 
 #' Transfer information between v14 and v14-seg neurons
 #'
@@ -1526,9 +1526,9 @@ catmaid_update_radius <- function(tnids, radii, pid = 1, conn = NULL, ...){
 }
 
 
-# uploaded1 = catmaid_controlled_upload(x ="annotation:downstream of aBN1", tolerance = 1, name = "downstream of antennal BN1 KE_",
+# uploaded1 = catmaid_uncontrolled_upload(x ="annotation:downstream of aBN1", tolerance = 0.8, name = "downstream of antennal BN1 KE_",
 #                                       annotations = c("v14 upload", "downstream of aBN1"), avoid = "v14 upload", lock = FALSE,
-#                                       include.tags = TRUE, include.connectors = TRUE, downsample = 10,
+#                                       include.tags = TRUE, include.connectors = FALSE, downsample = 10,
 #                                       search.range.nm = 100, duplication.range.nm=100, join = FALSE, join.tag = "TODO",
 #                                       fafbseg = FALSE, min_nodes = 2, return.uploaded.skids = TRUE,
 #                                       pid2 = 1, conn2 = NULL, pid = 1, conn = fafb_seg_conn(),
