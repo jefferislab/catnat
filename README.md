@@ -9,7 +9,7 @@ R Package for use with [rcatmaid](https://github.com/jefferis/rcatmaid) and [nat
 ```r
 # install
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("alexanderbates/catnat")
+devtools::install_github("jefferislab/catnat")
 
 # use
 library(catnat)
