@@ -321,15 +321,9 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
     while(n != length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      if(!"neuron"%in%class(neuron)){
-        n = n + 1
-        next
-      }
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron)), error = function(e) NULL)
-      count = 0
-      if(is.null(segs)&count<100){
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), error = function(e) NULL)
+      if(is.null(segs)){
         message("brainmaps read error, retrying ...")
-        count = count+1
       }else{
         m = reshape2::melt(table(segs))
         colnames(m) = c("ngl_id","node_hits")
@@ -375,7 +369,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
         }
         mm = subset(mm,ngl_id%in%keep)
         if(return.unmatched){
-          as = assign_strahler(neuron)
+          as = tryCatch(assign_strahler(neuron), error = function(e) neuron)
           unmatched.pnos = neuron$d$PointNo[which(!segs%in%mm$ngl_id)]
           mm = subset(as$d,PointNo%in%unmatched.pnos)
           mm$index = rownames(mm)
@@ -392,6 +386,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
   }
   t
 }
+
 
 
 # write_marked_swc <- function(nl, files,
