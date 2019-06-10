@@ -144,6 +144,7 @@ assign_cable.polarity <- function(someneuronlist,brain = nat.flybrains::FCWB,...
   someneuronlist
 }
 
+### Moved to nat ###
 #' Re-root neurons to their soma
 #'
 #' @description Cycle through and manually re-root neurons to their soma
@@ -187,6 +188,7 @@ correctsoma <- function(someneuronlist, brain = NULL,...){
   correctedsomas
 }
 
+### moved to nat ###
 #' Generate a connectivity matrix based on euclidean distance between points
 #'
 #' @description Generates an 'overlap matrix' of overlap scores between neurons in the 'neurons' and 'targets' pools.

@@ -109,20 +109,20 @@ connectors.inside <- function(skids, alpha, direction = "BOTH", degree = NULL){
       selection = c(selection, FALSE)
     }
   }
-  return(db[selection])
+  db[selection]
 }
 
+## Moved to nat ###
 #' Select 3D points in space
 #'
 #' @description Select and deselect 3D points in space interactively. Black = selected, red = deselected
 #'
 #' @param points a mxn matrix
 #' @param plot3d Object to pass to the rgl::plot3d function
-#' @param ... additional arguments passed to methods
 #'
 #' @return A mxn matrix
 #' @export
-select_points <- function (points, plot3d = NULL,...){
+select_points <- function (points, plot3d = NULL){
   plot3d(plot3d,col="grey")
   points = nat::xyzmatrix(points)
   selected.points = unique(points)

@@ -19,5 +19,6 @@ catmaid_node_time(id, time = c("creation_time", "edition_time"),
 \item{...}{methods passed to catmaid::catmaid_set_labels}
 }
 \description{
-Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
+Get the UTC creation / edit time for a CATMAID treenode or connector.
+Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
 }

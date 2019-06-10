@@ -3,7 +3,7 @@
 #' @description Remove points from a neuron, keeping the root node intact
 #'
 #' @param neuron a neuron object
-#' @param bad_vertex_labels Nodes ids for removal
+#' @param bad_vertex_labels node ids for removal
 #' @param invert whether to keep vertices rather than dropping them (default FALSE)
 #' @param ... additional arguments passed to methods.
 #' @return A pruned neuron object
@@ -82,7 +82,7 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
   y
 }
 
-
+### Moved to nat ###
 #' Prune a neuron interactively
 #'
 #' @description Remove points from a neuron, keeping the root node intact
@@ -94,6 +94,7 @@ prune.catmaidneuron<- function (x,target,maxdist, keep = c("near", "far"),
 #' @rdname prune_online
 prune_online <-function(x, ...) UseMethod("prune_online")
 
+### Moved to nat ###
 #' @export
 #' @rdname prune_online
 prune_online.neuron <- function(x, ...){
@@ -113,24 +114,26 @@ prune_online.neuron <- function(x, ...){
   neuron
 }
 
+### Moved to nat ###
 #' @export
 #' @rdname prune_online
 prune_online.neuronlist <- function(x, ...){
   nat::nlapply(x,prune_online.neuron)
 }
 
+### Moved to nat ###
 #' Manually assign the dendrite and axon to a neuron
 #'
 #' @description Manually assign the dendrite and axon to neurons / a neuron
 #'
 #' @param x a neuron/neuronlist object
-#' @param soma whether or not to plot a soma, and at what radius. Argument for plot3d.neuron
+#' @param soma whether or not to plot a soma, and at what radius
 #' @param ... additional arguments passed to methods
 #' @return The neuron/neuronlist object with axon/dendrite info assigned in SWC format to neuron$d
 #' @export
 #' @rdname manually_assign_axon_dendrite
 manually_assign_axon_dendrite <-function(x, ...) UseMethod("manually_assign_axon_dendrite")
-
+### Moved to nat ###
 #' @export
 #' @rdname manually_assign_axon_dendrite
 manually_assign_axon_dendrite.neuron <- function(x, ...){
@@ -180,7 +183,7 @@ plot3d.split <- function(x, soma = TRUE, ...){
   rgl::plot3d(x, col = "grey", soma = soma, ...)
 }
 
-
+### Moved to nat ###
 #' @export
 #' @rdname manually_assign_axon_dendrite
 manually_assign_axon_dendrite.neuronlist<-function(x, ...){
@@ -210,7 +213,7 @@ assign.connector.info.neuron<-function(x, ...){
 assign.connector.info.neuronlist<-function(x, ...){
   nlapply(x,assign.connector.info.neuron, ...)
 }
-
+### Moved to nat ###
 #' Prune neuron within neuropil volume
 #'
 #' @details Prune neuron inside subvolume of a segmented brain object.
@@ -226,7 +229,7 @@ assign.connector.info.neuronlist<-function(x, ...){
 #' @export
 #' @rdname prune_in_volume
 prune_in_volume <-function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...) UseMethod("prune_in_volume")
-
+### Moved to nat ###
 #' @export
 #' @rdname prune_in_volume
 prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){
@@ -239,7 +242,7 @@ prune_in_volume.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, neurop
   }
   neuron
 }
-
+### Moved to nat ###
 #' @export
 #' @rdname prune_in_volume
 prune_in_volume.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R", invert = TRUE, ...){

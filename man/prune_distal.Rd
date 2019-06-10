@@ -9,7 +9,7 @@ prune_distal(neuron, bad_vertex_labels, invert = FALSE, ...)
 \arguments{
 \item{neuron}{a neuron object}
 
-\item{bad_vertex_labels}{Nodes ids for removal}
+\item{bad_vertex_labels}{node ids for removal}
 
 \item{invert}{whether to keep vertices rather than dropping them (default FALSE)}
 

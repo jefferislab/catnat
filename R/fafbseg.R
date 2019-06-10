@@ -401,4 +401,34 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
 #         append = FALSE, sep = " ")
 #
 # }
-
+# uploaded2 = catmaid_controlled_upload(x ="annotation:add to BN2_3", tolerance = 0.25, name = "add to BN2_3",
+#                                       annotations = c("v14-seg upload", "KE upseg", "HampelSeedLab", "downstream of aBN1", "ASB stitched from auto segments"), avoid = "v14", lock = FALSE,
+#                                       include.tags = TRUE, include.connectors = FALSE, downsample = 10,
+#                                       search.range.nm = 100, duplication.range.nm=100, join = FALSE, join.tag = "TODO",
+#                                       fafbseg = FALSE, min_nodes = 2, return.uploaded.skids = TRUE,
+#                                       pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(),
+#                                       include.potential.duplicates = FALSE, join.only = NULL, avoid.join = NULL)
+#
+# x ="annotation:add to BN2_3"
+# tolerance = 0.25
+# name = "add to BN2_3"
+# annotations = c("v14-seg upload", "KE upseg", "HampelSeedLab", "downstream of aBN1", "ASB stitched from auto segments")
+# avoid = "v14"
+# lock = FALSE
+# include.tags = TRUE
+# include.connectors = FALSE
+# downsample = 10
+# search.range.nm = 100
+# duplication.range.nm=100
+# join = FALSE
+# join.tag = "TODO"
+# fafbseg = FALSE
+# min_nodes = 2
+# return.uploaded.skids = TRUE
+# pid = 1
+# conn = NULL
+# pid2 = 1
+# conn2 = fafb_seg_conn()
+# include.potential.duplicates = FALSE
+# join.only = NULL
+# avoid.join = NULL

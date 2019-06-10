@@ -14,7 +14,8 @@ catmaid_set_meta_annotations(meta_annotations, annotations, pid = 1,
 
 \item{pid}{project id (default 1)}
 
-\item{conn}{a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login}
+\item{conn}{a catmaid_connection objection returned by catmaid_login. I
+f NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login}
 
 \item{...}{additional arguments passed to methods.}
 }

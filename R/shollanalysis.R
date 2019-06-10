@@ -9,7 +9,7 @@
 #' @param radius.step the change in radius between successive spheres. Defaults to one 100th of the radius of the ending sphere
 #' @return a data.frame of spheres radii and the number of dendritic intersections at each radius
 #' @export
-#' @rdname sholl_analysis
+#' @rdname sholl_data
 sholl_data <- function(neuron, start = colMeans(xyzmatrix(neuron)), starting.radius = radius.step, ending.radius = NULL, radius.step = ending.radius/100){
   message("Reminder: Neuron should be appropriately resampled and dendrites marked (Label = 3)")
   unit.vector <- function(x) {x / sqrt(sum(x^2))}

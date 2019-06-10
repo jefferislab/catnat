@@ -8,7 +8,7 @@
 \title{Fetch the up or outgoing auto-traced FAFB fragments from a CATMAID FAFB neuron}
 \usage{
 fafb_frags_ids(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, volume = NULL, pid = 1, conn = NULL, ...)
+  connector_ids = NULL, mesh3d = NULL, pid = 1, conn = NULL, ...)
 
 fafb_frags_skeletons(ids, skids = NULL, direction = c("incoming",
   "outgoing"), connector_ids = NULL, read.from = c("CATMAID",
@@ -30,7 +30,7 @@ fafb_seg_tracing_list(skids, direction = c("incoming", "outgoing"),
 \item{connector_ids}{restrict your search to only certain connectors. Use if, for example, you want to spatially restrict your search.
 Default set to NULL, searches all incoming or outgoing connectors, as specified by direction.}
 
-\item{volume}{volume to which to restrict connector locations}
+\item{mesh3d}{mesh3d to which to restrict connector locations}
 
 \item{pid}{project id. Defaults to 1}
 

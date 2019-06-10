@@ -610,3 +610,46 @@ neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c
   close(pb)
   neuron$d
 }
+
+
+
+
+
+# volume.key.newest = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190521" # Newest Segmentation from Peter Li
+# options(fafbseg.skeletonuri = volume.key.newest) # Set this as teh segmentation we'll be looking at
+# skids = c(886797,902072,905761,985774,1054753,1056097,1058996,1059420,1071860,1077174,1078535,1088678,1106958,1107045,1107296,1110693,1110765,1111992,1121730,1121795,3509520,3510999,3514698,3529071,3546483,4135042,4224711,4235152,4504548,4504557,7204844,7311408,7311493,7510076,7674107,7690273,7694305,7760435,793032,
+#   804092,804539,807401,815241,815776,851432,852286,852993, 982897, 988674,1112633,1124867,2852912,5031615,827034, 830793, 4058824) # The skeletons we want to find
+# neurons = read.neurons.catmaid(skids) # read them from CATMAID
+# neurons.vol = neuronlist() # Object to collect the data
+# errors =c()
+# for(n in 1:length(neurons)){
+#   neuron = neurons[[n]]
+#   nam = names(neurons)[n]
+#   n.vol = tryCatch(catnat::fafb_segs_stitch_volumes(neuron=neuron,
+#                                                     volumes = NULL,
+#                                                     map = TRUE,
+#                                                     voxelSize = 50,
+#                                                     downsample.factor = 12,
+#                                                     soma = TRUE,
+#                                                     node.match = 4,
+#                                                     smooth = FALSE,
+#                                                     resample.neuron = TRUE,
+#                                                     resample.volume = FALSE,
+#                                                     smooth.type= "surfPreserveLaplace",
+#                                                     lambda = 0.5, mu = -0.53, delta = 0.1
+#   ),error=function(e) "ERROR")
+#   if(n.vol=="ERROR"){
+#     message(nam)
+#     errors = c(errors,nam)
+#     message(n.vol)
+#   }else{
+#     n.vol$name = nam # Save
+#     message(paste0(nam, " saved!"))
+#     neurons.vol = c(neurons.vol,n.vol)
+#   }
+# }
+#
+# # To get a more accurate radisu estimation, you can try
+# nv = neurons.vol[[1]]
+# result = catnat:::neuronvolume_get_radius(neuron = nv, volume = nv$volume$mesh3d$whole)
+

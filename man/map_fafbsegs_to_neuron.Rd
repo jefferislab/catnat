@@ -21,5 +21,5 @@ need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, 
 }
 \description{
 Set the local path to the location where you have .zip files of FAFB segmented skeletons. This function also very roughly estimates
-whether fragment is microtubule containing,  what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
+whether fragment is microtubule containing, what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
 }

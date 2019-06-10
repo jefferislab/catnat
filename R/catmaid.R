@@ -105,7 +105,8 @@ resample.catmaidneuronlist <- function(x,stepsize=1, ...) {
 #'
 #' @param annotations annotations to meta-annotate
 #' @param meta_annotations meta-annotation to add
-#' @param conn a catmaid_connection objection returned by catmaid_login. If NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
+#' @param conn a catmaid_connection objection returned by catmaid_login. I
+#' f NULL (the default) a new connection object will be generated using the values of the catmaid.* package options as described in the help for catmaid_login
 #' @param pid project id (default 1)
 #' @param ... additional arguments passed to methods.
 #'

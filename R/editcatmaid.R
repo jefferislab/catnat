@@ -248,9 +248,11 @@ catmaid_interactive_name_transfer <- function(x = "name:ASB CHECK", transfer.ann
   }
 }
 
+### Added to rcatmaid ###
 #' Get the UTC creation / edit time for a CATMAID node
 #'
-#' @description Get the UTC creation / edit time for a CATMAID treenode or connector. Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
+#' @description Get the UTC creation / edit time for a CATMAID treenode or connector.
+#' Useful for making 'state' arguments to be passed to other functions that edit data on a CATMAID server.
 #' @param id a treenode or connector ID
 #' @param time whether to return the creation_time or edition_time
 #' @param pid project id. Defaults to 1
@@ -517,6 +519,7 @@ catmaid_interactive_join <- function(possible.merges, downstream.neurons = NULL,
   }
 }
 
+### Moved to rcatmaid ###
 #' Get information on a CATMAID connector node
 #'
 #' @description Get information on a CATMAID connector node
@@ -729,6 +732,7 @@ catmaid_join_skeletons <- function(from_treenode_id, to_treenode_id, pid = 1, co
   message(res$message)
 }
 
+### moved to rcatmaid ###
 #' Search for CATMAID skeletons within a volume
 #'
 #' @description  Programmatically search for skeleton IDs pertaining to neurons within a search volume defined by a bounding box.
@@ -952,6 +956,7 @@ catmaid_delete_neurons <- function(skids,
                      plot=plot,brain=brain,max.nodes=max.nodes,control=control,pid=pid,conn=conn,...)
 }
 
+### moved to rcatmaid ###
 #' Get the CATMAID neuron ID that corresponds to the skeleton ID
 #'
 #' @description Retrieve the neuron IDs for given skeleton IDs. This is typically the skeleton ID + 1, and is often, but not always accurately, kept by CATMAID tracers in the name of a neuron.
@@ -978,6 +983,7 @@ catmaid_get_neuronid <- function(skids, pid = 1, conn = NULL, ...){
   res
 }
 
+### added to rcatmaid ###
 #' Lock or unlock a CATMAID neuron reconstruction
 #'
 #' @description  Lock or unlock a CATMAID neuron reconstruction by adding or removing a 'locked' annotation to a set of skeleton IDs (skids). A locked neuron cannot be edited until it is unlocked.
@@ -1364,7 +1370,7 @@ local_conn <- function(){
                          Cache = FALSE)
 }
 
-
+### moved to rcatmaid ###
 #' Get CATMAID server
 #'
 #' @description shows the URL for a connection object (see ?catmaid::catmaid_login)

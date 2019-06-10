@@ -5,7 +5,7 @@
 \title{Find out what is already known about a neuron's connectivity profile and connected FAFB segments}
 \usage{
 fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
-  connector_ids = connector_ids, volume = NULL, pid = 1,
+  connector_ids = connector_ids, mesh3d = NULL, pid = 1,
   conn = NULL, ...)
 }
 \arguments{
@@ -15,7 +15,7 @@ fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
 
 \item{connector_ids}{Optional numeric ids of CATMAID connector nodes that will restrict connections for analysis}
 
-\item{volume}{volume to which to restrict connector locations}
+\item{mesh3d}{mesh3d to which to restrict connector locations}
 
 \item{pid}{project id. Defaults to 1}
 
