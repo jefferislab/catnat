@@ -105,7 +105,8 @@ fafbseg_transfer_tags <- function(new.neuron, old.neuron, offset = FALSE, search
     tagged.points = tagged.points[tagged.points%in%old.neuron$d$PointNo]
     tagged.points = old.neuron$d[match(tagged.points,old.neuron$d$PointNo),]
     tagged.points$tag = labels
-    near = nabor::knn(query = tagged.points[,c('X','Y', 'Z')], data =nat::xyzmatrix(new.neuron), k=1, radius= ifelse(offset,search.range.nm,0) )$nn.idx
+    near = tryCatch(nabor::knn(query = tagged.points[,c('X','Y', 'Z')], data =nat::xyzmatrix(new.neuron), k=1, radius= ifelse(offset,search.range.nm,0) )$nn.idx,
+                    error = function(e) nabor::knn(query = tagged.points[,c('X','Y', 'Z')], data =nat::xyzmatrix(new.neuron), k=1)$nn.idx)
     near = near[near!=0]
     labels = tagged.points$tag[near!=0]
     nodes = new.neuron$d$PointNo[near]
@@ -132,7 +133,8 @@ fafbseg_transfer_connectors<- function(new.neuron, old.neuron,
   }
   if(!is.null(old.neuron$connector)&length(old.neuron$connector)){
     c.df = old.neuron$connector
-    near = nabor::knn(query = nat::xyzmatrix(c.df), data = nat::xyzmatrix(new.neuron), k=1, radius=ifelse(offset,search.range.nm,0))$nn.idx
+    near = tryCatch(nabor::knn(query = nat::xyzmatrix(c.df), data = nat::xyzmatrix(new.neuron), k=1, radius=ifelse(offset,search.range.nm,0))$nn.idx,
+                      error = function(e) nnabor::knn(query = nat::xyzmatrix(c.df), data = nat::xyzmatrix(new.neuron), k=1)$nn.idx)
     new.c.df = c.df[near!=0,]
     new.c.df$near_id = new.neuron$d[near,"PointNo"]
     if(nrow(new.c.df)>0){
@@ -402,7 +404,10 @@ catmaid_find_likely_merge <- function(TODO, skid = NULL, fafbseg = FALSE, min_no
     }
     if(length(neuron.bbx)){
       neuron.bbx.d = do.call(rbind,lapply(1:length(neuron.bbx),function(n) cbind(neuron.bbx[[n]]$d,skid=names(neuron.bbx[n]))))
-      near = nabor::knn(query = todo[,c('X','Y', 'Z')], data = nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm)$nn.idx
+      near = tryCatch(nabor::knn(query = todo[,c('X','Y', 'Z')], data = nat::xyzmatrix(neuron.bbx.d),k=10, radius=search.range.nm),
+                      error = function(e) nabor::knn(query = todo[,c('X','Y', 'Z')], data = nat::xyzmatrix(neuron.bbx.d),k=10))
+      near$nn.idx[near$nn.dists>=search.range.nm] = 0
+      near = near$nn.idx
       near = near[near!=0]
       near = neuron.bbx.d[near,]
       near$TODO = todo$PointNo
