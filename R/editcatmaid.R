@@ -64,11 +64,11 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
     new.neuron = catmaid::read.neuron.catmaid(res$skeleton_id, pid = pid, conn = conn, ...)
     if(include.tags&nat::is.neuron(neurons[[file]])){
       fafbseg_transfer_tags(new.neuron = new.neuron, old.neuron = neurons[[file]],
-                            pid = pid, conn = conn, search.range.nm = 0,...)
+                            pid = pid, conn = conn, search.range.nm = 0, offset = FALSE, ...)
     }
     if(include.connectors&nat::is.neuron(neurons[[file]])){
       fafbseg_transfer_connectors(new.neuron = new.neuron, old.neuron = neurons[[file]], links = TRUE,
-                                  search.range.nm = 0, pid = pid, conn = conn, ...)
+                                  search.range.nm = 0, offset = FALSE, pid = pid, conn = conn, ...)
     }
     skids = c(skids,res$skeleton_id)
   }
@@ -92,7 +92,7 @@ catmaid_upload_neurons <- function(swc = NULL, name ="neuron SWC upload", annota
 #' @param ... methods passed to catmaid::catmaid_set_labels
 #' @export
 #' @rdname fafbseg_transfer
-fafbseg_transfer_tags <- function(new.neuron, old.neuron, offset = TRUE, search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...){
+fafbseg_transfer_tags <- function(new.neuron, old.neuron, offset = FALSE, search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...){
   if(!nat::is.neuron(new.neuron)){
     new.neuron = catmaid::read.neuron.catmaid(new.neuron, pid = pid, conn = conn, ...)
   }
