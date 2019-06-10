@@ -19,11 +19,12 @@ set_segmentation_location <- function(path){
 #' @param google if TRUE, we treat x as the name of a Google FAFB segment. If name = FALSE, then x can be skeleton ids (numeric or characters) or the name / annotation for a neuron,
 #' if given as a character starting with 'name:' or 'annotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.
 #' @param read.from from where to read FAFB segmented skeletons to generate node count data
+#' @param seg the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0
 #' @param conn a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.
 #' @param ... methods passed to catmaid::read.neurons.catmaid
 #' @export
 #' @rdname read.neurons.fafbseg
-read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
+read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, seg = "v14seg-Li-190411.0", ...){
   if(google){
     x = paste0("name:",x)
     y = paste0("annotation:",x)
@@ -38,7 +39,7 @@ read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
     message("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
     message("See ?catmaid_login")
   }
-  conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+  conn$server = paste0("https://neuropil.janelia.org/tracing/fafb/",seg,"/")
   n = catmaid::read.neurons.catmaid(skids, conn=conn, OmitFailures = TRUE,...)
   n[,"nodes"] = nat:::summary.neuronlist(n)$nodes
   n[,"skeleton.type"] = "FAFB-seg"
@@ -49,16 +50,17 @@ read.neurons.fafbseg <- function(x, google = FALSE, conn = NULL, ...){
 #'
 #' @description Use any CATMAID function in the v14-seg environment, without logging into separate CATMAID instance
 #' @param FUN catmaid function from rcatmaid or catnat
+#' @param seg the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0
 #' @param ... methods passed to FUN
 #' @export
 #' @rdname fafb_seg
-fafb_seg <- function(FUN, ...){
+fafb_seg <- function(FUN, seg = "v14seg-Li-190411.0", ...){
   conn = catmaid::catmaid_login()
   if(conn$server != "https://neuropil.janelia.org/tracing/fafb/v14/"){
     message("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
     message("See ?catmaid_login")
   }
-  conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+  conn$server = paste0("https://neuropil.janelia.org/tracing/fafb/",seg,"/")
   FUN(conn=conn, ...)
 }
 
@@ -67,10 +69,11 @@ fafb_seg <- function(FUN, ...){
 #' @description Log into the v14-seg CATMAID instance for FAFB v14 Adult flybrain segmented skeletonisations from Peter Li at Google
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
+#' @param seg the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0
 #' @param ... methods passed to catmaid::catmaid_fetch
 #' @export
 #' @rdname fafb_seg_conn
-fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
+fafb_seg_conn <- function(pid = 1, conn = NULL, seg = "v14seg-Li-190411.0", ...){
   if(is.null(conn)){
     conn = catmaid::catmaid_login()
 
@@ -79,13 +82,14 @@ fafb_seg_conn <- function(pid = 1, conn = NULL, ...){
     warning("You need to log into CATMAID: https://neuropil.janelia.org/tracing/fafb/v14/")
     warning("See ?catmaid_login")
   }
-  conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+  conn$server = paste0("https://neuropil.janelia.org/tracing/fafb/",seg,"/")
   conn
 }
 
 #' @export
 #' @rdname read.neurons.fafbseg
-fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","local"), ...){
+fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","local"),
+                                  seg = "v14seg-Li-190411.0", ...){
   read.from=match.arg(read.from)
   if(read.from=="CATMAID"){
     y = paste0("name:",x)
@@ -95,7 +99,7 @@ fafbseg_get_node_count <-function(x, read.from = c("CATMAID","Neuroglancer","loc
       message("See ?catmaid_login")
 
     }
-    conn$server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/"
+    conn$server = paste0("https://neuropil.janelia.org/tracing/fafb/",seg,"/")
     skids = sapply(y,catmaid_skids,several.ok=FALSE,conn=conn, ...)
     skids[sapply(skids,length)==0] = 0
     skids = unlist(skids)
@@ -178,6 +182,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
 #' @param treat.skids.separately create hitlist, with hits pooled for all skids given (FALSE, default) or per skid given (TRUE)
 #' @param read.from from where to read FAFB segmented skeletons
 #' @param unique if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column
+#' @param seg the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0
 #' @param pid project id. Defaults to 1
 #' @param conn CATMAID connection object, see ?catmaid::catmaid_login for details
 #' @param ... methods passed to catmaid::catmaid_fetch, catmaid::catmaid_get_connector_table for fafb_frags_ids, and read read methods for fafb_frags_skeletons
@@ -272,7 +277,9 @@ fafb_seg_hitlist <- function(skids, direction = c("incoming","outgoing"),
 #' @rdname fafb_frags
 fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
                                connector_ids = NULL, max.nodes = 10,
-                               add.links = TRUE, unique = TRUE, ...){
+                               add.links = TRUE, unique = TRUE,
+                               seg = "v14seg-Li-190411.0",
+                               ...){
   direction=match.arg(direction)
   df = fafb_neuron_details(skids = skids, direction = direction, connector_ids = connector_ids)
   if(!is.null(max.nodes)){
@@ -281,7 +288,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
   if (nrow(df)>0){
     if(add.links){
       df$FAFB.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
-      df$FAFBseg.link = connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14-seg/")
+      df$FAFBseg.link = connector_URL(df, server = paste0("https://neuropil.janelia.org/tracing/fafb/",seg,"/"))
     }
     df$ngl_id[df$ngl_id==0] = paste0(df$ngl_id[df$ngl_id==0],"_",1:sum(df$ngl_id==0))
     hits = table(df$ngl_id)
