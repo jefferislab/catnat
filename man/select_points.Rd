@@ -4,14 +4,12 @@
 \alias{select_points}
 \title{Select 3D points in space}
 \usage{
-select_points(points, plot3d = NULL, ...)
+select_points(points, plot3d = NULL)
 }
 \arguments{
 \item{points}{a mxn matrix}
 
 \item{plot3d}{Object to pass to the rgl::plot3d function}
-
-\item{...}{additional arguments passed to methods}
 }
 \value{
 A mxn matrix
