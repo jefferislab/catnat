@@ -313,11 +313,12 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
 #' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
 #' @param return.unmatched defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.
+#' @param volume character vector identifier string for the volume containing segmentation data - by default it uses the value of the fafbseg.skeletonuri option. Any input that can be parsed by brainmaps_volume is acceptable.
 #' @param ... methods passed to fafbseg::brainmaps_xyz2id
 #' @export
 #' @rdname map_fafbsegs_to_neuron
 #' @importFrom stats aggregate
-map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, volume = getOption("fafbseg.skeletonuri"), return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
     someneuronlist = as.neuronlist(someneuronlist)
   }
@@ -328,7 +329,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
     while(n != length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), ...), error = function(e) NULL)
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), volume = volume, ...), error = function(e) NULL)
       if(is.null(segs)){
         message("brainmaps read error, retrying ...")
       }else{
@@ -376,11 +377,9 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
         }
         mm = subset(mm,ngl_id%in%keep)
         if(return.unmatched){
-          as = tryCatch(assign_strahler(neuron), error = function(e) neuron)
-          unmatched.pnos = neuron$d$PointNo[which(!segs%in%mm$ngl_id)]
-          mm = subset(as$d,PointNo%in%unmatched.pnos)
-          mm$index = rownames(mm)
-          mm$skid = neuron$skid
+          mm$ngl_id[!mm$ngl_id%in%keep]= 0
+        }else{
+          mm = subset(mm,ngl_id%in%keep)
         }
         t = rbind(t,mm)
         utils::setTxtProgressBar(pb, n)
