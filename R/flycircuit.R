@@ -24,7 +24,7 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
     }
   }
   names(fcns) = ids
-  fcns=Chiang2FCWB(fcns)
+  fcns=Chiang2FCWB(fcns, xform_version=xform_version)
   fcns = nat::nlapply(fcns,reroot.flycircuit.neuron)
   fcns
 }
