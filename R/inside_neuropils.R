@@ -72,11 +72,7 @@ in_neuropil.neuron <- function(x,
     points = x$d
     points.in = points[alphashape3d::inashape3d(points=nat::xyzmatrix(points),as3d=neuropil, indexAlpha = "ALL"),]
     v = rownames(points.in)
-    if("catmaidneuron"%in%class(x)){
-      pruned = tryCatch(prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
-    }else{
-      pruned = tryCatch(nat::prune_vertices(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
-    }
+    pruned = tryCatch(nat::prune_vertices(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
     if(nrow(nat::xyzmatrix(pruned))&method=="cable"){
       summary(pruned)$cable.length
     }else if(!is.null(pruned)&method%in%c("PRE","POST")){
