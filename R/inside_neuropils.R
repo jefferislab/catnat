@@ -26,7 +26,7 @@ inside_neuropils.neuron <- function(x, brain, method = c("cable","PRE","POST"), 
 #' @rdname inside_neuropils
 inside_neuropils.neuronlist <- function(x, brain, method = c("cable","PRE","POST"), min.endpoints = 1, alpha=30, ...){
   method = match.arg(method)
-  nat::nlapply(x, inside_neuropils.neuron, brain=brain, method=method)
+  nat::nlapply(x, inside_neuropils.neuron, brain=brain, method=method, min.endpoints = min.endpoints, alpha = alpha, ...)
 }
 
 #' @export
