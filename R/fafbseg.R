@@ -318,7 +318,7 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #' @export
 #' @rdname map_fafbsegs_to_neuron
 #' @importFrom stats aggregate
-map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, volume = getOption("fafbseg.skeletonuri"), return.unmatched = FALSE, ...){
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
     someneuronlist = as.neuronlist(someneuronlist)
   }
@@ -326,10 +326,10 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, volume = getO
   if(nat::is.neuronlist(someneuronlist)){
     pb <- utils::txtProgressBar(min = 0, max = length(someneuronlist), style = 3)
     n <- 1
-    while(n != length(someneuronlist)){
+    while(n <= length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron), volume = volume, ...), error = function(e) NULL)
+      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron),  ...), error = function(e) NULL)
       if(is.null(segs)){
         message("brainmaps read error, retrying ...")
       }else{

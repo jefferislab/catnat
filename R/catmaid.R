@@ -113,7 +113,7 @@ resample.catmaidneuronlist <- function(x,stepsize=1, ...) {
 #' @export
 catmaid_set_meta_annotations<-function(meta_annotations,annotations,pid=1,conn=NULL,...){
   post_data = list()
-  post_data[sprintf("annotates[%d]", seq_along(annotations))] = as.list(annotations)
+  post_data[sprintf("entity_ids[%d]", seq_along(annotations))] = as.list(annotations)
   path = sprintf("/%d/annotations/add", pid)
   post_data[sprintf("annotations[%d]", seq_along(meta_annotations))] = as.list(meta_annotations)
   res = catmaid_fetch(path, body = post_data, include_headers = F,

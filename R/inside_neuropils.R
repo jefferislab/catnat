@@ -3,7 +3,7 @@
 #' @description Calculates the cable length supplied by neurons 'x' to different brain regions defined in 'brain'.
 #'
 #' @param x a set of neurons or, for points_in_neuropil a mxn matrix of 3D points
-#' @param neuropil the code for the neuropil volume to be searched. See nat.flybrains::JFRC2NP.surf$RegionList for codes
+#' @param neuropil the code for the neuropil volume to be searched.
 #' @param brain the .surf brainspace in which the neurons are registered, must be segmented into neuropils
 #' @param method whether to calculate cable inside a given neuropil volume, or synapse number (PRE or POST)
 #' @param min.endpoints the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it
@@ -13,26 +13,26 @@
 #' @return a matrix of 3D points
 #' @export
 #' @rdname inside_neuropils
-inside_neuropils<-function(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable","PRE","POST"), min.endpoints = 1,alpha=30, ...) UseMethod("inside_neuropils")
+inside_neuropils<-function(x, brain, method = c("cable","PRE","POST"), min.endpoints = 1, alpha=30, ...) UseMethod("inside_neuropils")
 
 #' @export
 #' @rdname inside_neuropils
-inside_neuropils.neuron <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable","PRE","POST"), min.endpoints = 1,alpha=30, ...){
-  if(!requireNamespace('nat.flybrains', quietly = TRUE))
-    stop("You must install suggested package nat.flybrains to use this function!")
-  method = method[1]
+inside_neuropils.neuron <- function(x, brain, method = c("cable","PRE","POST"), min.endpoints = 1, alpha=30, ...){
+  method = match.arg(method)
   sapply(brain$RegionList, function(n) in_neuropil(x=x,method = method, brain = brain,neuropil=n,min.endpoints=min.endpoints,alpha=alpha))
 }
 
 #' @export
 #' @rdname inside_neuropils
-inside_neuropils.neuronlist <- function(x, brain = nat.flybrains::FCWBNP.surf, method = c("Cable","PRE","POST"), min.endpoints = 1,alpha=30, ...){
+inside_neuropils.neuronlist <- function(x, brain, method = c("cable","PRE","POST"), min.endpoints = 1, alpha=30, ...){
+  method = match.arg(method)
   nat::nlapply(x, inside_neuropils.neuron, brain=brain, method=method)
 }
 
 #' @export
 #' @rdname inside_neuropils
 points_in_neuropil <- function(x, brain, alpha = 30, ...){
+  method = match.arg(method)
   nps = brain$RegionList
   df = cbind(as.data.frame(x),neuropil=0)
   for (n in nps){
@@ -46,11 +46,20 @@ points_in_neuropil <- function(x, brain, alpha = 30, ...){
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil<-function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha, ...) UseMethod("in_neuropil")
+in_neuropil<-function(x,
+                      brain,
+                      neuropil,
+                      method = c("cable","PRE","POST"),
+                      min.endpoints =1,alpha=30, ...) UseMethod("in_neuropil")
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha, ...){
+in_neuropil.neuron <- function(x,
+                               brain,
+                               neuropil,
+                               method = c("cable","PRE","POST"),
+                               min.endpoints =1, alpha=30, ...){
+  method = match.arg(method)
   neuropil = subset(brain,neuropil)
   neuropil = alphashape3d::ashape3d(nat::xyzmatrix(neuropil),alpha=alpha)
   endings <- function(x){
@@ -65,11 +74,10 @@ in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.fl
     v = rownames(points.in)
     if("catmaidneuron"%in%class(x)){
       pruned = tryCatch(prune_vertices.catmaidneuron(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
-      class(pruned) = c("catmaidneuron","neuron")
     }else{
       pruned = tryCatch(nat::prune_vertices(x,verticestoprune=v,invert=TRUE),error = function(e)NULL)
     }
-    if(!is.null(pruned)&method=="Cable"){
+    if(nrow(nat::xyzmatrix(pruned))&method=="cable"){
       summary(pruned)$cable.length
     }else if(!is.null(pruned)&method%in%c("PRE","POST")){
       nrow(get.synapses(pruned,target=method))
@@ -80,6 +88,7 @@ in_neuropil.neuron <- function(x,method = c("Cable","PRE","POST"),brain = nat.fl
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil.neuronlist <- function(x,method = c("Cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=alpha, ...){
+in_neuropil.neuronlist <- function(x,method = c("cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=30, ...){
+  method = match.arg(method)
   nat::nlapply(x, in_neuropil.neuron, brain=brain, neuropil=neuropil,min.endpoints=min.endpoints,alpha=alpha,...)
 }
