@@ -16,15 +16,16 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
   ids = c()
   fcns = neuronlist()
   for (n in 1:length(fcneurons)){
-    swc=sprintf("http://flycircuit.tw/download/swc/%s.swc", fcneurons[n])
-    ofcn=tryCatch(nat::read.neuron(swc), error = function(e) NULL)
+    baseurl="http://flycircuit.tw/flycircuitSourceData/NeuronData_v1.2/%s/%s_seg001_linesetTransformRelease.swc"
+    swc=sprintf(baseurl, fcneurons[n], fcneurons[n])
+    ofcn=tryCatch(nat::read.neuron(swc), error = function(e) warning("unable to read neuron: ", fcneurons[n]))
     if(!is.null(ofcn)) {
       fcns = c(fcns, as.neuronlist(ofcn))
       ids = c(ids, fcneurons[n])
     }
   }
   names(fcns) = ids
-  fcns=Chiang2FCWB(fcns)
+  fcns=Chiang2FCWB(fcns, xform_version=xform_version)
   fcns = nat::nlapply(fcns,reroot.flycircuit.neuron)
   fcns
 }
