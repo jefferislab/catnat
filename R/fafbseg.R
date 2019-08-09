@@ -336,7 +336,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
         m = reshape2::melt(table(segs))
         colnames(m) = c("ngl_id","node_hits")
         m$skid = names(someneuronlist)[n]
-        # Get a rough idea if a fragment if microtubule containing, or what Strahler order it is at, if the neuron has this marked
+        # Get a rough idea if a fragment of microtubule containing, or what Strahler order it is at, if the neuron has this marked
         if(!is.null(neuron$d$microtubules)){
           mt = aggregate(neuron$d$microtubules,list(ngl_id = segs),function(x) (sum(x)/length(x))>=0.5)
           colnames(mt) = c("ngl_id","microtubules")
@@ -375,7 +375,6 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatc
             }
           }
         }
-        mm = subset(mm,ngl_id%in%keep)
         if(return.unmatched){
           mm$ngl_id[!mm$ngl_id%in%keep]= 0
         }else{

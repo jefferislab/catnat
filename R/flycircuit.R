@@ -1,5 +1,7 @@
 ## These are flycircuit functions
 
+
+#  moved to flycircuit
 #' Fetch FlyCircuit neuron skeletons from the Taiwan FlyCircuit server
 #'
 #' @description Assigns cell body side based in neuron name.
@@ -30,6 +32,7 @@ get.skeleton.from.flycircuit <- function(fcneurons, xform_version=1, ...){
   fcns
 }
 
+# moved to flycircuit
 #' @rdname get.skeleton.from.flycircuit
 reroot.flycircuit.neuron <- function(x){
   x = nat::as.neuron(nat::as.ngraph(x), origin = which(x$d$Label==4))
@@ -38,6 +41,7 @@ reroot.flycircuit.neuron <- function(x){
   x
 }
 
+# moved to flycircuit
 #' @rdname get.skeleton.from.flycircuit
 Chiang2FCWB <- function(x, female = grepl("-F-",x), xform_version=1) {
   template_to_use=ifelse(female, "chiangf","chiangm")
