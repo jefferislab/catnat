@@ -18,6 +18,8 @@ need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, 
 \item{return.unmatched}{defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.}
 
 \item{...}{methods passed to fafbseg::brainmaps_xyz2id}
+
+\item{volume}{character vector identifier string for the volume containing segmentation data - by default it uses the value of the fafbseg.skeletonuri option. Any input that can be parsed by brainmaps_volume is acceptable.}
 }
 \description{
 Set the local path to the location where you have .zip files of FAFB segmented skeletons. This function also very roughly estimates

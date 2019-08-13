@@ -5,10 +5,11 @@
 \alias{fafbseg_get_node_count}
 \title{Read neurons from the FAFB segmentation instance (temporary)}
 \usage{
-read.neurons.fafbseg(x, google = FALSE, conn = NULL, ...)
+read.neurons.fafbseg(x, google = FALSE, conn = NULL,
+  seg = "v14seg-Li-190411.0", ...)
 
 fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
-  "local"), ...)
+  "local"), seg = "v14seg-Li-190411.0", ...)
 }
 \arguments{
 \item{x}{typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.}
@@ -17,6 +18,8 @@ fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
 if given as a character starting with 'name:' or 'annotation:' respectively. When Google FAFB fragments are merged, one name is maintained and the other may be found as an annotation. In order to check for this, annotations can also be read.}
 
 \item{conn}{a CATMAID connection object. If NULL catmaid::catmaid::catmaid_login() is called.}
+
+\item{seg}{the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0}
 
 \item{...}{methods passed to catmaid::read.neurons.catmaid}
 

@@ -5,7 +5,7 @@
 \alias{fafbseg_transfer_connectors}
 \title{Transfer information between v14 and v14-seg neurons}
 \usage{
-fafbseg_transfer_tags(new.neuron, old.neuron, offset = TRUE,
+fafbseg_transfer_tags(new.neuron, old.neuron, offset = FALSE,
   search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1,
   conn2 = fafb_seg_conn(), ...)
 

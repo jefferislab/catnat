@@ -20,7 +20,7 @@ fafb_seg_hitlist(skids, direction = c("incoming", "outgoing"),
 
 fafb_seg_tracing_list(skids, direction = c("incoming", "outgoing"),
   connector_ids = NULL, max.nodes = 10, add.links = TRUE,
-  unique = TRUE, ...)
+  unique = TRUE, seg = "v14seg-Li-190411.0", ...)
 }
 \arguments{
 \item{skids}{neuron skeleton ids}
@@ -49,6 +49,8 @@ Default set to NULL, searches all incoming or outgoing connectors, as specified 
 \item{add.links}{add links to CATMAID in our tracing list}
 
 \item{unique}{if TRUE, fafb_seg_tracing_list gives each segment only once in the tracing list, the rest of the information is just one example of a putative connection out of the total number, given in the 'hits' column}
+
+\item{seg}{the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0}
 }
 \description{
 Fetch skeleton ids or read skeletons from the FAFb Google Segmentation by Peter Li.

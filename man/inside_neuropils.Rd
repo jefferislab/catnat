@@ -10,31 +10,26 @@
 \alias{in_neuropil.neuronlist}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
-inside_neuropils(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30,
-  ...)
+inside_neuropils(x, brain, method = c("cable", "PRE", "POST"),
+  min.endpoints = 1, alpha = 30, ...)
 
-\method{inside_neuropils}{neuron}(x, brain = nat.flybrains::FCWBNP.surf,
-  method = c("Cable", "PRE", "POST"), min.endpoints = 1, alpha = 30,
-  ...)
-
-\method{inside_neuropils}{neuronlist}(x,
-  brain = nat.flybrains::FCWBNP.surf, method = c("Cable", "PRE",
+\method{inside_neuropils}{neuron}(x, brain, method = c("cable", "PRE",
   "POST"), min.endpoints = 1, alpha = 30, ...)
+
+\method{inside_neuropils}{neuronlist}(x, brain, method = c("cable",
+  "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
 
 points_in_neuropil(x, brain, alpha = 30, ...)
 
-in_neuropil(x, method = c("Cable", "PRE", "POST"),
-  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  min.endpoints = 1, alpha = alpha, ...)
+in_neuropil(x, brain, neuropil, method = c("cable", "PRE", "POST"),
+  min.endpoints = 1, alpha = 30, ...)
 
-\method{in_neuropil}{neuron}(x, method = c("Cable", "PRE", "POST"),
-  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  min.endpoints = 1, alpha = alpha, ...)
+\method{in_neuropil}{neuron}(x, brain, neuropil, method = c("cable",
+  "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
 
-\method{in_neuropil}{neuronlist}(x, method = c("Cable", "PRE", "POST"),
+\method{in_neuropil}{neuronlist}(x, method = c("cable", "PRE", "POST"),
   brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
-  min.endpoints = 1, alpha = alpha, ...)
+  min.endpoints = 1, alpha = 30, ...)
 }
 \arguments{
 \item{x}{a set of neurons or, for points_in_neuropil a mxn matrix of 3D points}
@@ -49,7 +44,7 @@ in_neuropil(x, method = c("Cable", "PRE", "POST"),
 
 \item{...}{additional arguments passed to methods}
 
-\item{neuropil}{the code for the neuropil volume to be searched. See nat.flybrains::JFRC2NP.surf$RegionList for codes}
+\item{neuropil}{the code for the neuropil volume to be searched.}
 }
 \value{
 a matrix of 3D points

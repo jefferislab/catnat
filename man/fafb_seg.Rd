@@ -4,10 +4,12 @@
 \alias{fafb_seg}
 \title{Use any CATMAID function in the v14-seg environment, without logging into separate CATMAID instance}
 \usage{
-fafb_seg(FUN, ...)
+fafb_seg(FUN, seg = "v14seg-Li-190411.0", ...)
 }
 \arguments{
 \item{FUN}{catmaid function from rcatmaid or catnat}
+
+\item{seg}{the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0}
 
 \item{...}{methods passed to FUN}
 }

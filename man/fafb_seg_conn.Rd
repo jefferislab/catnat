@@ -4,12 +4,14 @@
 \alias{fafb_seg_conn}
 \title{Log into the v14-seg CATMAID instance for FAFB v14 Adult flybrain segmented skeletonisations}
 \usage{
-fafb_seg_conn(pid = 1, conn = NULL, ...)
+fafb_seg_conn(pid = 1, conn = NULL, seg = "v14seg-Li-190411.0", ...)
 }
 \arguments{
 \item{pid}{project id. Defaults to 1}
 
 \item{conn}{CATMAID connection object, see ?catmaid::catmaid_login for details}
+
+\item{seg}{the CATMAID segmentation instance, e.g. v14-seg, v14seg-Li-190411.0}
 
 \item{...}{methods passed to catmaid::catmaid_fetch}
 }
