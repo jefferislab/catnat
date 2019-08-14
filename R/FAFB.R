@@ -15,8 +15,8 @@
 read.neurons.catmaid.meta <- function(skids,
                                       meta = c("ItoLee_Lineage",
                                                "ItoLee_Hemilineage",
-                                               "Volker_Lineage",
-                                               "Volker_Hemilineage"),
+                                               "Hartenstein_Lineage",
+                                               "Hartenstein_Hemilineage"),
                                       sub = " |:",
                                       OmitFailures = TRUE,
                                       ...){
