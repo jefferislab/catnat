@@ -74,3 +74,11 @@ catmaid_query_meta_annotations <-function(meta_annotations,
   invisible(catmaid_error_check(res))
   res$entities
 }
+
+# hidden
+possibly.numeric <- function(x) {
+  stopifnot(is.atomic(x) || is.list(x))
+  nNA <- sum(is.na(x))
+  nNA.new <- suppressWarnings(sum(is.na(as.numeric(x))))
+  nNA.new == nNA
+}
