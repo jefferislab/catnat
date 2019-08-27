@@ -5,7 +5,7 @@
 \title{Read neurons from CATMAID with extra meta-data}
 \usage{
 read.neurons.catmaid.meta(skids, meta = c("ItoLee_Lineage",
-  "ItoLee_Hemilineage", "Volker_Lineage", "Volker_Hemilineage"),
+  "ItoLee_Hemilineage", "Hartenstein_Lineage", "Hartenstein_Hemilineage"),
   sub = " |:", OmitFailures = TRUE, ...)
 }
 \arguments{
