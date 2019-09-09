@@ -1020,7 +1020,7 @@ catmaid_convert_time <- function(utc){
 
 #' Interactively upload neuron(s) to CATMAID
 #'
-#' @description  Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
+#' @description  Uploads neurons to CATMAID, names them and annotates them, from the environment specified with \code{conn} to that specified by \code{conn2}.
 #' Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 #' @param x either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server
 #' @param tolerance how many potentially duplicated nodes you will tolerate
