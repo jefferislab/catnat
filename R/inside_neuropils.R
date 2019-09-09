@@ -84,7 +84,12 @@ in_neuropil.neuron <- function(x,
 
 #' @export
 #' @rdname inside_neuropils
-in_neuropil.neuronlist <- function(x,method = c("cable","PRE","POST"),brain = nat.flybrains::FCWBNP.surf,neuropil = "LH_R",min.endpoints =1,alpha=30, ...){
+in_neuropil.neuronlist <- function(x,
+                                   brain = nat.flybrains::FCWBNP.surf,
+                                   neuropil = "LH_R",
+                                   method = c("cable","PRE","POST"),
+                                   min.endpoints =1,
+                                   alpha=30, ...){
   method = match.arg(method)
   nat::nlapply(x, in_neuropil.neuron, brain=brain, neuropil=neuropil,min.endpoints=min.endpoints,alpha=alpha,...)
 }

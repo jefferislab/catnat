@@ -27,8 +27,8 @@ in_neuropil(x, brain, neuropil, method = c("cable", "PRE", "POST"),
 \method{in_neuropil}{neuron}(x, brain, neuropil, method = c("cable",
   "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
 
-\method{in_neuropil}{neuronlist}(x, method = c("cable", "PRE", "POST"),
-  brain = nat.flybrains::FCWBNP.surf, neuropil = "LH_R",
+\method{in_neuropil}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
+  neuropil = "LH_R", method = c("cable", "PRE", "POST"),
   min.endpoints = 1, alpha = 30, ...)
 }
 \arguments{
