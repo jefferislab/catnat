@@ -62,7 +62,7 @@ catmaid_controlled_upload(x, tolerance = 0.15,
 \item{...}{methods passed to catmaid::catmaid_fetch}
 }
 \description{
-Uploads neurons to CATMAID, names them and annotates them, from the environment specified with conn2 to that specified by conn2.
+Uploads neurons to CATMAID, names them and annotates them, from the environment specified with \code{conn} to that specified by \code{conn2}.
 Please use with caution, as you could be heavily adding to a live tracing environment. When neurons are shown, potential join sites / locations of join tags are shown as spheres.
 }
 \examples{
