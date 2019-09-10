@@ -307,18 +307,29 @@ fafb_seg_tracing_list <- function(skids, direction = c("incoming","outgoing"),
 #'
 #' @description  Set the local path to the location where you have .zip files of FAFB segmented skeletons. This function also very roughly estimates
 #' whether fragment is microtubule containing, what Strahler order it is at, or if it is axonic or dendritic, if the neuron has this marked
-#' @param someneuronlist a neuronlist or neuron object
-#' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
-#' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
+#'
+#' @section Volumes: You can choose which auto-segmentation to use by specifying
+#' an optional \code{volume} argument, which will be passed to \code{fafbseg::\link{brainmaps_xyz2id}}. By default the
+#' @param someneuronlist a \code{\link{neuronlist}} or \code{\link{neuron}} object
+#' @param node.match how many nodes of each neuron in someneuronlist need to be within an auto segmented volume, for it to be said to match.
+#' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. i.e. if a neuron matches with a volume
 #' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
-#' need be in the volumetric Google FAFB segmentation for a Neuroglancer fragment, for that fragment to be returned.
-#' @param return.unmatched defaults to FALSE. If TRUE, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.
-#' @param volume character vector identifier string for the volume containing segmentation data - by default it uses the value of the fafbseg.skeletonuri option. Any input that can be parsed by brainmaps_volume is acceptable.
-#' @param ... methods passed to fafbseg::brainmaps_xyz2id
+#' @param return.unmatched defaults to \code{FALSE}. If \code{TRUE}, then a data frame of unmatched Point Numbers for the neuron in question are returned, and their Strahler order.
+#' @param ... Additional arguments passed to \code{fafbseg::\link{brainmaps_xyz2id}} potentiallly including a \code{volume} identifier.
+#'
 #' @export
 #' @rdname map_fafbsegs_to_neuron
 #' @importFrom stats aggregate
-map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5, return.unmatched = FALSE, ...){
+#' @examples
+#' \dontrun{
+#' da2=read.neurons.catmaid("glomerulus DA2 right")
+#' fafbseg::with_segmentation("20190805",{
+#' autoseghits=map_fafbsegs_to_neuron(da2)
+#' })
+#' summary(autoseghits)
+#' }
+map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5,
+                                   return.unmatched = FALSE, ...){
   if(is.neuron(someneuronlist)){
     someneuronlist = as.neuronlist(someneuronlist)
   }
