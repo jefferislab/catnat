@@ -21,7 +21,7 @@
 #'   = PN).
 #' @export
 #' @seealso \code{\link{seebroken3d}} \code{\link{flow.centrality}}
-cluster_synapses_within_skeleton <-function(x, polyadic = T, lambda = 30, order = 150, e = c(0.3,0.7),...) UseMethod("cluster_synapses_within_skeleton")
+cluster_synapses_within_skeleton <-function(x, polyadic = FALSE, lambda = 30, order = 150, e = c(0.3,0.7),...) UseMethod("cluster_synapses_within_skeleton")
 
 #' @export
 #' @rdname cluster_synapses_within_skeleton
@@ -80,6 +80,7 @@ cluster_synapses_within_skeleton.neuron <- function(x, polyadic = T, lambda = 30
   gradient.ascent <- function(x, ngraph, nodes, clusters, order){
     peak = F
     positions = c()
+    x = as.numeric(x)
     while (peak == F){
       neighbours = unlist(igraph::neighborhood(igraph::as.undirected(ngraph), order = order, nodes = x))
       scores = nodes[as.character(neighbours),"syn.density.score"]
