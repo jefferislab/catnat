@@ -14,12 +14,12 @@ set_segmentation_location <- function(path){
 brainmaps_xyz2id_chunk <- function(xyz, chunk.size = 199, ...){
   is <- seq(from = 1, to = nrow(xyz), by = chunk.size)
   j <- is[1]
-  p <- data.frame()
+  p <- c()
   for(i in is[-1]){
     cont <- TRUE
     bmps <- fafbseg::brainmaps_xyz2id(xyz = xyz[j:i,], ...)
     j <- i
-    p <- rbind(p, bmps)
+    p <- p(p, bmps)
   }
   p
 }
