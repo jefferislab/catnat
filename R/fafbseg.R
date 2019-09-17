@@ -13,13 +13,16 @@ set_segmentation_location <- function(path){
 # hidden, to avoid brainmaps freak-out
 brainmaps_xyz2id_chunk <- function(xyz, chunk.size = 199, ...){
   is <- seq(from = 1, to = nrow(xyz), by = chunk.size)
+  if(!nrow(xyz)%in%is){
+    is <- c(is, nrow(xyz))
+  }
   j <- is[1]
   p <- c()
   for(i in is[-1]){
     cont <- TRUE
     bmps <- fafbseg::brainmaps_xyz2id(xyz = xyz[j:i,], ...)
-    j <- i
-    p <- p(p, bmps)
+    j <- (i+1)
+    p <- c(p, bmps)
   }
   p
 }
