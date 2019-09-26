@@ -71,7 +71,7 @@ catmaid_query_meta_annotations <-function(meta_annotations,
   path <- sprintf("/%d/annotations/query-targets", pid)
   res <- catmaid::catmaid_fetch(path, body = post_data, include_headers = F,
                        simplifyVector = T, conn = conn, ...)
-  invisible(catmaid_error_check(res))
+  invisible(catmaid:::catmaid_error_check(res))
   res$entities
 }
 
