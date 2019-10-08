@@ -28,8 +28,8 @@ read.neurons.catmaid.meta <- function(skids,
     mad$field <- gsub(sub, "", mad$field)
     maddf <- rbind(maddf, mad)
   }
-  n <-  read.neurons.catmaid(x, OmitFailures = OmitFailures, ...)
-  as <-  catmaid_get_annotations_for_skeletons(names(n), ...)
+  n <-  catmaid::read.neurons.catmaid(skids, OmitFailures = OmitFailures, ...)
+  as <-  catmaid::catmaid_get_annotations_for_skeletons(names(n), ...)
   as <- as[as$id %in% maddf$id, ]
   m <-  merge(maddf, as[,c("skid","id")])
   n[, c(meta, "unique.assignment")] <- NA
