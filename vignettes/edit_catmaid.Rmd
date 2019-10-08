@@ -143,7 +143,7 @@ It's important to do a few things while tracing in the `v14-seg` instance:
 - STOP tracing in `v14-seg` when you come up against a manually traced neuron. Split off any overlapping cable.
 - Annotate all the neurons you want to upload with the same annotation (or constellation of annotations)
 - Leave a specific tag (e.g. "TODO") at leaf nodes where you want to join your `v14-seg` skeleton up to a manually traced neuron once ported to 'v14'. Place ths leaf node as close to the manual skeleton as possible.
-- Be aware that the importing will take connectors with your neuron, but in FIXME `v14-seg` it will create new connectors, that will not retain any other connectivity information other than their relationship with the imported skeleton.
+- Be aware that the importing will take connectors with your neuron, but in `v14` it will create new connectors, that will not retain any other connectivity information other than their relationship with the imported skeleton.
 
 There are function to do the import and joining automatically without user interaction (`catmaid_uncontrolled_upload`), however, it is STRONGLY recommended that you use `catmaid_controlled_upload` which will walk you through the changes you are making to CATMAID so you can be sure you do not make a mistake. The process is roughly:
   
