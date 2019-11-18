@@ -2,20 +2,34 @@
 % Please edit documentation in R/rankedSampling.R
 \name{segments_ranked_pre}
 \alias{segments_ranked_pre}
-\title{Sampling BLAH}
+\alias{segments_ranked_post}
+\title{Ranked sampling}
 \usage{
 segments_ranked_pre(x, fileout = NULL, omitNAs = FALSE,
   volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805", ...)
+
+segments_ranked_post(x, fileout = NULL, omitNAs = FALSE,
+  volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805", ...)
 }
 \arguments{
-\item{x}{a neuron or neuronlist object, or (a) local file path(s) to your saved .swc file(s).}
+\item{x}{neuron or neuronlist. given by a CATMAID skid, skid list, or annotation. Synaptic partners of these neurons will be returned.}
 
-\item{fileout}{whatever you want to name your uploaded neurons. If a single character, then it will be added to all uploaded neurons. Else, can be a character vector the same length as swc.}
+\item{fileout}{character. defines the file to write out the generated spreadsheet in csv format}
 
-\item{omitNAs}{a character vector of annotations, to be added to all of the uploaded neurons}
+\item{omitNAs}{logical. Should NAs be omitted? FALSE by default}
 
-\item{...}{methods passed to catmaid::catmaid_fetch}
+\item{...}{catmaid::catmaid_get_connector_table for segments_ranked_pre, catmaid::catmaid_get_connectors_between for segments_ranked_post}
+}
+\value{
+A \code{list}, most importantly the columns: "segment"  - google segment ID, "n" - number of overlaps with query neuron connections, "FAFB.link" and "FAFBseg.link" URLs to position of the connection in the regular and the Google seg CATMAID environments, respectively.
 }
 \description{
-BLAH
+Generating a ranked sampling spreadsheet based on number of overlapping synapses with segments for CATMAID neurons or neuron lists. The function relies on the brainmaps API from Google. The result depends on marked up pre- or postsynapses.
+}
+\examples{
+\donttest{
+DA2_up_segs = segments_ranked_pre("glomerulus DA2 right")
+View(DA2_up_segs)
+segments_ranked_post(38885, fileout = "single_DA2_downstream_segs.csv", omitNAs = TRUE)
+}
 }
