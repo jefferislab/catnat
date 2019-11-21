@@ -5,6 +5,10 @@ cache: packages
 warnings_are_errors: false
 r_build_args: "--no-manual"
 r_check_args: "--no-manual"
+addons:
+  apt:
+    packages:
+    - libglu1-mesa-dev
 env:
   global:
     - RGL_USE_NULL=TRUE
