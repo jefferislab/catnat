@@ -22,7 +22,7 @@ error. The default value (\code{NA}) will result in \code{\link{nlapply}}
 stopping with an error message the moment there is an error. For other
 values, see details.}
 
-\item{...}{Additional arguments passed to the \code{\link{catmaid_fetch}} 
+\item{...}{Additional arguments passed to the \code{\link{catmaid_fetch}}
 function}
 }
 \description{

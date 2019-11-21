@@ -6,7 +6,7 @@
 \alias{cluster_synapses_within_skeleton.neuronlist}
 \title{Cluster synapses within a neuron's skeleton}
 \usage{
-cluster_synapses_within_skeleton(x, polyadic = T, lambda = 30,
+cluster_synapses_within_skeleton(x, polyadic = FALSE, lambda = 30,
   order = 150, e = c(0.3, 0.7), ...)
 
 \method{cluster_synapses_within_skeleton}{neuron}(x, polyadic = T,

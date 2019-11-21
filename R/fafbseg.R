@@ -10,6 +10,24 @@ set_segmentation_location <- function(path){
   options(fafbseg.skelziproot = path)
 }
 
+# hidden, to avoid brainmaps freak-out
+brainmaps_xyz2id_chunk <- function(xyz, chunk.size = 199, ...){
+  is <- seq(from = 1, to = nrow(xyz), by = chunk.size)
+  if(!nrow(xyz)%in%is){
+    is <- c(is, nrow(xyz))
+  }
+  j <- is[1]
+  p <- c()
+  for(i in is[-1]){
+    cont <- TRUE
+    bmps <- fafbseg::brainmaps_xyz2id(xyz = xyz[j:i,], ...)
+    j <- (i+1)
+    p <- c(p, bmps)
+  }
+  p
+}
+
+
 #' Read neurons from the FAFB segmentation instance (temporary)
 #'
 #' @description  Reads neurons (or node count data) from the temporary FAFB segmentation instance.
@@ -162,7 +180,7 @@ fafb_neuron_details <- function(skids, direction = c("incoming","outgoing"), con
     df = subset(df,connector_id%in%connector_ids)
   }
   df[is.na(df$X),c("X","Y","Z")] = df[is.na(df$X),c("x","y","z")] # In the cases where there are no pre nodes
-  df$ngl_id = fafbseg::brainmaps_xyz2id(df[,c('X','Y', 'Z')])
+  df$ngl_id = brainmaps_xyz2id_chunk(df[,c('X','Y', 'Z')])
   df
 }
 
@@ -220,7 +238,7 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
   if(!is.null(connector_ids)){
     connected = subset(connected,connector_id%in%connector_ids)
   }
-  connected_ids= fafbseg::brainmaps_xyz2id(connected[,c('X','Y', 'Z')])
+  connected_ids= brainmaps_xyz2id_chunk(connected[,c('X','Y', 'Z')])
   connected_ids
 }
 #' @export
@@ -340,7 +358,7 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5,
     while(n <= length(someneuronlist)){
       message(names(someneuronlist)[n])
       neuron = someneuronlist[[n]]
-      segs = tryCatch(fafbseg::brainmaps_xyz2id(nat::xyzmatrix(neuron),  ...), error = function(e) NULL)
+      segs = tryCatch(brainmaps_xyz2id_chunk(nat::xyzmatrix(neuron),  ...), error = function(e) NULL)
       if(is.null(segs)){
         message("brainmaps read error, retrying ...")
       }else{
