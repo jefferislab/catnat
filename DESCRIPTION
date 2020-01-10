@@ -38,11 +38,11 @@ Imports: Rvcg, nabor, Morpho, dplyr, nat.templatebrains, rgl, plyr, igraph, goog
 URL: https://github.com/jefferislab/catnat
 BugReports: https://github.com/jefferislab/catnat/issues
 Remotes: kassambara/easyGgplot2,
-    jefferis/nat,
-    jefferis/rcatmaid,
-    jefferislab/nat.templatebrains,
-    jefferislab/nat.flybrains,
-    jefferis/elmr,
+    natverse/nat,
+    natverse/rcatmaid,
+    natverse/nat.templatebrains,
+    natverse/nat.flybrains,
+    natverse/elmr,
     jefferislab/lhns,
     jefferis/fafbseg
 Encoding: UTF-8
