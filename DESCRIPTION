@@ -43,6 +43,7 @@ Remotes: kassambara/easyGgplot2,
     natverse/nat.templatebrains,
     natverse/nat.flybrains,
     natverse/elmr,
+    natverse/nat.nblast,
     jefferislab/lhns,
     jefferis/fafbseg
 Encoding: UTF-8
