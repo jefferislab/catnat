@@ -6,6 +6,9 @@ cache:
   packages: true
 
 warnings_are_errors: false
+r_build_args: "--no-manual"
+r_check_args: "--no-manual"
+
 stages:
   - name: pre-cache1
   - name: pre-cache2
