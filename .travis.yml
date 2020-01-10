@@ -4,8 +4,6 @@
 language: r
 cache:
   packages: true
-  directories:
-  - $HOME/usr/local
 
 warnings_are_errors: false
 stages:
@@ -18,8 +16,6 @@ jobs:
     - stage: pre-cache1
       before_install:
          - echo 'options(Ncpus = 2)' >> ~/.Rprofile
-         - export PATH=$PATH:$HOME/usr/local/bin
-         - sh ./cmtk_build.sh
       install:
          - R -e 'install.packages(c("remotes", "rgl"))'
       script: true
