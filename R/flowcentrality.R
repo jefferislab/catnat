@@ -445,15 +445,3 @@ splitscan <- function (someneuronlist, col = c("blue", "orange", "purple","green
     savetodisk(selected, selected_file)
   selected
 }
-
-
-# nopen3d()
-# for(i in 1:length(l)){
-#   message(i)
-#   seesplit3d(l[[i]],lwd=2,soma=500)
-#   y = ll[[i]]
-#   xyzmatrix(y) = xyzmatrix(y)+1000
-#   seesplit3d(y,lwd=2,soma=500, col = c("cyan", "yellow", "magenta","darkgreen", "darkgrey", "deeppink"))
-#   p = readline("Next? ")
-#   clear3d()
-# }
