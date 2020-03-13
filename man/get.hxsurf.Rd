@@ -4,8 +4,14 @@
 \alias{get.hxsurf}
 \title{Read Amira surface (aka HxSurface or HyperSurface) files into hxsurf object}
 \usage{
-get.hxsurf(filename, RegionNames = NULL, RegionChoice = "both",
-  FallbackRegionCol = "grey", Verbose = FALSE, ...)
+get.hxsurf(
+  filename,
+  RegionNames = NULL,
+  RegionChoice = "both",
+  FallbackRegionCol = "grey",
+  Verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{filename}{file path from which to read}

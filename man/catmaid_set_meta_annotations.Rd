@@ -4,8 +4,13 @@
 \alias{catmaid_set_meta_annotations}
 \title{Meta-annotate CATMAID annotations}
 \usage{
-catmaid_set_meta_annotations(meta_annotations, annotations, pid = 1,
-  conn = NULL, ...)
+catmaid_set_meta_annotations(
+  meta_annotations,
+  annotations,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{meta_annotations}{meta-annotation to add}

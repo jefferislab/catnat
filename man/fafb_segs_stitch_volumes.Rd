@@ -5,20 +5,38 @@
 \alias{neuronvolume3d}
 \title{Get neuron volumes and stitch them into a cohesive neuron, or neuronal compartment}
 \usage{
-fafb_segs_stitch_volumes(neuron, volumes = NULL, map = TRUE,
-  voxelSize = 50, downsample.factor = 12, soma = TRUE,
-  node.match = 4, smooth = FALSE, resample.neuron = TRUE,
-  resample.volume = FALSE, smooth.type = c("taubin", "laplace",
-  "HClaplace", "fujiLaplace", "angWeight", "surfPreserveLaplace"),
-  lambda = 0.5, mu = -0.53, delta = 0.1, conn = NULL, ...)
+fafb_segs_stitch_volumes(
+  neuron,
+  volumes = NULL,
+  map = TRUE,
+  voxelSize = 50,
+  downsample.factor = 12,
+  soma = TRUE,
+  node.match = 4,
+  smooth = FALSE,
+  resample.neuron = TRUE,
+  resample.volume = FALSE,
+  smooth.type = c("taubin", "laplace", "HClaplace", "fujiLaplace", "angWeight",
+    "surfPreserveLaplace"),
+  lambda = 0.5,
+  mu = -0.53,
+  delta = 0.1,
+  conn = NULL,
+  ...
+)
 
-neuronvolume3d(neuronvolume, type = c("volume", "points"),
-  split = c("whole", "split", "soma", "primary neurite", "axon",
-  "dendrite", "microtubule", "primary dendrite"), alpha = 0.3,
-  WithConnectors = TRUE, synapse.radius = 500, cols = c(neuron =
-  "grey", dendrite = "cyan", soma = "magenta", primary.neurite = "purple",
-  primary.dendrite = "chartreuse", axon = "orange", microtubule = "green",
-  twig = "brown"))
+neuronvolume3d(
+  neuronvolume,
+  type = c("volume", "points"),
+  split = c("whole", "split", "soma", "primary neurite", "axon", "dendrite",
+    "microtubule", "primary dendrite"),
+  alpha = 0.3,
+  WithConnectors = TRUE,
+  synapse.radius = 500,
+  cols = c(neuron = "grey", dendrite = "cyan", soma = "magenta", primary.neurite =
+    "purple", primary.dendrite = "chartreuse", axon = "orange", microtubule = "green",
+    twig = "brown")
+)
 }
 \arguments{
 \item{neuron}{a neuron object that matches the volumes given}

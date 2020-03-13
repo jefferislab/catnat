@@ -13,8 +13,7 @@ primary.neurite(x, resample = 1, keep.pnt = T, ...)
 
 \method{primary.neurite}{neuron}(x, resample = 1, keep.pnt = T, ...)
 
-\method{primary.neurite}{neuronlist}(x, resample = 1, keep.pnt = T,
-  ...)
+\method{primary.neurite}{neuronlist}(x, resample = 1, keep.pnt = T, ...)
 
 starting.neurite(x, k, ...)
 

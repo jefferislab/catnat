@@ -4,8 +4,13 @@
 \alias{catmaid_node_time}
 \title{Get the UTC creation / edit time for a CATMAID node}
 \usage{
-catmaid_node_time(id, time = c("creation_time", "edition_time"),
-  pid = 1, conn = NULL, ...)
+catmaid_node_time(
+  id,
+  time = c("creation_time", "edition_time"),
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{id}{a treenode or connector ID}

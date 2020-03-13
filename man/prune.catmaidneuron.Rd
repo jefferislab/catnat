@@ -5,8 +5,7 @@
 \alias{prune}
 \title{Prune nodes from a catmaid neuron, keeping the synapses}
 \usage{
-\method{prune}{catmaidneuron}(x, target, maxdist, keep = c("near",
-  "far"), return.indices = FALSE, ...)
+\method{prune}{catmaidneuron}(x, target, maxdist, keep = c("near", "far"), return.indices = FALSE, ...)
 }
 \arguments{
 \item{x}{a neuron object}

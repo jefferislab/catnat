@@ -6,16 +6,24 @@
 \alias{tracer.neuron.stats}
 \title{Get data and plots describing tracer activity statistics}
 \usage{
-tracer.plot(names = c("Alex Bates", "Ruairi Roberts", "Greg Jefferis",
-  "Clement Hallou", "Philipp Ranft", "Philipp Schlegel", "Fiona Love",
-  "Amelia Edmondson-Stait"), calc.date = "2016-04-01",
-  from.date = "2016-04-01", to.date = Sys.Date(), cumulative = T,
-  ...)
+tracer.plot(
+  names = c("Alex Bates", "Ruairi Roberts", "Greg Jefferis", "Clement Hallou",
+    "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"),
+  calc.date = "2016-04-01",
+  from.date = "2016-04-01",
+  to.date = Sys.Date(),
+  cumulative = T,
+  ...
+)
 
-tracer.treenodes.plot(skids = NULL, names = c("Alex Bates",
-  "Ruairi Roberts", "Greg Jefferis", "Clement Hallou", "Philipp Ranft",
-  "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"),
-  from.date = "2016-04-01", to.date = Sys.Date(), ...)
+tracer.treenodes.plot(
+  skids = NULL,
+  names = c("Alex Bates", "Ruairi Roberts", "Greg Jefferis", "Clement Hallou",
+    "Philipp Ranft", "Philipp Schlegel", "Fiona Love", "Amelia Edmondson-Stait"),
+  from.date = "2016-04-01",
+  to.date = Sys.Date(),
+  ...
+)
 
 tracer.neuron.stats(skids, value = c("nodes", "pre", "post"), ...)
 }

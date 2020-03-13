@@ -4,8 +4,7 @@
 \alias{connector_URL}
 \title{Generate URLs to CATMAID connector location}
 \usage{
-connector_URL(df,
-  server = "https://neuropil.janelia.org/tracing/fafb/v14/")
+connector_URL(df, server = "https://neuropil.janelia.org/tracing/fafb/v14/")
 }
 \arguments{
 \item{df}{data frame that must contain a connector_id column, and x, y, z columns}

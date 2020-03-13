@@ -5,11 +5,20 @@
 \alias{fafbseg_get_node_count}
 \title{Read neurons from the FAFB segmentation instance (temporary)}
 \usage{
-read.neurons.fafbseg(x, google = FALSE, conn = NULL,
-  seg = "v14seg-Li-190411.0", ...)
+read.neurons.fafbseg(
+  x,
+  google = FALSE,
+  conn = NULL,
+  seg = "v14seg-Li-190411.0",
+  ...
+)
 
-fafbseg_get_node_count(x, read.from = c("CATMAID", "Neuroglancer",
-  "local"), seg = "v14seg-Li-190411.0", ...)
+fafbseg_get_node_count(
+  x,
+  read.from = c("CATMAID", "Neuroglancer", "local"),
+  seg = "v14seg-Li-190411.0",
+  ...
+)
 }
 \arguments{
 \item{x}{typically a skeleton ID in from the CATMAID FAFB v14-seg instance neuroglancer ID.}

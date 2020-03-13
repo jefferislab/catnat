@@ -4,8 +4,12 @@
 \alias{map_fafbsegs_to_neuron}
 \title{Find out what is already known about a neuron's connectivity profile and connected FAFB segments}
 \usage{
-map_fafbsegs_to_neuron(someneuronlist, node.match = 5,
-  return.unmatched = FALSE, ...)
+map_fafbsegs_to_neuron(
+  someneuronlist,
+  node.match = 5,
+  return.unmatched = FALSE,
+  ...
+)
 }
 \arguments{
 \item{someneuronlist}{a \code{\link{neuronlist}} or \code{\link{neuron}} object}

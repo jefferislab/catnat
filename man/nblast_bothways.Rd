@@ -4,9 +4,16 @@
 \alias{nblast_bothways}
 \title{NBLAST two different sets of neurons forwards and backwards}
 \usage{
-nblast_bothways(group1, group2 = group1, smat = NULL, sd = 3,
-  version = c(2, 1), normalised = FALSE, UseAlpha = FALSE,
-  OmitFailures = NA)
+nblast_bothways(
+  group1,
+  group2 = group1,
+  smat = NULL,
+  sd = 3,
+  version = c(2, 1),
+  normalised = FALSE,
+  UseAlpha = FALSE,
+  OmitFailures = NA
+)
 }
 \arguments{
 \item{group1}{a neuronlist object}

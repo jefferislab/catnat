@@ -4,8 +4,7 @@
 \alias{catmaid_skeletons_in_bbx}
 \title{Search for CATMAID skeletons within a volume}
 \usage{
-catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL,
-  ...)
+catmaid_skeletons_in_bbx(bbx, min_nodes = 2, pid = 1, conn = NULL, ...)
 }
 \arguments{
 \item{bbx}{the bounding box (a matrix of 2 rows and 3 columns) describing a search volume}

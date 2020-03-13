@@ -7,8 +7,7 @@
 \usage{
 node.contribution.to.skeletons(x, exclude.authors = NULL, ...)
 
-synapse.contribution.to.skeletons(x, exclude.authors = NULL,
-  direction = NULL)
+synapse.contribution.to.skeletons(x, exclude.authors = NULL, direction = NULL)
 }
 \arguments{
 \item{x}{a neuronlist where the name of each neuron is its skeleton ID}

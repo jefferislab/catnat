@@ -7,20 +7,47 @@
 \alias{fafb_seg_tracing_list}
 \title{Fetch the up or outgoing auto-traced FAFB fragments from a CATMAID FAFB neuron}
 \usage{
-fafb_frags_ids(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, mesh3d = NULL, pid = 1, conn = NULL, ...)
+fafb_frags_ids(
+  skids,
+  direction = c("incoming", "outgoing"),
+  connector_ids = NULL,
+  mesh3d = NULL,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 
-fafb_frags_skeletons(ids, skids = NULL, direction = c("incoming",
-  "outgoing"), connector_ids = NULL, read.from = c("CATMAID",
-  "Neuroglancer", "local"), pid = 1, conn = NULL, ...)
+fafb_frags_skeletons(
+  ids,
+  skids = NULL,
+  direction = c("incoming", "outgoing"),
+  connector_ids = NULL,
+  read.from = c("CATMAID", "Neuroglancer", "local"),
+  pid = 1,
+  conn = NULL,
+  ...
+)
 
-fafb_seg_hitlist(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, treat.skids.separately = FALSE, pid = 1,
-  conn = NULL, ...)
+fafb_seg_hitlist(
+  skids,
+  direction = c("incoming", "outgoing"),
+  connector_ids = NULL,
+  treat.skids.separately = FALSE,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 
-fafb_seg_tracing_list(skids, direction = c("incoming", "outgoing"),
-  connector_ids = NULL, max.nodes = 10, add.links = TRUE,
-  unique = TRUE, seg = "v14seg-Li-190411.0", ...)
+fafb_seg_tracing_list(
+  skids,
+  direction = c("incoming", "outgoing"),
+  connector_ids = NULL,
+  max.nodes = 10,
+  add.links = TRUE,
+  unique = TRUE,
+  seg = "v14seg-Li-190411.0",
+  ...
+)
 }
 \arguments{
 \item{skids}{neuron skeleton ids}

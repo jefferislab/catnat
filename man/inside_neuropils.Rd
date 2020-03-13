@@ -10,26 +10,64 @@
 \alias{in_neuropil.neuronlist}
 \title{Calculate the cable length inside of different neuropils in a segmented .surf brain}
 \usage{
-inside_neuropils(x, brain, method = c("cable", "PRE", "POST"),
-  min.endpoints = 1, alpha = 30, ...)
+inside_neuropils(
+  x,
+  brain,
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 
-\method{inside_neuropils}{neuron}(x, brain, method = c("cable", "PRE",
-  "POST"), min.endpoints = 1, alpha = 30, ...)
+\method{inside_neuropils}{neuron}(
+  x,
+  brain,
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 
-\method{inside_neuropils}{neuronlist}(x, brain, method = c("cable",
-  "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+\method{inside_neuropils}{neuronlist}(
+  x,
+  brain,
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 
-points_in_neuropil(x, brain, alpha = 30, ...)
+points_in_neuropil(x, brain, alpha = NULL, ...)
 
-in_neuropil(x, brain, neuropil, method = c("cable", "PRE", "POST"),
-  min.endpoints = 1, alpha = 30, ...)
+in_neuropil(
+  x,
+  brain,
+  neuropil,
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 
-\method{in_neuropil}{neuron}(x, brain, neuropil, method = c("cable",
-  "PRE", "POST"), min.endpoints = 1, alpha = 30, ...)
+\method{in_neuropil}{neuron}(
+  x,
+  brain,
+  neuropil,
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 
-\method{in_neuropil}{neuronlist}(x, brain = nat.flybrains::FCWBNP.surf,
-  neuropil = "LH_R", method = c("cable", "PRE", "POST"),
-  min.endpoints = 1, alpha = 30, ...)
+\method{in_neuropil}{neuronlist}(
+  x,
+  brain = nat.flybrains::FCWBNP.surf,
+  neuropil = "LH_R",
+  method = c("cable", "PRE", "POST"),
+  min.endpoints = 1,
+  alpha = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{a set of neurons or, for points_in_neuropil a mxn matrix of 3D points}
@@ -40,7 +78,8 @@ in_neuropil(x, brain, neuropil, method = c("cable", "PRE", "POST"),
 
 \item{min.endpoints}{the minimum number of endpoints a neuron must have in a neuropil to be counted as included in it}
 
-\item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion}
+\item{alpha}{the alpha given to the ashape3d() function to generate neuropil objects by which to calculate point inclusion.
+If \code{NULL} then \code{nat::pointsinside} is used.}
 
 \item{...}{additional arguments passed to methods}
 

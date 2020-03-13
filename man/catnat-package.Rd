@@ -28,11 +28,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alex Bates \email{abates@mrc-lmb.cam.ac.uk} (0000-0002-1195-0445)
+\strong{Maintainer}: Alex Bates \email{abates@mrc-lmb.cam.ac.uk} (\href{https://orcid.org/0000-0002-1195-0445}{ORCID})
 
 Authors:
 \itemize{
-  \item Gregory Jefferis \email{jefferis@gmail.com} (0000-0002-0587-9355)
+  \item Gregory Jefferis \email{jefferis@gmail.com} (\href{https://orcid.org/0000-0002-0587-9355}{ORCID})
 }
 
 }

@@ -10,17 +10,27 @@
 \usage{
 connectivity_similarity(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
 
-\method{connectivity_similarity}{numeric}(x, y, c1 = 0.5, c2 = 0.18,
-  normalise = TRUE)
+\method{connectivity_similarity}{numeric}(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
 
-\method{connectivity_similarity}{matrix}(x, y, c1 = 0.5, c2 = 0.18,
-  normalise = TRUE)
+\method{connectivity_similarity}{matrix}(x, y, c1 = 0.5, c2 = 0.18, normalise = TRUE)
 
-connectivity_similarity_distance(m, c1 = 0.5, c2 = 0.18,
-  normalise = FALSE, diag = FALSE, upper = FALSE)
+connectivity_similarity_distance(
+  m,
+  c1 = 0.5,
+  c2 = 0.18,
+  normalise = FALSE,
+  diag = FALSE,
+  upper = FALSE
+)
 
-connectivity_similarity_matrix(m, c1 = 0.5, c2 = 0.18,
-  normalise = FALSE, diag = FALSE, upper = FALSE)
+connectivity_similarity_matrix(
+  m,
+  c1 = 0.5,
+  c2 = 0.18,
+  normalise = FALSE,
+  diag = FALSE,
+  upper = FALSE
+)
 }
 \arguments{
 \item{x}{a vector/matrix of connectivities, where each entry in the vector or each column in the matrix is a different target/input neuron/cell type}

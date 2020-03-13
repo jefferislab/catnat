@@ -4,9 +4,15 @@
 \alias{fafb_neuron_details}
 \title{Find out what is already known about a neuron's connectivity profile and connected FAFB segments}
 \usage{
-fafb_neuron_details(skids, direction = c("incoming", "outgoing"),
-  connector_ids = connector_ids, mesh3d = NULL, pid = 1,
-  conn = NULL, ...)
+fafb_neuron_details(
+  skids,
+  direction = c("incoming", "outgoing"),
+  connector_ids = connector_ids,
+  mesh3d = NULL,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{skids}{neuron skeleton ids}

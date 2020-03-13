@@ -4,9 +4,13 @@
 \alias{sholl_data}
 \title{Sholl analysis on neuron skeletons}
 \usage{
-sholl_data(neuron, start = colMeans(xyzmatrix(neuron)),
-  starting.radius = radius.step, ending.radius = NULL,
-  radius.step = ending.radius/100)
+sholl_data(
+  neuron,
+  start = colMeans(xyzmatrix(neuron)),
+  starting.radius = radius.step,
+  ending.radius = NULL,
+  radius.step = ending.radius/100
+)
 }
 \arguments{
 \item{neuron}{a neuron object}

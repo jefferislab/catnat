@@ -4,13 +4,18 @@
 \alias{read.neurons.catmaid.meta}
 \title{Read neurons from CATMAID with extra meta-data}
 \usage{
-read.neurons.catmaid.meta(skids, meta = c("ItoLee_Lineage",
-  "ItoLee_Hemilineage", "Hartenstein_Lineage", "Hartenstein_Hemilineage"),
-  sub = " |:", OmitFailures = TRUE, ...)
+read.neurons.catmaid.meta(
+  skids,
+  meta = c("ItoLee_Lineage", "ItoLee_Hemilineage", "Hartenstein_Lineage",
+    "Hartenstein_Hemilineage"),
+  sub = " |:",
+  OmitFailures = TRUE,
+  ...
+)
 }
 \arguments{
 \item{skids}{One or more numeric skeleton ids or a character vector defining
-a query (see \code{\link{catmaid_skids}} or examples for the syntax).}
+a query (see \code{\link[catmaid]{catmaid_skids}} or examples for the syntax).}
 
 \item{meta}{a vector of meta-annotations to query. The annotations labelled by these meta-annotations will appear as
 entries in the \code{data.frame} attached to the returned \code{neuronlist}.}
@@ -22,7 +27,7 @@ error. The default value (\code{NA}) will result in \code{\link{nlapply}}
 stopping with an error message the moment there is an error. For other
 values, see details.}
 
-\item{...}{Additional arguments passed to the \code{\link{catmaid_fetch}}
+\item{...}{Additional arguments passed to the \code{\link[catmaid]{catmaid_fetch}}
 function}
 }
 \description{

@@ -4,8 +4,13 @@
 \alias{catmaid_join_skeletons}
 \title{Programmatically join CATMAID skeletons}
 \usage{
-catmaid_join_skeletons(from_treenode_id, to_treenode_id, pid = 1,
-  conn = NULL, ...)
+catmaid_join_skeletons(
+  from_treenode_id,
+  to_treenode_id,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{from_treenode_id}{the treenode ID of the downstream neuron}

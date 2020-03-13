@@ -4,10 +4,19 @@
 \alias{get_connected_skeletons}
 \title{Retrieving CATMAID neuron skeletons connected to query skeletons}
 \usage{
-get_connected_skeletons(someneuronlist, X = c(upper = 1e+08, lower = 0),
-  Y = c(upper = 1e+08, lower = 0), Z = c(upper = 1e+08, lower = 0),
-  min_nodes = 1000, max_nodes = NULL, min_synapses = 4,
-  prepost = NULL, soma = T, exclude.skids = NULL, ...)
+get_connected_skeletons(
+  someneuronlist,
+  X = c(upper = 1e+08, lower = 0),
+  Y = c(upper = 1e+08, lower = 0),
+  Z = c(upper = 1e+08, lower = 0),
+  min_nodes = 1000,
+  max_nodes = NULL,
+  min_synapses = 4,
+  prepost = NULL,
+  soma = T,
+  exclude.skids = NULL,
+  ...
+)
 }
 \arguments{
 \item{someneuronlist}{a 3D shape, neuronlist or neuron object that has been plotted in 3D whose coordinates can be accessed with nat::xyzmatrix()}

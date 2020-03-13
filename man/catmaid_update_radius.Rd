@@ -7,9 +7,14 @@
 \usage{
 catmaid_update_radius(tnids, radii, pid = 1, conn = NULL, ...)
 
-fafbseg_update_node_radii(x, max.dist = 2000,
-  method = c("nearest.mesh.point", "ray.cast"), pid = 1, conn = NULL,
-  ...)
+fafbseg_update_node_radii(
+  x,
+  max.dist = 2000,
+  method = c("nearest.mesh.point", "ray.cast"),
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{tnids}{the treenode ids to edit}

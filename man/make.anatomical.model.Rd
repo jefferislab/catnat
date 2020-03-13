@@ -4,9 +4,15 @@
 \alias{make.anatomical.model}
 \title{Generate a neuroanatomical alpha shape from connector and/or tree node data}
 \usage{
-make.anatomical.model(someneuronlist, substrate = c("connectors",
-  "cable", "both"), maxdistance = 10000, groupsize = 100,
-  alpha = 3000, auto.selection = T, chosen.points = NULL)
+make.anatomical.model(
+  someneuronlist,
+  substrate = c("connectors", "cable", "both"),
+  maxdistance = 10000,
+  groupsize = 100,
+  alpha = 3000,
+  auto.selection = T,
+  chosen.points = NULL
+)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist or neuron object}

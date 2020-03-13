@@ -4,10 +4,19 @@
 \alias{catmaid_interactive_name_transfer}
 \title{Interactively transfer names and annotations between neurons in two different CATMAID instances}
 \usage{
-catmaid_interactive_name_transfer(x = "name:ASB CHECK",
-  transfer.annotations = TRUE, additional.annotations = "ASB CHECK",
-  downsample = 100, fafbseg = FALSE, duplication.range.nm = 1,
-  pid = 1, conn = NULL, pid2 = 1, conn2 = fafb_seg_conn(), ...)
+catmaid_interactive_name_transfer(
+  x = "name:ASB CHECK",
+  transfer.annotations = TRUE,
+  additional.annotations = "ASB CHECK",
+  downsample = 100,
+  fafbseg = FALSE,
+  duplication.range.nm = 1,
+  pid = 1,
+  conn = NULL,
+  pid2 = 1,
+  conn2 = fafb_seg_conn(),
+  ...
+)
 }
 \arguments{
 \item{x}{a neuron object, or the skeleton ID of a neuron in v14 space}

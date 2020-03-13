@@ -4,8 +4,13 @@
 \alias{create_skeleton_from_nrrd}
 \title{Create a skeleton from a skeletonised neuron saved as a .Nrrd file}
 \usage{
-create_skeleton_from_nrrd(files, connection.distance = 25, k = "all",
-  distance.steps = 0.5, ...)
+create_skeleton_from_nrrd(
+  files,
+  connection.distance = 25,
+  k = "all",
+  distance.steps = 0.5,
+  ...
+)
 }
 \arguments{
 \item{files}{paths to saved .Nrrd files that have been skeletonised in Fiji}

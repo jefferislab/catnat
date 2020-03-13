@@ -4,8 +4,16 @@
 \alias{catmaid_find_likely_merge}
 \title{Find the TODO tagged merge sites between a given neuron and the CATMAID database at large}
 \usage{
-catmaid_find_likely_merge(TODO, skid = NULL, fafbseg = FALSE,
-  min_nodes = 2, search.range.nm = 1000, pid = 1, conn = conn, ...)
+catmaid_find_likely_merge(
+  TODO,
+  skid = NULL,
+  fafbseg = FALSE,
+  min_nodes = 2,
+  search.range.nm = 1000,
+  pid = 1,
+  conn = conn,
+  ...
+)
 }
 \arguments{
 \item{TODO}{a data.frame, as returned by catmaid_get_tag with tag = "TODO" (or a different tag indicative of a merge point) and url = FALSE}

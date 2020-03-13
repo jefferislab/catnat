@@ -4,8 +4,11 @@
 \alias{downstream.deletion.test}
 \title{Find how many downstream partners tracers have connected up}
 \usage{
-downstream.deletion.test(someneuronlist, names = c("Alex Bates",
-  "Ruairi Roberts"), ...)
+downstream.deletion.test(
+  someneuronlist,
+  names = c("Alex Bates", "Ruairi Roberts"),
+  ...
+)
 }
 \arguments{
 \item{someneuronlist}{a neuronlist object. Should be the downstream partners of (a) neuron(s) of interest}

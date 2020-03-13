@@ -4,8 +4,14 @@
 \alias{catmaid_interactive_join}
 \title{Interactively choose to join neurons in CATMAID, visualising with rgl in R}
 \usage{
-catmaid_interactive_join(possible.merges, downstream.neurons = NULL,
-  brain = NULL, pid = 1, conn = conn, ...)
+catmaid_interactive_join(
+  possible.merges,
+  downstream.neurons = NULL,
+  brain = NULL,
+  pid = 1,
+  conn = conn,
+  ...
+)
 }
 \arguments{
 \item{possible.merges}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}

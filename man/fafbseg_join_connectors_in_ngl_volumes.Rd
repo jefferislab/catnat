@@ -4,9 +4,16 @@
 \alias{fafbseg_join_connectors_in_ngl_volumes}
 \title{Join free connectors in a CATMAID instance to skeletons if they share a Google Brainmaps volume}
 \usage{
-fafbseg_join_connectors_in_ngl_volumes(x, direction = c("presynapses",
-  "postsynapses", "both"), maybe.connected, connector.range.nm = 1000,
-  node.match = 5, pid = 1, conn = NULL, ...)
+fafbseg_join_connectors_in_ngl_volumes(
+  x,
+  direction = c("presynapses", "postsynapses", "both"),
+  maybe.connected,
+  connector.range.nm = 1000,
+  node.match = 5,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{a neuronlist object or skeletons IDs / names / annotations that can be read by catmaid::catmaid_skids}

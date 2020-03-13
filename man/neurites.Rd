@@ -6,8 +6,11 @@
 \alias{neurites.neuronlist}
 \title{Segregate neurite compartments from a neuron/neuronlist}
 \usage{
-neurites(x, fragment = c("axons", "dendrites", "primary dendrite",
-  "primary neurite", "nulls"), ...)
+neurites(
+  x,
+  fragment = c("axons", "dendrites", "primary dendrite", "primary neurite", "nulls"),
+  ...
+)
 
 \method{neurites}{neuron}(x, fragment, ...)
 

@@ -9,14 +9,11 @@
 \usage{
 prune_by_tag(x, ...)
 
-\method{prune_by_tag}{neuron}(x, tag = "SCHLEGEL_LH",
-  remove.upstream = TRUE, ...)
+\method{prune_by_tag}{neuron}(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...)
 
-\method{prune_by_tag}{catmaidneuron}(x, tag = "SCHLEGEL_LH",
-  remove.upstream = TRUE, ...)
+\method{prune_by_tag}{catmaidneuron}(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...)
 
-\method{prune_by_tag}{neuronlist}(x, tag = "SCHLEGEL_LH",
-  remove.upstream = TRUE, ...)
+\method{prune_by_tag}{neuronlist}(x, tag = "SCHLEGEL_LH", remove.upstream = TRUE, ...)
 }
 \arguments{
 \item{x}{a \code{neuron} or \code{neuronlist} object}

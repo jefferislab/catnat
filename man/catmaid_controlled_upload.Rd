@@ -4,15 +4,33 @@
 \alias{catmaid_controlled_upload}
 \title{Interactively upload neuron(s) to CATMAID}
 \usage{
-catmaid_controlled_upload(x, tolerance = 0.15,
-  name = "v14-seg neuron upload", annotations = "v14-seg upload",
-  avoid = "v14", avoid.join = NULL, join.only = NULL,
-  include.potential.duplicates = FALSE, include.tags = TRUE,
-  include.connectors = TRUE, search.range.nm = 1000, join = FALSE,
-  join.tag = "TODO", lock = TRUE, fafbseg = FALSE, downsample = 2,
-  min_nodes = 2, brain = NULL, return.uploaded.skids = TRUE,
-  duplication.range.nm = 20, pid = 1, conn = NULL, pid2 = 1,
-  conn2 = fafb_seg_conn(), ...)
+catmaid_controlled_upload(
+  x,
+  tolerance = 0.15,
+  name = "v14-seg neuron upload",
+  annotations = "v14-seg upload",
+  avoid = "v14",
+  avoid.join = NULL,
+  join.only = NULL,
+  include.potential.duplicates = FALSE,
+  include.tags = TRUE,
+  include.connectors = TRUE,
+  search.range.nm = 1000,
+  join = FALSE,
+  join.tag = "TODO",
+  lock = TRUE,
+  fafbseg = FALSE,
+  downsample = 2,
+  min_nodes = 2,
+  brain = NULL,
+  return.uploaded.skids = TRUE,
+  duplication.range.nm = 20,
+  pid = 1,
+  conn = NULL,
+  pid2 = 1,
+  conn2 = fafb_seg_conn(),
+  ...
+)
 }
 \arguments{
 \item{x}{either skeleton IDs in the environment specified by conn2 (by default, the v14-seg CATMAID instance), or a neuronlist object to upload to the CATMAID instance specified when you use catmaid::catmaid_login(), if conn is NULL, else specified by conn$server}

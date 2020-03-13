@@ -4,8 +4,14 @@
 \alias{as.mesh3d.kde}
 \title{Convert a 3D Kernel Density Estimate (package ks) into rgl mesh3d object}
 \usage{
-\method{as.mesh3d}{kde}(x, cont = 50, approx.cont = TRUE,
-  method = c("tri", "ashape3d"), ashape.alpha = NULL, ...)
+\method{as.mesh3d}{kde}(
+  x,
+  cont = 50,
+  approx.cont = TRUE,
+  method = c("tri", "ashape3d"),
+  ashape.alpha = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{The kde object}

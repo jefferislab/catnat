@@ -6,20 +6,38 @@
 \alias{flow.centrality.neuronlist}
 \title{Determine dendritic/axonal by calculating flow centrality}
 \usage{
-flow.centrality(x, mode = c("sum", "centrifugal", "centripetal"),
-  polypre = TRUE, primary.dendrite = 0.9, bending.flow = FALSE,
-  split = c("postsynapses", "presynapses", "distance"), catmaid = TRUE,
-  ...)
+flow.centrality(
+  x,
+  mode = c("sum", "centrifugal", "centripetal"),
+  polypre = TRUE,
+  primary.dendrite = 0.9,
+  bending.flow = FALSE,
+  split = c("postsynapses", "presynapses", "distance"),
+  catmaid = TRUE,
+  ...
+)
 
-\method{flow.centrality}{neuron}(x, mode = c("sum", "centrifugal",
-  "centripetal"), polypre = TRUE, primary.dendrite = 0.9,
-  bending.flow = FALSE, split = c("postsynapses", "presynapses",
-  "distance"), catmaid = TRUE, ...)
+\method{flow.centrality}{neuron}(
+  x,
+  mode = c("sum", "centrifugal", "centripetal"),
+  polypre = TRUE,
+  primary.dendrite = 0.9,
+  bending.flow = FALSE,
+  split = c("postsynapses", "presynapses", "distance"),
+  catmaid = TRUE,
+  ...
+)
 
-\method{flow.centrality}{neuronlist}(x, mode = c("sum", "centrifugal",
-  "centripetal"), polypre = T, primary.dendrite = 0.9,
-  bending.flow = FALSE, split = c("postsynapses", "presynapses",
-  "distance"), catmaid = TRUE, ...)
+\method{flow.centrality}{neuronlist}(
+  x,
+  mode = c("sum", "centrifugal", "centripetal"),
+  polypre = T,
+  primary.dendrite = 0.9,
+  bending.flow = FALSE,
+  split = c("postsynapses", "presynapses", "distance"),
+  catmaid = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{a neuronlist or neuron object}

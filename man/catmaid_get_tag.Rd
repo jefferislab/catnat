@@ -4,8 +4,14 @@
 \alias{catmaid_get_tag}
 \title{Find the location of specified tags for a CATMAID neuron}
 \usage{
-catmaid_get_tag(x, tag = "TODO", url = FALSE, only.leaves = TRUE,
-  conn = NULL, pid = 1)
+catmaid_get_tag(
+  x,
+  tag = "TODO",
+  url = FALSE,
+  only.leaves = TRUE,
+  conn = NULL,
+  pid = 1
+)
 }
 \arguments{
 \item{x}{a neuron or neuronlist object}

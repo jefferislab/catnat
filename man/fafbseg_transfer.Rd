@@ -5,13 +5,30 @@
 \alias{fafbseg_transfer_connectors}
 \title{Transfer information between v14 and v14-seg neurons}
 \usage{
-fafbseg_transfer_tags(new.neuron, old.neuron, offset = FALSE,
-  search.range.nm = 1000, pid = 1, conn = NULL, pid2 = 1,
-  conn2 = fafb_seg_conn(), ...)
+fafbseg_transfer_tags(
+  new.neuron,
+  old.neuron,
+  offset = FALSE,
+  search.range.nm = 1000,
+  pid = 1,
+  conn = NULL,
+  pid2 = 1,
+  conn2 = fafb_seg_conn(),
+  ...
+)
 
-fafbseg_transfer_connectors(new.neuron, old.neuron, offset = FALSE,
-  search.range.nm = 1000, links = TRUE, pid = 1, conn = NULL,
-  pid2 = 1, conn2 = fafb_seg_conn(), ...)
+fafbseg_transfer_connectors(
+  new.neuron,
+  old.neuron,
+  offset = FALSE,
+  search.range.nm = 1000,
+  links = TRUE,
+  pid = 1,
+  conn = NULL,
+  pid2 = 1,
+  conn2 = fafb_seg_conn(),
+  ...
+)
 }
 \arguments{
 \item{new.neuron}{a neuron object, or the skeleton ID of a neuron in v14 space}

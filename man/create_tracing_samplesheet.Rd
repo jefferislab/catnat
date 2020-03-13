@@ -6,17 +6,31 @@
 \alias{update_tracing_samplesheets}
 \title{Create or update a googlesheet of randomised tracing targets for a given neuron}
 \usage{
-create_tracing_samplesheet(neuron, sheet_title = "mystery_neuron",
-  folder = "googlesheet", skid = neuron$skid, polypre = TRUE,
-  axon.dendrite.split = FALSE, randomise = TRUE)
+create_tracing_samplesheet(
+  neuron,
+  sheet_title = "mystery_neuron",
+  folder = "googlesheet",
+  skid = neuron$skid,
+  polypre = TRUE,
+  axon.dendrite.split = FALSE,
+  randomise = TRUE
+)
 
-update_single_samplesheet(sheet_title = "mystery_neuron",
-  folder = "googlesheet", neuron = NULL, skid = neuron$skid,
-  ws = "whole neuron input")
+update_single_samplesheet(
+  sheet_title = "mystery_neuron",
+  folder = "googlesheet",
+  neuron = NULL,
+  skid = neuron$skid,
+  ws = "whole neuron input"
+)
 
-update_tracing_samplesheets(sheet_title = "mystery_neuron",
-  folder = "googlesheet", neuron = NULL, skid = neuron$skid,
-  polypre = TRUE)
+update_tracing_samplesheets(
+  sheet_title = "mystery_neuron",
+  folder = "googlesheet",
+  neuron = NULL,
+  skid = neuron$skid,
+  polypre = TRUE
+)
 }
 \arguments{
 \item{neuron}{a neuron object. If neuron = NULL is given to the update function, data will be updated in the google sheet but any addition or removal of nodes/synapses to the CATMAID neuron will be ignored. If axon.dendrite.split = TRUE, neuron should be passed through catnat::flow.centrality first in order to identify its axon and dendrite}

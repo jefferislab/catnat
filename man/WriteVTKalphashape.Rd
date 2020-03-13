@@ -4,8 +4,12 @@
 \alias{WriteVTKalphashape}
 \title{Write alphashape as a .vtk file}
 \usage{
-WriteVTKalphashape(ashape, filename, title = filename,
-  datatype = c("float", "double"))
+WriteVTKalphashape(
+  ashape,
+  filename,
+  title = filename,
+  datatype = c("float", "double")
+)
 }
 \arguments{
 \item{ashape}{List of alphashape objects}

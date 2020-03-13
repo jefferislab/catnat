@@ -4,9 +4,15 @@
 \alias{catmaid_link_connectors}
 \title{Add synaptic links between connectors and treenodes}
 \usage{
-catmaid_link_connectors(treenode_id, connector_id,
-  link_type = c("presynaptic", "postsynaptic"), verbose = TRUE,
-  pid = 1, conn = NULL, ...)
+catmaid_link_connectors(
+  treenode_id,
+  connector_id,
+  link_type = c("presynaptic", "postsynaptic"),
+  verbose = TRUE,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{treenode_id}{the treenode ID to/from which a link is to be made}

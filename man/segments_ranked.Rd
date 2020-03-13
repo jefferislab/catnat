@@ -5,11 +5,21 @@
 \alias{segments_ranked_post}
 \title{Ranked sampling}
 \usage{
-segments_ranked_pre(x, fileout = NULL, omitNAs = FALSE,
-  volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805", ...)
+segments_ranked_pre(
+  x,
+  fileout = NULL,
+  omitNAs = FALSE,
+  volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805",
+  ...
+)
 
-segments_ranked_post(x, fileout = NULL, omitNAs = FALSE,
-  volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805", ...)
+segments_ranked_post(
+  x,
+  fileout = NULL,
+  omitNAs = FALSE,
+  volume = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190805",
+  ...
+)
 }
 \arguments{
 \item{x}{neuron or neuronlist. given by a CATMAID skid, skid list, or annotation. Synaptic partners of these neurons will be returned.}

@@ -4,8 +4,13 @@
 \alias{catmaid_connector_nodes}
 \title{Get information on a CATMAID connector node}
 \usage{
-catmaid_connector_nodes(connector_id, node = c("presynaptic",
-  "postsynaptic"), pid = 1, conn = conn, ...)
+catmaid_connector_nodes(
+  connector_id,
+  node = c("presynaptic", "postsynaptic"),
+  pid = 1,
+  conn = conn,
+  ...
+)
 }
 \arguments{
 \item{connector_id}{a data frame of possible mergers between tree nodes for neurons in a CATMAID database, as returned via catmaid_find_likely_merge}

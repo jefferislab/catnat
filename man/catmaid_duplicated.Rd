@@ -4,9 +4,17 @@
 \alias{catmaid_duplicated}
 \title{Try to detect whether a neuron your are about to import into CATMAID might cause a duplication in that CATMAID instance}
 \usage{
-catmaid_duplicated(neuron, skid = 0, tolerance = NULL,
-  duplication.range.nm = 20, downsample = 1, fafbseg = FALSE,
-  pid = 1, conn = NULL, ...)
+catmaid_duplicated(
+  neuron,
+  skid = 0,
+  tolerance = NULL,
+  duplication.range.nm = 20,
+  downsample = 1,
+  fafbseg = FALSE,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{neuron}{the neuron object you are thinking about uploading}

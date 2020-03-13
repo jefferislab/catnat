@@ -6,15 +6,31 @@
 \alias{catmaid_delete_neurons}
 \title{Function used to delete single neurons from CATMAID based on a given skeleton ID}
 \usage{
-catmaid_delete_neuron(skid, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
+catmaid_delete_neuron(
+  skid,
+  delete_connectors = TRUE,
+  plot = TRUE,
+  brain = NULL,
+  max.nodes = 100,
+  control = TRUE,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 
 catmaid_delete_connectors(connector_ids, pid = 1, conn = NULL, ...)
 
-catmaid_delete_neurons(skids, delete_connectors = TRUE, plot = TRUE,
-  brain = NULL, max.nodes = 100, control = TRUE, pid = 1,
-  conn = NULL, ...)
+catmaid_delete_neurons(
+  skids,
+  delete_connectors = TRUE,
+  plot = TRUE,
+  brain = NULL,
+  max.nodes = 100,
+  control = TRUE,
+  pid = 1,
+  conn = NULL,
+  ...
+)
 }
 \arguments{
 \item{skid}{the skeleton ID for a single neuron you want to delete}
