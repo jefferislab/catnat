@@ -14,7 +14,7 @@ Description: A selection of functions for analysis of neuronal morphology and
     frequent updates.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: 
     knitr,
     rmarkdown,

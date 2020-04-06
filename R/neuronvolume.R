@@ -9,6 +9,7 @@
 #' (no.points=no.points/downsample.factor) in order to make alphashape generation by alphashape3d::ashape manageable
 #' @param map if TRUE, instead of using the volumes argument, map_fafbsegs_to_neuron and fafbseg::read_brainmaps_meshes are used to retrieve Google 3D segmentations as mesh3d objects
 #' @param soma if TRUE, the soma (root point for neuron) will be identified
+#' @param downsample.volumes downsample the volume pulled from the brainmaps API by xovelsize.
 #' @param node.match how many nodes of each neuron in someneuronlist, need to be within a auto segmented volume, for it to be said to match.
 #' These nodes all need to be consecutive, in the sense that they must be in the same segment or a branch from that segment. I.e. If a neuron matches with a volume
 #' 5 times at diverse points across it arbour, this is thought to be a non-match with a large, proximal auto-traced segment.
@@ -25,7 +26,8 @@
 #' @return a 'neuronvolume' object, with the same structure as a neuron object (see the nat package), but which contains a mesh3D object for the neuron and other volume related data as a list at neuron$volume
 #' @export
 #' @rdname fafb_segs_stitch_volumes
-fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSize = 50, downsample.factor = 12,
+fafb_segs_stitch_volumes <- function(neuron, volumes = NULL,
+                                     map = TRUE, voxelSize = 50, downsample.factor = 12, downsample.volumes = TRUE,
                                      soma = TRUE, node.match = 4, smooth = FALSE, resample.neuron = TRUE, resample.volume = FALSE,
                                      smooth.type=c("taubin", "laplace", "HClaplace", "fujiLaplace","angWeight", "surfPreserveLaplace"),
                                      lambda = 0.5, mu = -0.53, delta = 0.1, conn = NULL, ...){
@@ -35,6 +37,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
     stop("Please install suggested fafbseg package")
   smooth.type = match.arg(smooth.type)
   downsample_vol <- function(vol,voxelSize = 50, ...){
+    v = Rvcg::vcgClean(v,sel=0:6,iterate=TRUE, silent = TRUE)
     v = Rvcg::vcgUniformRemesh(vol, voxelSize = voxelSize, offset = 0, discretize = FALSE,
                                multiSample = TRUE, absDist = FALSE, mergeClost = FALSE,
                                silent = TRUE)
@@ -100,7 +103,11 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
   neuron$d$volume = NA
   neuron$volume = list() # For collecting volume data
   message("Downsampling meshes")
-  downvolumes = pbapply::pblapply(volumes,function(s) tryCatch(downsample_vol(s),error = function(e) s))
+  if(downsample.volumes){
+    downvolumes = pbapply::pblapply(volumes,function(s) tryCatch(downsample_vol(s),error = function(e) s))
+  }else{
+    downvolumes = volumes
+  }
   ### FIND SOMA ###
   if(soma){
     message("Identifying soma")
@@ -127,7 +134,7 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
       p = nabor::knn(data=neuron.points[-1:-3,],query=soma.points,k=1,radius=1000)
       soma.ashape = alphashape3d::ashape3d(unique(soma.points[p$nn.dists>1000,]),pert = TRUE,alpha = voxelSize*50)
       soma.mesh = tryCatch(ashape2mesh3d(soma.ashape, remove.interior.points = TRUE),error = function(e) ashape2mesh3d(soma.ashape, remove.interior.points = FALSE))
-      soma.dv = tryCatch(Rvcg::vcgUniformRemesh(x=soma.mesh,voxelSize = voxelSize*4),error = function(e) soma.mesh)
+      soma.dv = tryCatch(Rvcg::vcgUniformRemesh(x=soma.mesh,voxelSize = voxelSize*10),error = function(e) soma.mesh)
       downvolumes[[length(downvolumes)+1]] = soma.dv
       soma.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=soma.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
       neuron$volume$volume.estimation$soma.ashape.volume = soma.ashape.volume
@@ -295,13 +302,13 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
   utils::setTxtProgressBar(pb, 1)
   p.na = apply(p,1,function(x) sum(is.na(x)>0))
   p = p[!p.na,]
-  a = alphashape3d::ashape3d(p,pert = TRUE,alpha = voxelSize*4)
+  a = alphashape3d::ashape3d(p,pert = TRUE,alpha = voxelSize*10)
   utils::setTxtProgressBar(pb, 2)
   triangles = a$triang[apply(a$triang, 1, function(x) {( any(as.numeric(x[9]) > 1))} ),][,1:3]
   vertices = unique(as.vector(unique(triangles)))
   vert = a$x[vertices,]
   utils::setTxtProgressBar(pb, 3)
-  neuron.ashape = alphashape3d::ashape3d(vert,pert = TRUE,alpha = voxelSize*4)
+  neuron.ashape = alphashape3d::ashape3d(vert,pert = TRUE,alpha = voxelSize*10)
   utils::setTxtProgressBar(pb, 4)
   mesh = ashape2mesh3d(neuron.ashape, remove.interior.points = FALSE)
   utils::setTxtProgressBar(pb, 5)
@@ -336,45 +343,69 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL, map = TRUE, voxelSi
   mesh.vertices = cbind(as.data.frame(mesh.vertices),matched.points)
   message("Creating sub-volumes...")
   if(2%in%mesh.vertices$Label){
-    axon.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==2)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    axon.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==2)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     axon.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=axon.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$axon.ashape.volume = axon.ashape.volume
-    neuron$volume$mesh3d$axon = ashape2mesh3d(axon.ashape, remove.interior.points = FALSE)
+    axon.mesh3d = ashape2mesh3d(axon.ashape, remove.interior.points = FALSE)
+    axon.mesh3d = Rvcg::vcgClean(axon.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$axon = axon.mesh3d
+    axon.mesh3d.volume = Rvcg::vcgVolume(axon.mesh3d)
+    neuron$volume$volume.estimation$axon.mesh3d.volume = axon.mesh3d.volume
     message("axon volume created")
   }
   if(3%in%mesh.vertices$Label){
-    dendrite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==3)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    dendrite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==3)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     dendrite.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=dendrite.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$dendrite.ashape.volume = dendrite.ashape.volume
-    neuron$volume$mesh3d$dendrite = ashape2mesh3d(dendrite.ashape, remove.interior.points = FALSE)
+    dendrite.mesh3d = ashape2mesh3d(dendrite.ashape, remove.interior.points = FALSE)
+    dendrite.mesh3d = Rvcg::vcgClean(dendrite.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$dendrite = dendrite.mesh3d
+    dendrite.mesh3d.volume = Rvcg::vcgVolume(dendrite.mesh3d)
+    neuron$volume$volume.estimation$dendrite.mesh3d.volume = dendrite.mesh3d.volume
     message("dendrite volume created")
   }
   if(7%in%mesh.vertices$Label){
-    primary.neurite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==7)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    primary.neurite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==7)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     primary.neurite.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=primary.neurite.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$primary.neurite.ashape.volume = primary.neurite.ashape.volume
-    neuron$volume$mesh3d$primary.neurite = ashape2mesh3d(primary.neurite.ashape, remove.interior.points = FALSE)
+    primary.neurite.mesh3d = ashape2mesh3d(primary.neurite.ashape, remove.interior.points = FALSE)
+    primary.neurite.mesh3d = Rvcg::vcgClean(primary.neurite.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$primary.neurite = primary.neurite.mesh3d
+    primary.neurite.mesh3d.volume = Rvcg::vcgVolume(primary.neurite.mesh3d)
+    neuron$volume$volume.estimation$primary.neurite.mesh3d.volume = primary.neurite.mesh3d.volume
     message("primary neurite volume created")
   }
   if(4%in%mesh.vertices$Label){
-    primary.dendrite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==4)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    primary.dendrite.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,Label==4)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     primary.dendrite.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=primary.dendrite.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$primary.dendrite.ashape.volume = primary.dendrite.ashape.volume
-    neuron$volume$mesh3d$primary.dendrite = ashape2mesh3d(primary.dendrite.ashape, remove.interior.points = FALSE)
+    primary.dendrite.mesh3d = ashape2mesh3d(primary.dendrite.ashape, remove.interior.points = FALSE)
+    primary.dendrite.mesh3d = Rvcg::vcgClean(primary.dendrite.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$primary.dendrite = primary.dendrite.mesh3d
+    primary.dendrite.mesh3d.volume = Rvcg::vcgVolume(primary.dendrite.mesh3d)
+    neuron$volume$volume.estimation$primary.dendrite.mesh3d.volume = primary.dendrite.mesh3d.volume
     message("primary dendrite volume created")
   }
   if(TRUE%in%mesh.vertices$microtubule){
-    mt.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,microtubule==TRUE)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    mt.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,microtubule==TRUE)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     mt.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=mt.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$microtubule.ashape.volume = mt.ashape.volume
-    neuron$volume$mesh3d$microtubule = ashape2mesh3d(mt.ashape, remove.interior.points = FALSE)
+    microtubule.mesh3d = ashape2mesh3d(microtubule.ashape, remove.interior.points = FALSE)
+    microtubule.mesh3d = Rvcg::vcgClean(microtubule.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$microtubule = microtubule.mesh3d
+    microtubule.mesh3d.volume = Rvcg::vcgVolume(microtubule.mesh3d)
+    neuron$volume$volume.estimation$microtubule.mesh3d.volume = microtubule.mesh3d.volume
     message("microtubule volume created")
   }
   if(FALSE%in%mesh.vertices$microtubule){
-    twig.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,microtubule==FALSE)[,1:3]),pert = TRUE,alpha = voxelSize*4)
+    twig.ashape = alphashape3d::ashape3d(as.matrix(subset(mesh.vertices,microtubule==FALSE)[,1:3]),pert = TRUE,alpha = voxelSize*10)
     twig.ashape.volume = tryCatch(alphashape3d::volume_ashape3d(as3d=twig.ashape, byComponents = FALSE, indexAlpha = 1),error = function(e) NA)
     neuron$volume$volume.estimation$twig.ashape.volume = twig.ashape.volume
-    neuron$volume$mesh3d$twig = ashape2mesh3d(twig.ashape, remove.interior.points = FALSE)
+    twig.mesh3d = ashape2mesh3d(twig.ashape, remove.interior.points = FALSE)
+    twig.mesh3d = Rvcg::vcgClean(twig.mesh3d,sel=0:7,iterate=TRUE, silent = TRUE)
+    neuron$volume$mesh3d$twig = twig.mesh3d
+    twig.mesh3d.volume = Rvcg::vcgVolume(twig.mesh3d)
+    neuron$volume$volume.estimation$twig.mesh3d.volume = twig.mesh3d.volume
     message("twig volume created")
   }
   neuron$volume$vertices = mesh.vertices
@@ -527,7 +558,6 @@ fafbseg_update_node_radii <- function(x, max.dist = 2000, method = c("nearest.me
   }
 }
 
-
 # Hidden
 fafbseg_get_volumes <- function(nglids){
   volumes = list()
@@ -610,10 +640,6 @@ neuronvolume_get_radius <- function(neuron, volumes, max.dist = 2000, method = c
   close(pb)
   neuron$d
 }
-
-
-
-
 
 # volume.key.newest = "brainmaps://772153499790:fafb_v14:fafb-ffn1-20190521" # Newest Segmentation from Peter Li
 # options(fafbseg.skeletonuri = volume.key.newest) # Set this as teh segmentation we'll be looking at

@@ -11,6 +11,7 @@ fafb_segs_stitch_volumes(
   map = TRUE,
   voxelSize = 50,
   downsample.factor = 12,
+  downsample.volumes = TRUE,
   soma = TRUE,
   node.match = 4,
   smooth = FALSE,
@@ -49,6 +50,8 @@ neuronvolume3d(
 
 \item{downsample.factor}{after the Google volumes have been resampled uniformly at voxelSize, points are randomly removed from the neuron cloud
 (no.points=no.points/downsample.factor) in order to make alphashape generation by alphashape3d::ashape manageable}
+
+\item{downsample.volumes}{downsample the volume pulled from the brainmaps API by xovelsize.}
 
 \item{soma}{if TRUE, the soma (root point for neuron) will be identified}
 
