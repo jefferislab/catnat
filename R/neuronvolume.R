@@ -65,7 +65,8 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL,
     volumes = list()
     nams = c()
     pb <- utils::txtProgressBar(min = 0, max = length(nglids), style = 3)
-    while(length(nglids)>0){
+    tries <- 0
+    while(length(nglids)>0 & tries <= 10){
       message("Getting volumes for ",length(nglids), " Neuroglancer segments")
       for(ng in 1:length(nglids)){
         s = fafbseg::find_merged_segments(nglids[ng])
@@ -87,6 +88,9 @@ fafb_segs_stitch_volumes <- function(neuron, volumes = NULL,
       }
       nglids = setdiff(nglids,nams)
       message("re-trying: ", length(nglids))
+      if(length(nglids)){
+        tries = tries + 1
+      }
       utils::setTxtProgressBar(pb, ng)
     }
     close(pb)
@@ -563,7 +567,8 @@ fafbseg_get_volumes <- function(nglids){
   volumes = list()
   nams = c()
   pb <- utils::txtProgressBar(min = 0, max = length(nglids), style = 3)
-  while(length(nglids)>0){
+  tries <- 0
+  while(length(nglids)>0 & tries <= 10){
     message("Getting volumes for ",length(nglids), " Neuroglancer segments")
     for(ng in 1:length(nglids)){
       s = fafbseg::find_merged_segments(nglids[ng])
@@ -583,6 +588,9 @@ fafbseg_get_volumes <- function(nglids){
     }
     nglids = setdiff(nglids,nams)
     message("re-trying: ", length(nglids))
+    if(length(nglids)){
+      tries <- tries + 1
+    }
     utils::setTxtProgressBar(pb, ng)
   }
   close(pb)
