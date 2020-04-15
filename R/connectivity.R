@@ -98,6 +98,7 @@ connectivity_matrix <- function(pre, post = pre, ...){
       m[skel,skel2] = ifelse(length(syns)==0, 0, syns)
     }
   }
+  m
 }
 
 #' @export
