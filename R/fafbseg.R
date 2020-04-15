@@ -418,7 +418,12 @@ map_fafbsegs_to_neuron <- function(someneuronlist, node.match = 5,
   }else {
     t = NULL
   }
-  t
+  t %>%
+    dplyr::group_by(.data$ngl_id) %>%
+    dplyr::filter(.data$node_hits >= max(.data$node_hits, na.rm = TRUE)) %>%
+    as.data.frame()->
+    mapping
+  mapping
 }
 
 
