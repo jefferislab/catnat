@@ -25,7 +25,7 @@ segments_ranked_pre <- function(x,
                                        direction = 'incoming',
                                        get_partner_names = T,
                                        get_partner_nodes = T, ...)
-  known_up = known_up[!data.table::duplicated(known_up),]
+  known_up = known_up[!duplicated(known_up),]
   known_up$segment = NA
   for (j in 1:ceiling(nrow(known_up)/200)) {
     i = (j*200)-199
