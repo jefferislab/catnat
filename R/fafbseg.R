@@ -228,15 +228,12 @@ fafb_frags_ids <- function(skids, direction = c("incoming","outgoing"), connecto
     connected = connected[,c("connector_id", "post_node_x", "post_node_y", "post_node_z")]
   }
   if(!is.null(connector_ids)){
-    connected = subset(connected,connector_id%in%connector_ids)
+    connected = subset(connected,connected$connector_id%in%connector_ids)
   }
   colnames(connected) = c("connector_id","X","Y","Z")
   if(!is.null(mesh3d)){
     i = nat::pointsinside(nat::xyzmatrix(connected),mesh3d,rval = "logical")
     connected = connected[i,]
-  }
-  if(!is.null(connector_ids)){
-    connected = subset(connected,connector_id%in%connector_ids)
   }
   connected_ids= brainmaps_xyz2id_chunk(connected[,c('X','Y', 'Z')])
   connected_ids

@@ -7,12 +7,7 @@
 \alias{catnat}
 \title{catnat: Analyse neuronal morphology and connectivity (extends catmaid and nat)}
 \description{
-A selection of functions for analysis of neuronal morphology and
-    connectivity created for use alongside the nat and catmaid packages. Many
-    of the functions are driven by the need to analyse the results of annotation
-    of 3D electron microscopy data from the `CATMAID` web application. This 
-    package is largely an incubator for work by Alex Bates and is subject to 
-    frequent updates.
+A selection of functions for analysis of neuronal morphology and connectivity created for use alongside the nat and catmaid packages. Many of the functions are driven by the need to analyse the results of annotation of 3D electron microscopy data from the `CATMAID` web application. This package is largely an incubator for work by Alex Bates and is subject to frequent updates.
 }
 \section{Online Help}{
  See \url{https://jefferislab.github.io/catnat} for

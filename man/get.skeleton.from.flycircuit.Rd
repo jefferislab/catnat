@@ -8,7 +8,7 @@
 \usage{
 get.skeleton.from.flycircuit(fcneurons, xform_version = 1, ...)
 
-reroot.flycircuit.neuron(x)
+\method{reroot}{flycircuit.neuron}(x)
 
 Chiang2FCWB(x, female = grepl("-F-", x), xform_version = 1)
 }
